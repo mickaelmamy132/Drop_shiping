@@ -31,14 +31,14 @@ class HandleInertiaRequests extends Middleware
                 $role = $profil->Role;
             }
         }
-        Log::info('User role:', ['role' => $role]);
-        // dd($role);
+        // Log::info('User role:', ['role' => $role]);
+        // dd($role, $user);
 
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $user,
-                'Role' => $role,
+                'role' => $role,
             ],
         ];
     }

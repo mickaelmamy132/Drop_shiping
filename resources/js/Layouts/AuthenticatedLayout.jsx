@@ -8,19 +8,18 @@ import { MultiLevelSidebar_acheteur } from '../Components/SideBar_acheteur';
 import { MultiLevelSidebar_vendeur } from '../Components/Sidebar_vendeur';
 
 
-export default function Authenticated({ Role, user, header, children }) {
+export default function Authenticated({ role, user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-    // console.log(user);
-    console.log(Role);
-
+    console.log(user); 
+    console.log(role);
+    
     return (
         <div className="h-screen bg-gray-100 w-screen flex overflow-y-hidden">
-            {Role === 'Acheteur' ? (
+            {role === 'Acheteur' ? (
                 <MultiLevelSidebar_acheteur className='' />
             ) : (
                 <MultiLevelSidebar_vendeur className='' />
             )}
-             {/* <MultiLevelSidebar_vendeur className='' /> */}
 
             {header && (
                 <header className="bg-white shadow">

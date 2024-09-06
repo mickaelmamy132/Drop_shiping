@@ -8,6 +8,7 @@ export default function Dashboard({ auth }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
+            Role={auth.role}
         >
             <Head title="Dashboard tay" />
             <div className='flex'>
