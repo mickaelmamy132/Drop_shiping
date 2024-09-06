@@ -10,8 +10,7 @@ import { MultiLevelSidebar_vendeur } from '../Components/Sidebar_vendeur';
 
 export default function Authenticated({ Role, user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-
-    // Vérifiez que le rôle est bien passé
+    // console.log(user);
     console.log(Role);
 
     return (
@@ -21,6 +20,7 @@ export default function Authenticated({ Role, user, header, children }) {
             ) : (
                 <MultiLevelSidebar_vendeur className='' />
             )}
+             {/* <MultiLevelSidebar_vendeur className='' /> */}
 
             {header && (
                 <header className="bg-white shadow">

@@ -13,6 +13,6 @@ class Profil extends Model
 
     public function user()
     {
-        return $this->belongsTo(user::class);
+        return $this->belongsTo(User::class, 'user_id');  // Assurez-vous que 'user_id' est bien le nom de la clé étrangère
     }
 }

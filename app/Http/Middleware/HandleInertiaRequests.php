@@ -4,7 +4,9 @@ namespace App\Http\Middleware;
 
 use App\Models\Profil;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Middleware;
+use PgSql\Lob;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -22,20 +24,21 @@ class HandleInertiaRequests extends Middleware
         $role = null;
 
         if ($user) {
-            // Charger le profil de l'utilisateur
+
             $profil = Profil::where('user_id', $user->id)->first();
             
-            // Si le profil existe, récupérer le rôle
             if ($profil) {
-                $role = $profil->Role; // Utilisez le bon nom du champ ici
+                $role = $profil->Role;
             }
         }
+        Log::info('User role:', ['role' => $role]);
+        // dd($role);
 
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $user,
-                'Role' => $role, // Partager le rôle
+                'Role' => $role,
             ],
         ];
     }

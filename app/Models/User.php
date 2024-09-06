@@ -24,8 +24,9 @@ class User extends Authenticatable
 
     public function profil()
     {
-        return $this->hasOne(Profil::class);
+        return $this->hasOne(Profil::class, 'user_id');  // Assurez-vous que 'user_id' est bien le nom de la clé étrangère
     }
+
 
     /**
      * The attributes that should be hidden for serialization.
