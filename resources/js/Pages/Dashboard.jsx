@@ -8,9 +8,9 @@ export default function Dashboard({ auth }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            Role={auth.role}
+            role={auth.role}
         >
-            <Head title="Dashboard tay" />
+            <Head title="Dashboard" />
             <div className='flex'>
                 {/* Main Content Area */}
                 <div className='w-full  mx-auto px-4 sm:px-6 lg:px-8 mt-20 overflow-y-auto'>

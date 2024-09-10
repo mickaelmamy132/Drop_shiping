@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Commande;
+use Illuminate\Database\Eloquent\Model;
 
-class Acheteur extends Profil
+class Acheteur extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'profil_id',
+        'user_id',
         'numero',
         'genre',
         'pays',
@@ -18,9 +19,9 @@ class Acheteur extends Profil
         'nif',
     ];
     
-    public function profil()
+    public function user()
     {
-        return $this->belongsTo(Profil::class, 'profil_id'); // Relation avec le modèle Profil
+        return $this->belongsTo(User::class); // Relation avec le modèle Profil
     }
 
     // public function estClientFidele()

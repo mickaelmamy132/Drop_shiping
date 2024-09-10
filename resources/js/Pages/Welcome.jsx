@@ -2,7 +2,7 @@ import { Link, Head } from '@inertiajs/react';
 import NavLink from '../Components/NavLink';
 import { CarouselCustomArrows } from '../Components/Carousel';
 
-export default function Welcome({ auth, laravelVersion, phpVersion }) {
+export default function Welcome({ auth }) {
     const handleImageError = () => {
         document.getElementById('screenshot-container')?.classList.add('!hidden');
         document.getElementById('docs-card')?.classList.add('!row-span-1');
@@ -17,10 +17,8 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                     <div>
                         <img className="w-20 h-25" src="/icons/Fuji-Dark.png" alt="Logo" />
                     </div>
-                    <div className="nav-links duration-500 md:static absolute bg-white md:min-h-fit min-h-[60vh] left-0 top-[-100%] md:w-auto w-full flex items-left px-5">
+                    <div className="nav-links duration-500 md:static absolute bg-white md:min-h-fit min-h-[60vh] left-0 top-0 md:w-auto w-full flex items-left px-5">
                         <ul className="flex md:flex-row flex-col md:items-center md:gap-[4vw] items-center gap-[4vw]">
-
-
                             {auth.user ? (
                                 <NavLink
                                     href={route('dashboard')}
@@ -34,28 +32,23 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         href={route('register_acheteur')}
                                         className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                     >
-                                        acheteur
+                                        Acheteur
                                     </NavLink>
 
-                                    {/* <NavLink
+                                    <NavLink
                                         href={route('register_vendeur')}
                                         className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                     >
-                                        vendeur
-                                    </NavLink> */}
-                                    
+                                        Vendeur
+                                    </NavLink>
+
+
                                     <NavLink
                                         href={route('login')}
                                         className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                     >
                                         Log in
                                     </NavLink>
-                                    {/* <NavLink
-                                        href={route('register')}
-                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                    >
-                                        Register
-                                    </NavLink> */}
                                 </>
                             )}
                         </ul>

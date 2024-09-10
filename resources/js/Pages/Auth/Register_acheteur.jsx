@@ -14,7 +14,7 @@ export default function register_acheteur() {
         password_confirmation: '',
         genre: '',
         accepte: false,
-        agreement: false,
+        agreement: false, 
         tva: '',
         nif: '',
         pays: '',

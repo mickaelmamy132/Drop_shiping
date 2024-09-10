@@ -12,6 +12,9 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
+    
+    Route::get('register_vendeur', [RegisteredUserController::class, 'create_vendeur'])
+    ->name('register_vendeur');
 
     Route::get('register_acheteur', [RegisteredUserController::class, 'create_acheteur'])
         ->name('register_acheteur');
@@ -36,11 +39,6 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
 });
-
-
-
-
-
 
 Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)

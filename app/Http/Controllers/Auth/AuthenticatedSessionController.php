@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Profil;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -34,7 +35,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = Auth::user();
-        
+
         $this->authenticated($request, $user);
 
         return redirect()->intended(route('dashboard', ['absolute' => false]));
@@ -43,7 +44,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Destroy an authenticated session.
      */
-    
+
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
@@ -62,8 +63,5 @@ class AuthenticatedSessionController extends Controller
      * @param  \App\Models\User  $user
      * @return void
      */
-    protected function authenticated(Request $request, $user)
-    {
-        $user->load('profil');
-    }
+    protected function authenticated(Request $request, $user) {}
 }

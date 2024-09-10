@@ -20,12 +20,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
-    public function profil()
-    {
-        return $this->hasOne(Profil::class, 'user_id');  // Assurez-vous que 'user_id' est bien le nom de la clé étrangère
-    }
 
 
     /**
@@ -49,5 +46,32 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function acheteur()
+    {
+        return $this->hasOne(Acheteur::class);
+    }
+
+
+    public function vendeur()
+    {
+        return $this->hasOne(Vendeur::class);
+    }
+
+    public function switchRole($role)
+    {
+        if (in_array($role, ['acheteur', 'vendeur'])) {
+            $this->role = $role;
+            $this->save();
+        }
+    }
+
+    public function activeRole()
+    {
+        if ($this->role === 'acheteur') {
+            return $this->acheteur;
+        }
+        return $this->vendeur;
     }
 }

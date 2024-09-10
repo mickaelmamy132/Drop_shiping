@@ -27,6 +27,10 @@ class RegisteredUserController extends Controller
         return Inertia::render('Auth/Register_acheteur');
     }
 
+    public function create_vendeur(): Response
+    {
+        return Inertia::render('Auth/Register_vendeur');
+    }
     /** 
      * Handle an incoming registration request.
      *
@@ -51,18 +55,14 @@ class RegisteredUserController extends Controller
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
+                'role' => 'acheteur',
                 'password' => Hash::make($request->password),
             ]);
-
-            // Création du profil associé à l'utilisateur
-            $profil = Profil::create([
-                'user_id' => $user->id,
-                'Role' => 'Acheteur',
-            ]);
+            
 
             // Création de l'acheteur
             $acheteur = Acheteur::create([
-                'profil_id' => $profil->id,
+                'user_id' => $user->id,
                 'numero' => $request->numero,
                 'genre' => $request->genre,
                 'pays' => $request->pays,
@@ -70,18 +70,14 @@ class RegisteredUserController extends Controller
                 'nif' => $request->nif,
             ]);
 
-            // Déclenche l'événement d'enregistrement
             event(new Registered($user));
 
-            // Authentifie l'utilisateur
             Auth::login($user);
 
-            // Redirection vers la route définie
             return redirect()->route('Acheteur');
         } catch (\Exception $e) {
             echo $e->getMessage();
             exit;
-            // Gère l'exception et retourne une réponse appropriée
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
