@@ -14,7 +14,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Acheteur;
 use App\Models\Vendeur;
-use App\Models\Profil;
+
 use PhpParser\Node\Expr\Exit_;
 
 class RegisteredUserController extends Controller
@@ -58,7 +58,7 @@ class RegisteredUserController extends Controller
                 'role' => 'acheteur',
                 'password' => Hash::make($request->password),
             ]);
-            
+
 
             // Création de l'acheteur
             $acheteur = Acheteur::create([
@@ -80,5 +80,25 @@ class RegisteredUserController extends Controller
             exit;
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
+    }
+
+    public function switchRole($role)
+    {
+        $user = Auth::user();
+
+        if (in_array($role, ['acheteur', 'vendeur'])) {
+            $user->switchRole($role);
+
+            // Rafraîchir l'utilisateur pour obtenir le rôle mis à jour
+            $user->refresh();
+
+            if ($user->role === 'acheteur') {
+                return Inertia::location(route('Acheteur'));
+            } elseif ($user->role === 'vendeur') {
+                return Inertia::location(route('dashboard'));
+            }
+        }
+
+        return back()->withErrors(['error' => 'Rôle invalide']);
     }
 }

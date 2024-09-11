@@ -9,7 +9,8 @@ import { MultiLevelSidebar_vendeur } from '../Components/Sidebar_vendeur';
 
 
 export default function Authenticated({ role, user, header, children }) {
-    console.log(role);
+
+
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
     return (
         <div className="h-screen bg-gray-100 w-screen flex overflow-y-hidden">

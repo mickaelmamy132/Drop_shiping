@@ -32,7 +32,7 @@ class HandleInertiaRequests extends Middleware
 
 
         // Log::info('User role:', ['role' => $role]);
-        // dd($role, $profil);
+        // dd( $profil);
 
         return [
             ...parent::share($request),

@@ -26,14 +26,6 @@ Route::get('/Acheteur', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('Acheteur');
 
-Route::post('/switch/{role}', function ($role) {
-    Auth::user()->switchRole($role);
-    if ($role === 'acheteur') {
-        return redirect()->route('Acheteur');
-    }
-    return redirect()->route('dashboard');
-})->middleware(['auth', 'verified'])->name('switch');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
