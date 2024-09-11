@@ -24,22 +24,28 @@ class HandleInertiaRequests extends Middleware
 
         $role = null;
         $profil = null;
+        $acheteurInfo = null;
+
 
         if ($user) {
+            $user->load(['acheteur', 'vendeur']);
             $profil = $user->activeRole();
             $role = $user->role;
+            if ($role === 'acheteur' && $profil) {
+                $acheteurInfo = $profil->toArray();
+            } else {
+                $acheteurInfo = null;
+            }
         }
 
-
-        // Log::info('User role:', ['role' => $role]);
-        // dd( $profil);
+        // dd($acheteurInfo);
 
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $user,
                 'role' => $role,
-                'profil' => $profil,
+                'profil' => $acheteurInfo,
             ],
         ];
     }

@@ -8,26 +8,8 @@ import { useForm } from '@inertiajs/react';
 
 
 export default function Dashboard({ auth }) {
-    const { post } = useForm();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const newRole = auth.user.role === 'vendeur' ? 'acheteur' : 'vendeur';
-        post(route('switch', { role: newRole }), {
-            preserveState: false,
-            preserveScroll: false,
-            onSuccess: () => {
-                if (newRole === 'acheteur') {
-                    Inertia.visit(route('Acheteur'));
-                } else {
-                    Inertia.visit(route('dashboard'));
-                }
-            },
-            onError: (errors) => {
-                console.error(errors);
-            }
-        });
-    };
+    const { data, setData, post, processing, errors, reset } = useForm();
 
     return (
         <AuthenticatedLayout
@@ -37,12 +19,23 @@ export default function Dashboard({ auth }) {
             <Head title="Dashboard" />
             <div className='flex'>
                 {/* Main Content Area */}
-                <div className='w-full mx-auto px-4 sm:px-6 lg:px-8 mt-20 overflow-y-auto'>
+                <div className='w-full  mx-auto px-4 sm:px-6 lg:px-8 mt-20 overflow-y-auto'>
                     <div className='flex justify-between items-center p-5 bg-white rounded-lg shadow-md'>
                         <h2 className='text-2xl font-bold'>
                             Liste des achats en cours
                         </h2>
-                        <form className="flex items-center" onSubmit={handleSubmit}>
+                        <form className="flex items-center" onSubmit={(e) => {
+                            e.preventDefault();
+                            const newRole = auth.user.role === 'vendeur' ? 'acheteur' : 'vendeur';
+                            post(`/switch/${newRole}`, {
+                                onSuccess: () => {
+                                    window.location.reload();
+                                },
+                                onError: (errors) => {
+                                    console.error(errors);
+                                }
+                            });
+                        }}>
                             <button type="submit">
                                 {auth.user.role === 'vendeur' ? 'Se connecter en tant qu\'acheteur' : 'Se connecter en tant que vendeur'}
                             </button>

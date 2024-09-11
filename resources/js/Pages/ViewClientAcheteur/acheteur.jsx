@@ -10,6 +10,7 @@ export default function Acheteur({ auth }) {
         <AuthenticatedLayout
             user={auth.user}
             role={auth.role}
+            profil={auth.profil}
         >
             <main className='flex'>
                 <div className='flex-1 items-center mt-5'>
@@ -17,22 +18,17 @@ export default function Acheteur({ auth }) {
                         <h3 className='font-bold text-2xl ml-3'>Les rubriques en vente</h3>
                         <form className="flex items-center" onSubmit={(e) => {
                             e.preventDefault();
-                            post(route('switch', { role: 'vendeur' }), {
+                            const newRole = auth.user.role === 'vendeur' ? 'acheteur' : 'vendeur';
+                            post(`/switch/${newRole}`, {
                                 onSuccess: () => {
-                                    if (newRole === 'acheteur') {
-                                        Inertia.visit(route('Acheteur'));
-                                    } else {
-                                        Inertia.visit(route('dashboard'));
-                                    }
+                                    window.location.reload();
                                 },
                                 onError: (errors) => {
                                     console.error(errors);
                                 }
                             });
                         }}>
-                            <button type="submit">
-                                {auth.user.role === 'vendeur' ? 'Se connecter en tant qu\'acheteur' : 'Se connecter en tant que vendeur'}
-                            </button>
+                            <button type="submit" className='bg-blue-400 py-2 px-2 rounded-xl mx-auto text-center text-black hover:bg-red-300' >Se connecter en tant que vendeur</button>
                         </form>
                     </div>
                     <div className='w-full mt-5 p-2 h-auto overflow-y-scroll'>
