@@ -6,9 +6,11 @@ import {
   InputNumber,
   Select,
   Upload,
+  message,
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import axios from 'axios';
 
 const { Option } = Select;
 
@@ -44,8 +46,12 @@ const tailFormItemLayout = {
 };
 export default function Add_rubrique({ auth }) {
   const [form] = Form.useForm();
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
+  const onFinish = (data) => {
+    console.log('Form submitted:', data);
+    console.log('Form submitted:', data);
+    // post(route('register_acheteur'), {
+    //   onSuccess: () => reset('password', 'password_confirmation'),
+    // });
   };
   const suffixSelector = (
     <Form.Item name="suffix" noStyle>
