@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProduirController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -14,22 +15,22 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard', [
-        'canSwicht' => Route::has('Acheteur'),
-    ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
 
-Route::get('/Acheteur', function () {
-    return Inertia::render('ViewClientAcheteur/acheteur', [
-        'canSwicht' => Route::has('dashboard'),
-    ]);
-})->middleware(['auth', 'verified'])->name('Acheteur');
+    Route::get('Acheteur', fn() => Inertia::render('ViewClientAcheteur/acheteur'))->name('Acheteur');
+
+    Route::get('consulter_article', fn() => Inertia::render('ViewClientAcheteur/Article_infos'))->name('consulter_article');
+
+    Route::resource('Produit',ProduirController::class);
+});
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
 });
 
 require __DIR__ . '/auth.php';

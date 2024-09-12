@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import Chartjx from '../Components/Chart';
 import ProductCard from './ViewClientVendeur/Produit';
-import Checkbox from '../Components/Checkbox';
+// import Checkbox from '../Components/Checkbox';
 import { useForm } from '@inertiajs/react';
 
 
@@ -28,9 +28,9 @@ export default function Dashboard({ auth }) {
                             e.preventDefault();
                             const newRole = auth.user.role === 'vendeur' ? 'acheteur' : 'vendeur';
                             post(`/switch/${newRole}`, {
-                                onSuccess: () => {
-                                    window.location.reload();
-                                },
+                                // onSuccess: () => {
+                                //     window.location.reload();
+                                // },
                                 onError: (errors) => {
                                     console.error(errors);
                                 }
@@ -43,9 +43,21 @@ export default function Dashboard({ auth }) {
 
                     </div>
 
+                    <Link href={route("Produit.create")}
+                        active={route().current("Produit.create")}
+                    >
+                        ajout rubrique
+                    </Link>
+
                     <div className=' overflow-hidden p-4 mt-5'>
+                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 mb-5'>
+                            <Chartjx />
+                            <Chartjx />
+                            <Chartjx />
+                            <Chartjx />
+                        </div>
                         {/* Grid of products */}
-                        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+                        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5'>
                             <ProductCard />
                             <ProductCard />
                             <ProductCard />
@@ -53,13 +65,7 @@ export default function Dashboard({ auth }) {
                         </div>
 
                         {/* Grid of charts */}
-                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4'>
-                            <Chartjx />
-                            <Chartjx />
-                            <Chartjx />
-                            <Chartjx />
-                            <Chartjx />
-                        </div>
+
                     </div>
                 </div>
             </div>

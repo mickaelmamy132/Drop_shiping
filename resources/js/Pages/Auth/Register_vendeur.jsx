@@ -14,13 +14,13 @@ export default function RegisterVendeur() {
     const [current, setCurrent] = useState(0);
     const [form] = Form.useForm();
 
-    const { data, setData, post, processing, reset } = useForm({
+    const { data, setData, post, } = useForm({
         name: '',
         email: '',
         numero: '',
         nom_de_l_entreprise: '',
         site_web: '',
-        activite: [],
+        industrie: [],
         adresse_facturation: '',
         code_postal: '',
         ville: '',
@@ -48,6 +48,7 @@ export default function RegisterVendeur() {
 
     const contentStyle = {
         padding: '30px',
+        // display: 'flex',
         textAlign: 'center',
         backgroundColor: token.colorBgContainer,
         borderRadius: token.borderRadiusLG,
@@ -56,6 +57,14 @@ export default function RegisterVendeur() {
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
         maxWidth: '650px',
     };
+
+    // const style_form = {
+    //     marginRight: 'auto',
+    //     boxShadow: ' 0 2px 8px rgba(0, 0, 0, 0.15)',
+    //     padding : '20px 25px 35px 30px' ,
+    //     width: 'auto',
+    //     height: 'auto',
+    // }
 
     const options = [
         {
@@ -83,10 +92,10 @@ export default function RegisterVendeur() {
 
     return (
         <>
-            <Steps current={current} items={items} style={{ marginBottom: 24 }} />
+            <Steps current={current} items={items} style={{ marginBottom: 24, marginTop: 45 }} />
             <Divider />
             <div style={contentStyle}>
-                <div style={{ color: token.colorTextPrimary, fontSize: 24, fontWeight: 'bold', marginBottom: 16 }}>
+                <div style={{ color: token.colorTextPrimary, fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
                     {['First-content', 'Second-content', 'Last-content'][current]}
                 </div>
 
@@ -96,6 +105,7 @@ export default function RegisterVendeur() {
                         name="register"
                         initialValues={{ prefix: '86' }}
                         scrollToFirstError
+                        // style={style_form}
                     >
                         <Form.Item
                             name="email"
@@ -111,7 +121,7 @@ export default function RegisterVendeur() {
                                 },
                             ]}
                         >
-                            <Input style={{ width: '100%' }} />
+                            <Input className='py-2 rounded-xl' />
                         </Form.Item>
 
                         <Form.Item
@@ -120,7 +130,7 @@ export default function RegisterVendeur() {
                             tooltip="What do you want others to call you?"
                             rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
                         >
-                            <Input style={{ width: '100%' }} />
+                            <Input className='py-2 rounded-xl' />
                         </Form.Item>
 
                         <Form.Item
@@ -133,42 +143,13 @@ export default function RegisterVendeur() {
                                 defaultCountry="US"
                                 value={data.numero}
                                 onChange={(value) => setData('numero', value)}
-                                style={{ width: '100%' }}
+                                style={{ width: '100%', borderRadius: '12px' }}
                             />
                         </Form.Item>
 
-                        <div className='flex'>
-                            <Form.Item
-                                name="ville"
-                                label="Ville"
-                                rules={[{ required: true, message: 'veilliez remplire le champ' }]}
-                            >
-                                <Input className='border-1/3 py-1 rounded-xl' />
-
-                            </Form.Item>
-                            
-                            <Form.Item
-                                name="code_postal"
-                                label="code postal"
-                                rules={[{ required: true, message: 'veilliez remplire le champ' }]}
-                            >
-                                <Input />
-
-                            </Form.Item>
-                        </div>
-
-                        <Form.Item
-                                name="adresse_livraison"
-                                label="adresse de livraison"
-                                rules={[{ required: true, message: 'veilliez remplire le champ' }]}
-                            >
-                                <Input />
-
-                            </Form.Item>
-
                         <Form.Item
                             name="activite"
-                            label="Activité"
+                            label="Activite"
                             rules={[{ required: true, message: 'Veuillez sélectionner votre activité!' }]}
                         >
                             <Cascader
@@ -197,14 +178,45 @@ export default function RegisterVendeur() {
                                 onChange={handleChange}
                                 showUploadList={{ showRemoveIcon: true }}
                             >
-                                <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                                <Button icon={<UploadOutlined />}>charger une fichier</Button>
                             </Upload>
                         </Form.Item>
                     </Form>
                 )}
 
                 {current === 1 && (
-                    <div>Last Step Content</div>
+                    <div>
+                        <Form>
+                            <div className='flex'>
+                                <Form.Item
+                                    name="ville"
+                                    label="Ville"
+                                    rules={[{ required: true, message: 'veilliez remplire le champ' }]}
+                                >
+                                    <Input className='py-1 rounded-xl' />
+
+                                </Form.Item>
+
+                                <Form.Item
+                                    name="code_postal"
+                                    label="code postal"
+                                    rules={[{ required: true, message: 'veilliez remplire le champ' }]}
+                                >
+                                    <Input className='py-1 rounded-xl' />
+
+                                </Form.Item>
+                            </div>
+                            <Form.Item
+                                name="adresse_livraison"
+                                label="adresse de livraison"
+                                rules={[{ required: true, message: 'veilliez remplire le champ' }]}
+                            >
+                                <Input />
+
+                            </Form.Item>
+                        </Form>
+
+                    </div>
                 )}
 
                 {current === 2 && (

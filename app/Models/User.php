@@ -65,7 +65,7 @@ class User extends Authenticatable
      * @param string $role
      * @return void
      */
-    
+
     public function switchRole($role)
     {
         if (in_array($role, ['acheteur', 'vendeur'])) {
@@ -81,5 +81,10 @@ class User extends Authenticatable
             return $this->acheteur;
         }
         return $this->vendeur;
+    }
+
+    public function produits()
+    {
+        return $this->hasMany(Produit::class, 'vendeur_id');
     }
 }
