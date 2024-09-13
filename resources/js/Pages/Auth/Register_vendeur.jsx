@@ -34,11 +34,6 @@ export default function RegisterVendeur() {
     });
 
     const next = () => {
-
-
-
-
-
         if (current === 0) {
             form.validateFields().then(() => {
                 setCurrent(current + 1);
@@ -255,13 +250,6 @@ export default function RegisterVendeur() {
                         <Form
                             form={form2}
                             layout="vertical"
-
-
-
-
-
-
-
                         >
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Form.Item
@@ -368,12 +356,6 @@ export default function RegisterVendeur() {
                                     <Button icon={<UploadOutlined />} style={{ ...inputStyle, height: 'auto' }}>Charger un fichier</Button>
                                 </Upload>
                             </Form.Item>
-
-
-
-
-
-
                         </Form>
                     </div>
                 )}
