@@ -15,6 +15,7 @@ export default function Dashboard({ auth }) {
         <AuthenticatedLayout
             user={auth.user}
             role={auth.role}
+            profil={auth.profil}
         >
             <Head title="Dashboard" />
             <div className='flex'>

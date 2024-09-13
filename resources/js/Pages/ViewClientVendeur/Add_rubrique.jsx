@@ -7,10 +7,10 @@ import {
   Select,
   Upload,
   message,
+  notification,
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import axios from 'axios';
 
 const { Option } = Select;
 
@@ -45,13 +45,27 @@ const tailFormItemLayout = {
   },
 };
 export default function Add_rubrique({ auth }) {
+  console.log(auth.user)
   const [form] = Form.useForm();
   const onFinish = (data) => {
     console.log('Form submitted:', data);
-    console.log('Form submitted:', data);
-    // post(route('register_acheteur'), {
-    //   onSuccess: () => reset('password', 'password_confirmation'),
-    // });
+    post(route('Produit.store'), {
+      onSuccess: () => {
+        reset('password', 'password_confirmation');
+        notification.success({
+          message: 'Succès',
+          description: 'Produit créé avec succès!',
+          placement: 'topRight',
+        });
+      },
+      onError: (errors) => {
+        notification.error({
+          message: 'Erreur',
+          description: 'Une erreur est survenue lors de la création du produit.',
+          placement: 'topRight',
+        });
+      }
+    });
   };
   const suffixSelector = (
     <Form.Item name="suffix" noStyle>
@@ -69,6 +83,7 @@ export default function Add_rubrique({ auth }) {
     <AuthenticatedLayout
       user={auth.user}
       role={auth.role}
+      profil={auth.profil}
     >
       <div className='w-full py-5 h-auto mt-10 shadow bg-white items-center justify-center flex'>
         <Form

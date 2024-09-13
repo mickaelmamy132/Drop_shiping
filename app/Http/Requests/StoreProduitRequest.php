@@ -11,7 +11,7 @@ class StoreProduitRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return true; 
     }
 
     /**

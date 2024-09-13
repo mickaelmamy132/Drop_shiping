@@ -14,7 +14,7 @@ class ProduirController extends Controller
      */
     public function index()
     {
-        //
+        $produit = Produit::all();
     }
 
     /**
@@ -30,7 +30,18 @@ class ProduirController extends Controller
      */
     public function store(StoreProduitRequest $request)
     {
-        //
+        $validatedData = $request->validated();
+
+        if ($request->hasFile('images')) {
+            $imagePaths = [];
+            foreach ($request->file('images') as $image) {
+                $imagePath = $image->store('produits', 'public');
+                $imagePaths[] = $imagePath;
+            }
+            $validatedData['images'] = $imagePaths;
+        }
+
+        $produit = Produit::create($validatedData);
     }
 
     /**

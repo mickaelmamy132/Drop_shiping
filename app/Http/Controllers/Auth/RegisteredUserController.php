@@ -89,8 +89,7 @@ class RegisteredUserController extends Controller
         if (in_array($role, ['acheteur', 'vendeur'])) {
             $user->switchRole($role);
 
-            // Rafraîchir l'utilisateur pour obtenir le rôle mis à jour
-            $user->refresh();
+            // $user->refresh();
 
             if ($user->role === 'acheteur') {
                 return Inertia::location(route('Acheteur'));

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Upload, Button, message, Steps, theme, Divider, Form, Input, Cascader } from 'antd';
+import { Upload, Button, message, Steps, theme, Divider, Form, Input, Cascader, Switch } from 'antd';
 import { useForm } from '@inertiajs/react';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
 import { UploadOutlined } from '@ant-design/icons';
+import { Description } from '@headlessui/react';
 
 const { Dragger } = Upload;
 const handleChange = (info) => {
@@ -13,14 +14,18 @@ export default function RegisterVendeur() {
     const { token } = theme.useToken();
     const [current, setCurrent] = useState(0);
     const [form] = Form.useForm();
+    const [form2] = Form.useForm();
 
     const { data, setData, post, } = useForm({
-        name: '',
+        nom: '',
+        prenom: '',
         email: '',
         numero: '',
         nom_de_l_entreprise: '',
         site_web: '',
         industrie: [],
+        activite: [],
+        description: '',
         adresse_facturation: '',
         code_postal: '',
         ville: '',
@@ -29,11 +34,26 @@ export default function RegisterVendeur() {
     });
 
     const next = () => {
-        form.validateFields().then(() => {
-            setCurrent(current + 1);
-        }).catch((errorInfo) => {
-            console.log('Validation Failed:', errorInfo);
-        });
+
+
+
+
+
+        if (current === 0) {
+            form.validateFields().then(() => {
+                setCurrent(current + 1);
+            }).catch((errorInfo) => {
+                console.log('Validation Failed:', errorInfo);
+                message.error('Veuillez remplir tous les champs obligatoires avant de continuer.');
+            });
+        } else if (current === 1) {
+            form2.validateFields().then(() => {
+                setCurrent(current + 1);
+            }).catch((errorInfo) => {
+                console.log('Validation Failed:', errorInfo);
+                message.error('Veuillez remplir tous les champs obligatoires avant de continuer.');
+            });
+        }
     };
 
     const prev = () => {
@@ -48,23 +68,28 @@ export default function RegisterVendeur() {
 
     const contentStyle = {
         padding: '30px',
-        // display: 'flex',
         textAlign: 'center',
         backgroundColor: token.colorBgContainer,
         borderRadius: token.borderRadiusLG,
         border: `1px solid ${token.colorBorder}`,
         marginTop: 24,
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
         maxWidth: '650px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     };
 
-    // const style_form = {
-    //     marginRight: 'auto',
-    //     boxShadow: ' 0 2px 8px rgba(0, 0, 0, 0.15)',
-    //     padding : '20px 25px 35px 30px' ,
-    //     width: 'auto',
-    //     height: 'auto',
-    // }
+    const formItemStyle = {
+        marginBottom: '24px',
+    };
+
+    const inputStyle = {
+        borderRadius: '8px',
+        padding: '5px',
+        fontSize: '16px',
+        border: `1px solid ${token.colorBorder}`,
+        transition: 'all 0.3s',
+    };
 
     const options = [
         {
@@ -80,23 +105,60 @@ export default function RegisterVendeur() {
             label: 'Reconditionneur',
         },
     ];
+    const option_industrie = [
+        {
+            value: 'Informatiques',
+            label: 'Informatiques',
+        },
+        {
+            value: 'Vetements',
+            label: 'Vetements',
+        },
+        {
+            value: 'Meubles',
+            label: 'Meubles',
+        },
+        {
+            value: 'Chaussures',
+            label: 'Chaussures',
+        },
+        {
+            value: 'Electromenagers',
+            label: 'Electromenagers',
+        },
+        {
+            label: 'Sport',
+            value: 'Sport',
+        },
+    ];
 
     const [selectedOptions, setSelectedOptions] = useState([]);
+    const [selectedActivite, setselectedActivite] = useState([]);
 
     const onCascaderChange = (value, selectedOptions) => {
         setSelectedOptions(value);
+        setData('industrie', value);
+    };
+
+    const onCascaderActivite = (value, selectedActivite) => {
+        setselectedActivite(value);
         setData('activite', value);
     };
 
+    const [showFields, setShowFields] = useState(true)
 
+    const onChange = (checked) => {
+        console.log(`switch to ${checked}`)
+        setShowFields(checked)
+    }
 
     return (
         <>
             <Steps current={current} items={items} style={{ marginBottom: 24, marginTop: 45 }} />
             <Divider />
             <div style={contentStyle}>
-                <div style={{ color: token.colorTextPrimary, fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
-                    {['First-content', 'Second-content', 'Last-content'][current]}
+                <div style={{ color: token.colorTextPrimary, fontSize: 28, fontWeight: 'bold', marginBottom: 30 }}>
+                    {['Information personnels', 'activite', 'finalisation'][current]}
                 </div>
 
                 {current === 0 && (
@@ -105,8 +167,26 @@ export default function RegisterVendeur() {
                         name="register"
                         initialValues={{ prefix: '86' }}
                         scrollToFirstError
-                        // style={style_form}
+                        layout="vertical"
                     >
+                        <Form.Item
+                            name="nom"
+                            label="Nom"
+                            rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
+                            style={formItemStyle}
+                        >
+                            <Input style={inputStyle} />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="nickname"
+                            label="Prenom"
+                            rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
+                            style={formItemStyle}
+                        >
+                            <Input style={inputStyle} />
+                        </Form.Item>
+
                         <Form.Item
                             name="email"
                             label="E-mail"
@@ -120,102 +200,181 @@ export default function RegisterVendeur() {
                                     message: 'Please input your E-mail!',
                                 },
                             ]}
+                            style={formItemStyle}
                         >
-                            <Input className='py-2 rounded-xl' />
-                        </Form.Item>
-
-                        <Form.Item
-                            name="nickname"
-                            label="Nickname"
-                            tooltip="What do you want others to call you?"
-                            rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
-                        >
-                            <Input className='py-2 rounded-xl' />
+                            <Input style={inputStyle} />
                         </Form.Item>
 
                         <Form.Item
                             name="phone"
                             label="Phone Number"
                             rules={[{ required: true, message: 'Please input your phone number!' }]}
+                            style={formItemStyle}
                         >
                             <PhoneInput
                                 international
                                 defaultCountry="US"
                                 value={data.numero}
                                 onChange={(value) => setData('numero', value)}
-                                style={{ width: '100%', borderRadius: '12px' }}
+                                style={{ ...inputStyle, width: '100%' }}
                             />
                         </Form.Item>
 
                         <Form.Item
-                            name="activite"
-                            label="Activite"
+                            name="industrie"
+                            label="industrie"
                             rules={[{ required: true, message: 'Veuillez sélectionner votre activité!' }]}
+                            style={formItemStyle}
                         >
                             <Cascader
-                                options={options}
+                                options={option_industrie}
                                 multiple
                                 onChange={onCascaderChange}
+                                style={inputStyle}
                             />
                         </Form.Item>
+
                         <Form.Item
-                            name="file"
-                            label="Upload your file"
-                            valuePropName="fileList"
-                            getValueFromEvent={(e) => e.fileList}
-                            extra="Upload a PDF or Word document only."
-                            rules={[{ required: true, message: 'Please upload a file!' }]}
+                            name="description"
+                            label="Que souhaitez-vous vendre et en quelle quantité ?*"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Veuillez saisir une description',
+                                },
+                            ]}
+                            style={formItemStyle}
                         >
-                            <Upload
-                                accept=".pdf,.doc,.docx"
-                                beforeUpload={(file) => {
-                                    const isValidType = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type);
-                                    if (!isValidType) {
-                                        message.error('You can only upload PDF or Word files!');
-                                    }
-                                    return isValidType;
-                                }}
-                                onChange={handleChange}
-                                showUploadList={{ showRemoveIcon: true }}
-                            >
-                                <Button icon={<UploadOutlined />}>charger une fichier</Button>
-                            </Upload>
+                            <Input.TextArea showCount maxLength={100} style={{ ...inputStyle, minHeight: '100px' }} />
                         </Form.Item>
                     </Form>
                 )}
 
                 {current === 1 && (
                     <div>
-                        <Form>
-                            <div className='flex'>
+                        <Form
+                            form={form2}
+                            layout="vertical"
+
+
+
+
+
+
+
+                        >
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Form.Item
                                     name="ville"
                                     label="Ville"
-                                    rules={[{ required: true, message: 'veilliez remplire le champ' }]}
+                                    rules={[{ required: true, message: 'Veuillez remplir le champ' }]}
+                                    style={{ ...formItemStyle, width: '48%' }}
                                 >
-                                    <Input className='py-1 rounded-xl' />
-
+                                    <Input style={inputStyle} />
                                 </Form.Item>
 
                                 <Form.Item
                                     name="code_postal"
-                                    label="code postal"
-                                    rules={[{ required: true, message: 'veilliez remplire le champ' }]}
+                                    label="Code postal"
+                                    rules={[{ required: true, message: 'Veuillez remplir le champ' }]}
+                                    style={{ ...formItemStyle, width: '48%' }}
                                 >
-                                    <Input className='py-1 rounded-xl' />
-
+                                    <Input style={inputStyle} />
                                 </Form.Item>
                             </div>
                             <Form.Item
                                 name="adresse_livraison"
-                                label="adresse de livraison"
-                                rules={[{ required: true, message: 'veilliez remplire le champ' }]}
+                                label="Adresse de livraison"
+                                rules={[{ required: true, message: 'Veuillez remplir le champ' }]}
+                                style={formItemStyle}
                             >
-                                <Input />
-
+                                <Input style={inputStyle} />
                             </Form.Item>
-                        </Form>
 
+                            <Form.Item
+                                name="activite"
+                                label="Activité"
+                                rules={[{ required: true, message: 'Veuillez sélectionner votre activité!' }]}
+                                style={formItemStyle}
+                            >
+                                <Cascader
+                                    options={options}
+                                    multiple
+                                    onChange={onCascaderActivite}
+                                    style={inputStyle}
+                                />
+                            </Form.Item>
+
+                            <Form.Item
+                                name="facturation"
+                                label="Adresse de votre industrie"
+                                rules={[
+                                    {
+                                        required: true, message: 'Veuillez indiquer votre adresse de facturation'
+                                    }
+                                ]}
+                                style={formItemStyle}
+                            >
+                                <Input style={inputStyle} />
+                            </Form.Item>
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+                                <Switch defaultChecked={false} onChange={onChange} />
+                                <p style={{ marginLeft: '10px', marginBottom: 0 }}>Mon adresse de livraison est différente</p>
+                            </div>
+
+                            {showFields && (
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <Form.Item
+                                        name="ville_livraison"
+                                        label="Ville de livraison"
+                                        rules={[{ required: true, message: 'Veuillez remplir le champ' }]}
+                                        style={{ ...formItemStyle, width: '48%' }}
+                                    >
+                                        <Input style={inputStyle} />
+                                    </Form.Item>
+
+                                    <Form.Item
+                                        name="code_postal_livraison"
+                                        label="Code postal de livraison"
+                                        rules={[{ required: true, message: 'Veuillez remplir le champ' }]}
+                                        style={{ ...formItemStyle, width: '48%' }}
+                                    >
+                                        <Input style={inputStyle} />
+                                    </Form.Item>
+                                </div>
+                            )}
+
+                            <Form.Item
+                                name="file"
+                                label="Télécharger un fichier"
+                                valuePropName="fileList"
+                                getValueFromEvent={(e) => e.fileList}
+                                extra="Téléchargez uniquement un document PDF ou Word."
+                                rules={[{ required: true, message: 'Veuillez télécharger un fichier!' }]}
+                                style={formItemStyle}
+                            >
+                                <Upload
+                                    accept=".pdf,.doc,.docx"
+                                    beforeUpload={(file) => {
+                                        const isValidType = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type);
+                                        if (!isValidType) {
+                                            message.error('Vous pouvez uniquement télécharger des fichiers PDF ou Word!');
+                                        }
+                                        return isValidType;
+                                    }}
+                                    onChange={handleChange}
+                                    showUploadList={{ showRemoveIcon: true }}
+                                >
+                                    <Button icon={<UploadOutlined />} style={{ ...inputStyle, height: 'auto' }}>Charger un fichier</Button>
+                                </Upload>
+                            </Form.Item>
+
+
+
+
+
+
+                        </Form>
                     </div>
                 )}
 
