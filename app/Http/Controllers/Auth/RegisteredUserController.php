@@ -86,6 +86,10 @@ class RegisteredUserController extends Controller
         try {
             // Validation des données du formulaire
             $validatedData = $request->validate([
+                'nom' => 'required|string|max:255',
+                'prenom' => 'required|string|max:255',
+                'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
                 'numero' => 'required|string|max:15',
                 'industrie' => 'required|array',
                 'nom_de_l_entreprise' => 'required|string',
@@ -97,8 +101,14 @@ class RegisteredUserController extends Controller
                 'adresse_livraison' => 'nullable|string|max:255',
                 'ville_livraison' => 'nullable|string|max:100',
                 'code_postal_livraison' => 'nullable|string|max:20',
-                'documentation' => 'required|file|mimes:pdf,doc,docx|max:2048',
+                'documentation' => 'required|file|mimes:pdf,doc,docx|max:20048',
+                'nom' => 'required|string|max:255',
+                'prenom' => 'required|string|max:255',
             ]);
+
+            $validatedData['name'] = $validatedData['nom'] . ' ' . $validatedData['prenom'];
+            $validatedData['role'] = 'vendeur';
+            $validatedData['password'] = Hash::make($validatedData['password']);
 
             $path = null;
             if ($request->hasFile('documentation') && $request->file('documentation')->isValid()) {
@@ -133,7 +143,7 @@ class RegisteredUserController extends Controller
 
             Auth::login($user);
 
-            return redirect()->route('Vendeur');
+            return redirect()->route('dashboard');
         } catch (\Exception $e) {
             echo $e->getMessage();
             exit;
