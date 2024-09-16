@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   Button,
   Form,
@@ -37,10 +38,30 @@ const tailFormItemLayout = {
 export default function Add_rubrique({ auth }) {
   console.log(auth.user)
   const [form] = Form.useForm();
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('/categories');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des catégories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const onFinish = (data) => {
-    console.log('Form submitted:', data);
-    post(route('Produit.store'), {
+    const formDataWithUser = {
+      ...data,
+      user_id: auth.user.id,
+      // Add any other user information you need
+    };
+    console.log('Form submitted:', formDataWithUser);
+
+    post(route('Produit.store'), formDataWithUser, {
       onSuccess: () => {
         reset('password', 'password_confirmation');
         notification.success({
@@ -102,6 +123,23 @@ export default function Add_rubrique({ auth }) {
             ]}
           >
             <Input className="rounded-md" />
+          </Form.Item>
+
+          <Form.Item
+            name="categorie"
+            label="Catégorie"
+            rules={[
+              {
+                required: true,
+                message: 'Veuillez sélectionner une catégorie!',
+              },
+            ]}
+          >
+            <Select placeholder="Sélectionnez une catégorie" className="rounded-md">
+              {categories.map(category => (
+                <Option key={category.id} value={category.id}>{category.nom}</Option>
+              ))}
+            </Select>
           </Form.Item>
 
           <Form.Item

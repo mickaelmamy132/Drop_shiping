@@ -106,13 +106,9 @@ class RegisteredUserController extends Controller
                 'prenom' => 'required|string|max:255',
             ]);
 
-            $validatedData['name'] = $validatedData['nom'] . ' ' . $validatedData['prenom'];
-            $validatedData['role'] = 'vendeur';
-            $validatedData['password'] = Hash::make($validatedData['password']);
-
             $path = null;
             if ($request->hasFile('documentation') && $request->file('documentation')->isValid()) {
-                $path = $request->file('documentation')->store('Documentation');
+                $path = $request->file('documentation')->store('Documentation', 'public');
             }
 
             // Création de l'utilisateur et du vendeur
