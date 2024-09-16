@@ -51,7 +51,6 @@ class RegisteredUserController extends Controller
                 'nif' => 'required|string|max:50',
             ]);
 
-            // Création de l'utilisateur
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -75,6 +74,76 @@ class RegisteredUserController extends Controller
             Auth::login($user);
 
             return redirect()->route('Acheteur');
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            exit;
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function store_vendeur(Request $request): RedirectResponse
+    {
+        try {
+            // Validation des données du formulaire
+            $validatedData = $request->validate([
+                'nom' => 'required|string|max:255',
+                'prenom' => 'required|string|max:255',
+                'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                'numero' => 'required|string|max:15',
+                'facturation' => 'required|string|',
+                'industrie' => 'required|array',
+                'description' => 'required|string',
+                // 'documentation' => 'required|mimes:pdf,doc,docx|max:20240',
+                'ville' => 'required|string|max:100',
+                'code_postal' => 'required|string|max:20',
+                'activite' => 'required|array',
+                // 'adresse_livraison' => 'required|string|max:255',
+                // 'code_postal_livraison' => 'required|string|max:20',
+                // 'facturation' => 'required|string|max:255',
+            ]);
+
+            // Ce bloc de code vérifie si un fichier de documentation a été téléchargé et le stocke
+
+            // Vérifie si une documentation a été envoyée dans la requête et si elle est valide
+            if ($request->hasFile('documentation') && $request->file('documentation')->isValid()) {
+                // Si oui, stocke le fichier dans le dossier 'documents' et récupère le chemin
+                $path = $request->file('documentation')->store('Documentation');
+            } else {
+                // Si non, lance une exception avec un message d'erreur
+                throw new \Exception('The documentation failed hghgjgshjgdj to upload.');
+            }
+            
+            // Vérification des données reçues
+            dd($request->all(), $path);
+            
+
+            // Création de l'utilisateur et du vendeur
+            // $user = User::create([
+            //     'name' => $validatedData['nom'] . ' ' . $validatedData['prenom'],
+            //     'email' => $validatedData['email'],
+            //     'role' => 'vendeur',
+            //     'password' => Hash::make($request->password), // Génère un mot de passe aléatoire
+            // ]);
+
+            // $vendeur = Vendeur::create([
+            //     'user_id' => $user->id,
+            //     'numero' => $validatedData['numero'],
+            //     'facturation' => $validatedData['facturation'],
+            //     'industrie' => json_encode($validatedData['industrie']),
+            //     'description' => $validatedData['description'],
+            //     'documentation' => $path,
+            //     'ville' => $validatedData['ville'],
+            //     'code_postal' => $validatedData['code_postal'],
+            //     'activite' => json_encode($validatedData['activite']),
+            //     'adresse_livraison' => $validatedData['adresse_livraison'] ?? null,
+            // ]);
+
+            event(new Registered($user));
+
+            Auth::login($user);
+
+            return redirect()->route('Vendeur');
         } catch (\Exception $e) {
             echo $e->getMessage();
             exit;

@@ -20,7 +20,8 @@ Route::middleware('guest')->group(function () {
         ->name('register_acheteur');
 
     Route::post('register_acheteur', [RegisteredUserController::class, 'store_acheteur']);
-
+    Route::post('register_vendeur', [RegisteredUserController::class, 'store_vendeur']);
+    
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 

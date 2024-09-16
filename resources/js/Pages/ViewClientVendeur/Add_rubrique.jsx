@@ -8,45 +8,36 @@ import {
   Upload,
   message,
   notification,
+  Typography,
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 const { Option } = Select;
+const { Title } = Typography;
 
 const formItemLayout = {
   labelCol: {
-    xs: {
-      span: 24,
-    },
-    sm: {
-      span: 8,
-    },
+    xs: { span: 24 },
+    sm: { span: 8 },
   },
   wrapperCol: {
-    xs: {
-      span: 24,
-    },
-    sm: {
-      span: 16,
-    },
+    xs: { span: 24 },
+    sm: { span: 16 },
   },
 };
+
 const tailFormItemLayout = {
   wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 16,
-      offset: 8,
-    },
+    xs: { span: 24, offset: 0 },
+    sm: { span: 16, offset: 8 },
   },
 };
+
 export default function Add_rubrique({ auth }) {
   console.log(auth.user)
   const [form] = Form.useForm();
+
   const onFinish = (data) => {
     console.log('Form submitted:', data);
     post(route('Produit.store'), {
@@ -67,25 +58,24 @@ export default function Add_rubrique({ auth }) {
       }
     });
   };
+
   const suffixSelector = (
     <Form.Item name="suffix" noStyle>
-      <Select
-        style={{
-          width: 70,
-        }}
-      >
+      <Select style={{ width: 70 }}>
         <Option value="USD">$</Option>
         <Option value="Euro">€</Option>
       </Select>
     </Form.Item>
   );
+
   return (
     <AuthenticatedLayout
       user={auth.user}
       role={auth.role}
       profil={auth.profil}
     >
-      <div className='w-full py-5 h-auto mt-10 shadow bg-white items-center justify-center flex'>
+      <div className='w-full py-10 px-5 mt-10 shadow-lg bg-white rounded-lg'>
+        <Title level={2} className="text-center mb-8">Ajouter un nouveau produit</Title>
         <Form
           {...formItemLayout}
           form={form}
@@ -96,8 +86,8 @@ export default function Add_rubrique({ auth }) {
             prefix: '86',
           }}
           style={{
-            maxWidth: 600,
-            marginTop: 10,
+            maxWidth: 800,
+            margin: '0 auto',
           }}
           scrollToFirstError
         >
@@ -111,7 +101,7 @@ export default function Add_rubrique({ auth }) {
               },
             ]}
           >
-            <Input />
+            <Input className="rounded-md" />
           </Form.Item>
 
           <Form.Item
@@ -124,7 +114,7 @@ export default function Add_rubrique({ auth }) {
               },
             ]}
           >
-            <InputNumber min={1} style={{ width: '100%' }} />
+            <InputNumber min={1} style={{ width: '100%' }} className="rounded-md" />
           </Form.Item>
 
           <Form.Item
@@ -143,6 +133,7 @@ export default function Add_rubrique({ auth }) {
                 width: '100%',
               }}
               min={0}
+              className="rounded-md"
             />
           </Form.Item>
 
@@ -156,7 +147,7 @@ export default function Add_rubrique({ auth }) {
               },
             ]}
           >
-            <Input.TextArea showCount maxLength={100} />
+            <Input.TextArea showCount maxLength={100} className="rounded-md" />
           </Form.Item>
 
           <Form.Item
@@ -169,7 +160,7 @@ export default function Add_rubrique({ auth }) {
               },
             ]}
           >
-            <Select placeholder="Sélectionnez l'état du produit">
+            <Select placeholder="Sélectionnez l'état du produit" className="rounded-md">
               <Option value="bon_etat">Bon état</Option>
               <Option value="neuf_emballage">Neuf avec emballage d'origine</Option>
               <Option value="premier_main">Premier main</Option>
@@ -199,7 +190,7 @@ export default function Add_rubrique({ auth }) {
           </Form.Item>
 
           <Form.Item {...tailFormItemLayout}>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" size="large" className="rounded-md">
               Enregistrer
             </Button>
           </Form.Item>

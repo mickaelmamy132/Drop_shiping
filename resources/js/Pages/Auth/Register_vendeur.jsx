@@ -6,10 +6,7 @@ import PhoneInput from 'react-phone-number-input';
 import { UploadOutlined } from '@ant-design/icons';
 import { Description } from '@headlessui/react';
 
-const { Dragger } = Upload;
-const handleChange = (info) => {
-    setData('documentation', info.file);
-};
+
 export default function RegisterVendeur() {
     const { token } = theme.useToken();
     const [current, setCurrent] = useState(0);
@@ -20,6 +17,8 @@ export default function RegisterVendeur() {
         nom: '',
         prenom: '',
         email: '',
+        password: '',
+        password_confirmation: '',
         numero: '',
         nom_de_l_entreprise: '',
         site_web: '',
@@ -30,22 +29,32 @@ export default function RegisterVendeur() {
         code_postal: '',
         ville: '',
         adresse_livraison: '',
+        facturation: '',
         documentation: null,
     });
+    const validatePasswords = () => {
+        if (data.password !== data.password_confirmation) {
+            message.error('Les mots de passe ne correspondent pas.');
+            return false;
+        }
+        return true;
+    };
 
     const next = () => {
         if (current === 0) {
             form.validateFields().then(() => {
-                setCurrent(current + 1);
+                if (validatePasswords()) {
+                    setCurrent(current + 1);
+                }
             }).catch((errorInfo) => {
-                console.log('Validation Failed:', errorInfo);
+                console.log('Validation échouée:', errorInfo);
                 message.error('Veuillez remplir tous les champs obligatoires avant de continuer.');
             });
         } else if (current === 1) {
-            form2.validateFields().then(() => {
+            form2.validateFields().then((values) => {
                 setCurrent(current + 1);
             }).catch((errorInfo) => {
-                console.log('Validation Failed:', errorInfo);
+                console.log('Validation échouée:', errorInfo);
                 message.error('Veuillez remplir tous les champs obligatoires avant de continuer.');
             });
         }
@@ -140,12 +149,53 @@ export default function RegisterVendeur() {
         setData('activite', value);
     };
 
-    const [showFields, setShowFields] = useState(true)
+    const [showFields, setShowFields] = useState(false)
 
     const onChange = (checked) => {
         console.log(`switch to ${checked}`)
         setShowFields(checked)
     }
+
+    const onFinish = () => {
+        const form1Values = form.getFieldsValue(true);
+        const form2Values = form2.getFieldsValue(true);
+        const allData = { ...form1Values, ...form2Values };
+
+        const formData = new FormData();
+        Object.keys(data).forEach(key => {
+            if (key === 'documentation' && data[key]) {
+                formData.append(key, data[key], data[key].name);
+            } else {
+                formData.append(key, data[key]);
+            }
+        });
+        console.log(formData)
+        post(route('register_vendeur'), formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            onSuccess: () => {
+                reset('password', 'password_confirmation');
+                notification.success({
+                    message: 'Succès', description: 'Produit créé avec succès!',
+                    placement: 'topRight',
+                });
+                next();
+            },
+            onError: (errors) => {
+                notification.error({
+                    message: 'Erreur', description: 'Une erreur est survenue lors de la création du produit.',
+                    placement: 'topRight',
+                });
+            }
+        });
+    };
+
+    const handleChange = (info) => {
+        if (info.file.status === 'done') {
+            setData('documentation', info.file.originFileObj);
+        }
+    };
 
     return (
         <>
@@ -159,8 +209,8 @@ export default function RegisterVendeur() {
                 {current === 0 && (
                     <Form
                         form={form}
+                        onFinish={onFinish}
                         name="register"
-                        initialValues={{ prefix: '86' }}
                         scrollToFirstError
                         layout="vertical"
                     >
@@ -170,16 +220,16 @@ export default function RegisterVendeur() {
                             rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
                             style={formItemStyle}
                         >
-                            <Input style={inputStyle} />
+                            <Input value={data.nom} onChange={(e) => setData('nom', e.target.value)} style={inputStyle} />
                         </Form.Item>
 
                         <Form.Item
-                            name="nickname"
+                            name="prenom"
                             label="Prenom"
                             rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
                             style={formItemStyle}
                         >
-                            <Input style={inputStyle} />
+                            <Input value={data.prenom} onChange={(e) => setData('prenom', e.target.value)} style={inputStyle} />
                         </Form.Item>
 
                         <Form.Item
@@ -197,12 +247,44 @@ export default function RegisterVendeur() {
                             ]}
                             style={formItemStyle}
                         >
-                            <Input style={inputStyle} />
+                            <Input value={data.email} onChange={(e) => setData('email', e.target.value)} style={inputStyle} />
                         </Form.Item>
 
                         <Form.Item
-                            name="phone"
-                            label="Phone Number"
+                            label="Password"
+                            name="password"
+                            rules={[{ required: true, message: 'Please input your password!' }]}
+                        >
+                            <Input.Password
+                                value={data.password}
+                                onChange={(e) => setData('password', e.target.value)}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Confirmer le mot de passe"
+                            name="password_confirmation"
+                            rules={[
+                                { required: true, message: 'Veuillez confirmer votre mot de passe!' },
+                                ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                        if (!value || getFieldValue('password') === value) {
+                                            return Promise.resolve();
+                                        }
+                                        return Promise.reject(new Error('Les mots de passe ne correspondent pas!'));
+                                    },
+                                }),
+                            ]}
+                        >
+                            <Input.Password
+                                value={data.password_confirmation}
+                                onChange={(e) => setData('password_confirmation', e.target.value)}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="numero"
+                            label="numero"
                             rules={[{ required: true, message: 'Please input your phone number!' }]}
                             style={formItemStyle}
                         >
@@ -240,7 +322,7 @@ export default function RegisterVendeur() {
                             ]}
                             style={formItemStyle}
                         >
-                            <Input.TextArea showCount maxLength={100} style={{ ...inputStyle, minHeight: '100px' }} />
+                            <Input.TextArea value={data.description} onChange={(e) => setData('description', e.target.value)} showCount maxLength={100} style={{ ...inputStyle, minHeight: '100px' }} />
                         </Form.Item>
                     </Form>
                 )}
@@ -250,6 +332,7 @@ export default function RegisterVendeur() {
                         <Form
                             form={form2}
                             layout="vertical"
+                            onFinish={onFinish}
                         >
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Form.Item
@@ -258,7 +341,7 @@ export default function RegisterVendeur() {
                                     rules={[{ required: true, message: 'Veuillez remplir le champ' }]}
                                     style={{ ...formItemStyle, width: '48%' }}
                                 >
-                                    <Input style={inputStyle} />
+                                    <Input value={data.ville} onChange={(e) => setData('ville', e.target.value)} style={inputStyle} />
                                 </Form.Item>
 
                                 <Form.Item
@@ -267,7 +350,7 @@ export default function RegisterVendeur() {
                                     rules={[{ required: true, message: 'Veuillez remplir le champ' }]}
                                     style={{ ...formItemStyle, width: '48%' }}
                                 >
-                                    <Input style={inputStyle} />
+                                    <Input value={data.code_postal} onChange={(e) => setData('code_postal', e.target.value)} style={inputStyle} />
                                 </Form.Item>
                             </div>
                             <Form.Item
@@ -276,7 +359,7 @@ export default function RegisterVendeur() {
                                 rules={[{ required: true, message: 'Veuillez remplir le champ' }]}
                                 style={formItemStyle}
                             >
-                                <Input style={inputStyle} />
+                                <Input value={data.adresse_livraison} onChange={(e) => setData('adresse_livraison', e.target.value)} style={inputStyle} />
                             </Form.Item>
 
                             <Form.Item
@@ -303,7 +386,7 @@ export default function RegisterVendeur() {
                                 ]}
                                 style={formItemStyle}
                             >
-                                <Input style={inputStyle} />
+                                <Input value={data.facturation} onChange={(e) => setData('facturation', e.target.value)} style={inputStyle} />
                             </Form.Item>
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
                                 <Switch defaultChecked={false} onChange={onChange} />
@@ -333,7 +416,7 @@ export default function RegisterVendeur() {
                             )}
 
                             <Form.Item
-                                name="file"
+                                name="documentation"
                                 label="Télécharger un fichier"
                                 valuePropName="fileList"
                                 getValueFromEvent={(e) => e.fileList}
@@ -352,9 +435,20 @@ export default function RegisterVendeur() {
                                     }}
                                     onChange={handleChange}
                                     showUploadList={{ showRemoveIcon: true }}
+                                    customRequest={({ file, onSuccess }) => {
+                                        setTimeout(() => {
+                                            onSuccess("ok");
+                                        }, 0);
+                                    }}
                                 >
                                     <Button icon={<UploadOutlined />} style={{ ...inputStyle, height: 'auto' }}>Charger un fichier</Button>
                                 </Upload>
+                            </Form.Item>
+
+                            <Form.Item>
+                                <Button type="primary" htmlType="submit">
+                                    Next
+                                </Button>
                             </Form.Item>
                         </Form>
                     </div>
@@ -371,7 +465,7 @@ export default function RegisterVendeur() {
                         Previous
                     </Button>
                 )}
-                {current < items.length - 1 && (
+                {current < items.length - 1 && current !== 1 && (
                     <Button type="primary" onClick={next}>
                         Next
                     </Button>
