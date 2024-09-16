@@ -20,16 +20,16 @@ export default function RegisterVendeur() {
         password: '',
         password_confirmation: '',
         numero: '',
-        nom_de_l_entreprise: '',
-        site_web: '',
         industrie: [],
-        activite: [],
+        nom_de_l_entreprise: '',
         description: '',
-        adresse_facturation: '',
-        code_postal: '',
         ville: '',
-        adresse_livraison: '',
+        code_postal: '',
+        activite: [],
         facturation: '',
+        adresse_livraison: '',
+        ville_livraison: '',
+        code_postal_livraison: '',
         documentation: null,
     });
     const validatePasswords = () => {
@@ -156,6 +156,12 @@ export default function RegisterVendeur() {
         setShowFields(checked)
     }
 
+    const handleChange = (info) => {
+        if (info.file.status === 'done') {
+            setData('documentation', info.file.originFileObj);
+        }
+    };
+
     const onFinish = () => {
         const form1Values = form.getFieldsValue(true);
         const form2Values = form2.getFieldsValue(true);
@@ -191,11 +197,7 @@ export default function RegisterVendeur() {
         });
     };
 
-    const handleChange = (info) => {
-        if (info.file.status === 'done') {
-            setData('documentation', info.file.originFileObj);
-        }
-    };
+
 
     return (
         <>
@@ -312,6 +314,18 @@ export default function RegisterVendeur() {
                         </Form.Item>
 
                         <Form.Item
+                            label="Nom de l'entreprise"
+                            name="nom_de_l_entreprise"
+                            rules={[{ required: true, message: 'Please input your password!' }]}
+                        >
+                            <Input
+                                value={data.nom_de_l_entreprise}
+                                onChange={(e) => setData('nom_de_l_entreprise', e.target.value)}
+                                style={inputStyle}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
                             name="description"
                             label="Que souhaitez-vous vendre et en quelle quantité ?*"
                             rules={[
@@ -353,13 +367,18 @@ export default function RegisterVendeur() {
                                     <Input value={data.code_postal} onChange={(e) => setData('code_postal', e.target.value)} style={inputStyle} />
                                 </Form.Item>
                             </div>
+
                             <Form.Item
-                                name="adresse_livraison"
-                                label="Adresse de livraison"
-                                rules={[{ required: true, message: 'Veuillez remplir le champ' }]}
+                                name="facturation"
+                                label="Adresse de facturation"
+                                rules={[
+                                    {
+                                        required: true, message: 'Veuillez indiquer votre adresse de facturation'
+                                    }
+                                ]}
                                 style={formItemStyle}
                             >
-                                <Input value={data.adresse_livraison} onChange={(e) => setData('adresse_livraison', e.target.value)} style={inputStyle} />
+                                <Input value={data.facturation} onChange={(e) => setData('facturation', e.target.value)} style={inputStyle} />
                             </Form.Item>
 
                             <Form.Item
@@ -376,42 +395,41 @@ export default function RegisterVendeur() {
                                 />
                             </Form.Item>
 
-                            <Form.Item
-                                name="facturation"
-                                label="Adresse de votre industrie"
-                                rules={[
-                                    {
-                                        required: true, message: 'Veuillez indiquer votre adresse de facturation'
-                                    }
-                                ]}
-                                style={formItemStyle}
-                            >
-                                <Input value={data.facturation} onChange={(e) => setData('facturation', e.target.value)} style={inputStyle} />
-                            </Form.Item>
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
                                 <Switch defaultChecked={false} onChange={onChange} />
                                 <p style={{ marginLeft: '10px', marginBottom: 0 }}>Mon adresse de livraison est différente</p>
                             </div>
 
                             {showFields && (
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <Form.Item
-                                        name="ville_livraison"
-                                        label="Ville de livraison"
-                                        rules={[{ required: true, message: 'Veuillez remplir le champ' }]}
-                                        style={{ ...formItemStyle, width: '48%' }}
-                                    >
-                                        <Input style={inputStyle} />
-                                    </Form.Item>
 
+                                <div>
                                     <Form.Item
-                                        name="code_postal_livraison"
-                                        label="Code postal de livraison"
+                                        name="adresse_livraison"
+                                        label="Adresse de livraison"
                                         rules={[{ required: true, message: 'Veuillez remplir le champ' }]}
-                                        style={{ ...formItemStyle, width: '48%' }}
+                                        style={formItemStyle}
                                     >
-                                        <Input style={inputStyle} />
+                                        <Input value={data.adresse_livraison} onChange={(e) => setData('adresse_livraison', e.target.value)} style={inputStyle} />
                                     </Form.Item>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <Form.Item
+                                            name="ville_livraison"
+                                            label="Ville de livraison"
+                                            rules={[{ required: true, message: 'Veuillez remplir le champ' }]}
+                                            style={{ ...formItemStyle, width: '48%' }}
+                                        >
+                                            <Input value={data.ville_livraison} onChange={(e) => setData('ville_livraison')} style={inputStyle} />
+                                        </Form.Item>
+
+                                        <Form.Item
+                                            name="code_postal_livraison"
+                                            label="Code postal de livraison"
+                                            rules={[{ required: true, message: 'Veuillez remplir le champ' }]}
+                                            style={{ ...formItemStyle, width: '48%' }}
+                                        >
+                                            <Input value={data.code_postal_livraison} onChange={(e) => setData('code_postal_livraison')} style={inputStyle} />
+                                        </Form.Item>
+                                    </div>
                                 </div>
                             )}
 

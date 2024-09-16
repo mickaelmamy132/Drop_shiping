@@ -86,58 +86,48 @@ class RegisteredUserController extends Controller
         try {
             // Validation des données du formulaire
             $validatedData = $request->validate([
-                'nom' => 'required|string|max:255',
-                'prenom' => 'required|string|max:255',
-                'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
-                'password' => ['required', 'confirmed', Rules\Password::defaults()],
                 'numero' => 'required|string|max:15',
-                'facturation' => 'required|string|',
                 'industrie' => 'required|array',
-                'description' => 'required|string',
-                // 'documentation' => 'required|mimes:pdf,doc,docx|max:20240',
+                'nom_de_l_entreprise' => 'required|string',
+                'description' => 'required|string|max:100',
                 'ville' => 'required|string|max:100',
                 'code_postal' => 'required|string|max:20',
                 'activite' => 'required|array',
-                // 'adresse_livraison' => 'required|string|max:255',
-                // 'code_postal_livraison' => 'required|string|max:20',
-                // 'facturation' => 'required|string|max:255',
+                'facturation' => 'required|string',
+                'adresse_livraison' => 'nullable|string|max:255',
+                'ville_livraison' => 'nullable|string|max:100',
+                'code_postal_livraison' => 'nullable|string|max:20',
+                'documentation' => 'required|file|mimes:pdf,doc,docx|max:2048',
             ]);
 
-            // Ce bloc de code vérifie si un fichier de documentation a été téléchargé et le stocke
-
-            // Vérifie si une documentation a été envoyée dans la requête et si elle est valide
+            $path = null;
             if ($request->hasFile('documentation') && $request->file('documentation')->isValid()) {
-                // Si oui, stocke le fichier dans le dossier 'documents' et récupère le chemin
                 $path = $request->file('documentation')->store('Documentation');
-            } else {
-                // Si non, lance une exception avec un message d'erreur
-                throw new \Exception('The documentation failed hghgjgshjgdj to upload.');
             }
-            
-            // Vérification des données reçues
-            dd($request->all(), $path);
-            
 
             // Création de l'utilisateur et du vendeur
-            // $user = User::create([
-            //     'name' => $validatedData['nom'] . ' ' . $validatedData['prenom'],
-            //     'email' => $validatedData['email'],
-            //     'role' => 'vendeur',
-            //     'password' => Hash::make($request->password), // Génère un mot de passe aléatoire
-            // ]);
+            $user = User::create([
+                'name' => $validatedData['nom'] . ' ' . $validatedData['prenom'],
+                'email' => $validatedData['email'],
+                'role' => 'vendeur',
+                'password' => Hash::make($validatedData['password']),
+            ]);
 
-            // $vendeur = Vendeur::create([
-            //     'user_id' => $user->id,
-            //     'numero' => $validatedData['numero'],
-            //     'facturation' => $validatedData['facturation'],
-            //     'industrie' => json_encode($validatedData['industrie']),
-            //     'description' => $validatedData['description'],
-            //     'documentation' => $path,
-            //     'ville' => $validatedData['ville'],
-            //     'code_postal' => $validatedData['code_postal'],
-            //     'activite' => json_encode($validatedData['activite']),
-            //     'adresse_livraison' => $validatedData['adresse_livraison'] ?? null,
-            // ]);
+            $vendeur = Vendeur::create([
+                'user_id' => $user->id,
+                'numero' => $validatedData['numero'],
+                'facturation' => $validatedData['facturation'],
+                'industrie' => json_encode($validatedData['industrie']),
+                'nom_de_l_entreprise' => $validatedData['nom_de_l_entreprise'],
+                'description' => $validatedData['description'],
+                'documentation' => $path,
+                'ville' => $validatedData['ville'],
+                'code_postal' => $validatedData['code_postal'],
+                'activite' => json_encode($validatedData['activite']),
+                'adresse_livraison' => $validatedData['adresse_livraison'] ?? null,
+                'ville_livraison' => $validatedData['ville_livraison'] ?? null,
+                'code_postal_livraison' => $validatedData['code_postal_livraison'] ?? null,
+            ]);
 
             event(new Registered($user));
 
