@@ -5,8 +5,6 @@ import ProductCard from './ViewClientVendeur/Produit';
 // import Checkbox from '../Components/Checkbox';
 import { useForm } from '@inertiajs/react';
 
-
-
 export default function Dashboard({ auth }) {
 
     const { data, setData, post, processing, errors, reset } = useForm();

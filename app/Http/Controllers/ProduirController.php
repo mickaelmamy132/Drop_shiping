@@ -30,19 +30,16 @@ class ProduirController extends Controller
      */
     public function store(StoreProduitRequest $request)
     {
-        $validatedData = $request->validated();
-
-        if ($request->hasFile('images')) {
-            $imagePaths = [];
-            foreach ($request->file('images') as $image) {
-                $imagePath = $image->store('produits', 'public');
-                $imagePaths[] = $imagePath;
-            }
-            $validatedData['images'] = $imagePaths;
+        $validated = $request->validated();
+        if ($request->hasFile('image_rubrique')) {
+            $path = $request->file('image_rubrique')->store('public/Produits');
+            $validated['image_rubrique'] = str_replace('public/', '', $path);
         }
-
-        $produit = Produit::create($validatedData);
+        // Créer le produit avec les données validées
+        Produit::create($validated);
+        return Inertia::render('Dashboard', ['success' => 'Produit créé']);
     }
+
 
     /**
      * Display the specified resource.

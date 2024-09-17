@@ -7,12 +7,13 @@ import {
   InputNumber,
   Select,
   Upload,
-  message,
   notification,
   Typography,
+  message,
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { useForm } from '@inertiajs/react';
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -36,7 +37,17 @@ const tailFormItemLayout = {
 };
 
 export default function Add_rubrique({ auth }) {
-  console.log(auth.user)
+  const { data, setData, post, processing, errors } = useForm({
+    nom: '',
+    categorie_id: '',
+    quantite: '',
+    prix: '',
+    description: '',
+    etat: '',
+    image_rubrique: null,
+    vendeur_id: auth.user.id
+  });
+
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
 
@@ -53,32 +64,30 @@ export default function Add_rubrique({ auth }) {
     fetchCategories();
   }, []);
 
-  const onFinish = (data) => {
-    const formDataWithUser = {
-      ...data,
-      user_id: auth.user.id,
-      // Add any other user information you need
-    };
-    console.log('Form submitted:', formDataWithUser);
-
-    post(route('Produit.store'), formDataWithUser, {
+  const onFinish = () => {
+    post(route('Produit.store'), {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
       onSuccess: () => {
-        reset('password', 'password_confirmation');
         notification.success({
           message: 'Succès',
-          description: 'Produit créé avec succès!',
+          description: 'Communication avec le backend réussie!',
           placement: 'topRight',
         });
+        console.log('Réponse du backend : Succès');
       },
       onError: (errors) => {
         notification.error({
           message: 'Erreur',
-          description: 'Une erreur est survenue lors de la création du produit.',
+          description: 'Échec de la communication avec le backend.',
           placement: 'topRight',
         });
+        console.error('Erreurs de communication :', errors);
       }
     });
   };
+
 
   const suffixSelector = (
     <Form.Item name="suffix" noStyle>
@@ -100,12 +109,8 @@ export default function Add_rubrique({ auth }) {
         <Form
           {...formItemLayout}
           form={form}
-          name="register"
           onFinish={onFinish}
-          initialValues={{
-            residence: ['zhejiang', 'hangzhou', 'xihu'],
-            prefix: '86',
-          }}
+          initialValues={data}
           style={{
             maxWidth: 800,
             margin: '0 auto',
@@ -113,7 +118,7 @@ export default function Add_rubrique({ auth }) {
           scrollToFirstError
         >
           <Form.Item
-            name="nom_produit"
+            name="nom"
             label="Nom du produit"
             rules={[
               {
@@ -121,12 +126,14 @@ export default function Add_rubrique({ auth }) {
                 message: 'Veuillez saisir le nom du produit!',
               },
             ]}
+            validateStatus={errors.nom && 'error'}
+            help={errors.nom}
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" value={data.nom} onChange={(e) => setData('nom', e.target.value)} />
           </Form.Item>
 
           <Form.Item
-            name="categorie"
+            name="categorie_id"
             label="Catégorie"
             rules={[
               {
@@ -134,8 +141,10 @@ export default function Add_rubrique({ auth }) {
                 message: 'Veuillez sélectionner une catégorie!',
               },
             ]}
+            validateStatus={errors.categorie_id && 'error'}
+            help={errors.categorie_id}
           >
-            <Select placeholder="Sélectionnez une catégorie" className="rounded-md">
+            <Select placeholder="Sélectionnez une catégorie" className="rounded-md" value={data.categorie_id} onChange={(value) => setData('categorie_id', value)}>
               {categories.map(category => (
                 <Option key={category.id} value={category.id}>{category.nom}</Option>
               ))}
@@ -143,7 +152,7 @@ export default function Add_rubrique({ auth }) {
           </Form.Item>
 
           <Form.Item
-            name="qunatite"
+            name="quantite"
             label="Quantité"
             rules={[
               {
@@ -151,8 +160,10 @@ export default function Add_rubrique({ auth }) {
                 message: 'Veuillez saisir la quantité!',
               },
             ]}
+            validateStatus={errors.quantite && 'error'}
+            help={errors.quantite}
           >
-            <InputNumber min={1} style={{ width: '100%' }} className="rounded-md" />
+            <InputNumber min={1} style={{ width: '100%' }} className="rounded-md" value={data.quantite} onChange={(value) => setData('quantite', value)} />
           </Form.Item>
 
           <Form.Item
@@ -164,6 +175,8 @@ export default function Add_rubrique({ auth }) {
                 message: 'Veuillez saisir le prix unitaire!',
               },
             ]}
+            validateStatus={errors.prix && 'error'}
+            help={errors.prix}
           >
             <InputNumber
               addonAfter={suffixSelector}
@@ -172,6 +185,8 @@ export default function Add_rubrique({ auth }) {
               }}
               min={0}
               className="rounded-md"
+              value={data.prix}
+              onChange={(value) => setData('prix', value)}
             />
           </Form.Item>
 
@@ -184,8 +199,10 @@ export default function Add_rubrique({ auth }) {
                 message: 'Veuillez saisir une description',
               },
             ]}
+            validateStatus={errors.description && 'error'}
+            help={errors.description}
           >
-            <Input.TextArea showCount maxLength={100} className="rounded-md" />
+            <Input.TextArea showCount maxLength={100} className="rounded-md" value={data.description} onChange={(e) => setData('description', e.target.value)} />
           </Form.Item>
 
           <Form.Item
@@ -197,8 +214,10 @@ export default function Add_rubrique({ auth }) {
                 message: 'Veuillez sélectionner l\'état du produit',
               },
             ]}
+            validateStatus={errors.etat && 'error'}
+            help={errors.etat}
           >
-            <Select placeholder="Sélectionnez l'état du produit" className="rounded-md">
+            <Select placeholder="Sélectionnez l'état du produit" className="rounded-md" value={data.etat} onChange={(value) => setData('etat', value)}>
               <Option value="bon_etat">Bon état</Option>
               <Option value="neuf_emballage">Neuf avec emballage d'origine</Option>
               <Option value="premier_main">Premier main</Option>
@@ -213,12 +232,42 @@ export default function Add_rubrique({ auth }) {
           <Form.Item
             name="image_rubrique"
             label="Image"
+            valuePropName="fileList"
+            getValueFromEvent={(e) => {
+              if (Array.isArray(e)) {
+                return e;
+              }
+              return e && e.fileList;
+            }}
+            validateStatus={errors.image_rubrique && 'error'}
+            help={errors.image_rubrique}
           >
             <Upload
               accept="image/*"
               listType="picture-card"
-              beforeUpload={() => false}
+              beforeUpload={(file) => {
+                const isImage = file.type.startsWith('image/');
+                if (!isImage) {
+                  message.error('Vous ne pouvez télécharger que des fichiers image !');
+                }
+                return false;
+              }}
               capture="environment"
+              maxCount={3}
+              fileList={data.image_rubrique ? [data.image_rubrique] : []}
+              onChange={(info) => {
+                const fileList = info.fileList.slice(-1);
+                if (fileList.length > 0) {
+                  const file = fileList[0].originFileObj;
+                  if (file.type.startsWith('image/')) {
+                    setData('image_rubrique', file);
+                  } else {
+                    setData('image_rubrique', null);
+                  }
+                } else {
+                  setData('image_rubrique', null);
+                }
+              }}
             >
               <div>
                 <PlusOutlined />
@@ -228,12 +277,12 @@ export default function Add_rubrique({ auth }) {
           </Form.Item>
 
           <Form.Item {...tailFormItemLayout}>
-            <Button type="primary" htmlType="submit" size="large" className="rounded-md">
-              Enregistrer
+            <Button type="primary" htmlType="submit" size="large" className="rounded-md" disabled={processing}>
+              {processing ? 'Enregistrement...' : 'Enregistrer'}
             </Button>
           </Form.Item>
         </Form>
       </div>
     </AuthenticatedLayout>
   );
-};
+}

@@ -22,7 +22,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('consulter_article', fn() => Inertia::render('ViewClientAcheteur/Article_infos'))->name('consulter_article');
 
-    Route::resource('Produit',ProduirController::class);
+    Route::resource('Produit', ProduirController::class);
 });
 
 
