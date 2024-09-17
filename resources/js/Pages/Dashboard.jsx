@@ -5,15 +5,12 @@ import ProductCard from './ViewClientVendeur/Produit';
 // import Checkbox from '../Components/Checkbox';
 import { useForm } from '@inertiajs/react';
 
-export default function Dashboard({ auth }) {
-
+export default function Dashboard({ auth, produits }) {
     const { data, setData, post, processing, errors, reset } = useForm();
-
     return (
         <AuthenticatedLayout
             user={auth.user}
             role={auth.role}
-            profil={auth.profil}
         >
             <Head title="Dashboard" />
             <div className='flex'>
@@ -52,19 +49,13 @@ export default function Dashboard({ auth }) {
                         <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 mb-5'>
                             <Chartjx />
                             <Chartjx />
-                            <Chartjx />
-                            <Chartjx />
                         </div>
-                        {/* Grid of products */}
-                        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5'>
-                            <ProductCard />
-                            <ProductCard />
-                            <ProductCard />
-                            <ProductCard />
+                
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                            {produits.map((produit) => (
+                                <ProductCard key={produit.id} produit={produit} />
+                            ))}
                         </div>
-
-                        {/* Grid of charts */}
-
                     </div>
                 </div>
             </div>

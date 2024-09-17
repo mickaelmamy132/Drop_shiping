@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProduitRequest;
 use App\Http\Requests\UpdateProduitRequest;
 use App\Models\Produit;
+use Illuminate\Container\Attributes\Storage;
 use Inertia\Inertia;
 
 class ProduirController extends Controller
@@ -14,7 +15,8 @@ class ProduirController extends Controller
      */
     public function index()
     {
-        $produit = Produit::all();
+        $produits = Produit::all();
+        return Inertia::render('Dashboard', ['produits' => $produits]);
     }
 
     /**
@@ -30,14 +32,14 @@ class ProduirController extends Controller
      */
     public function store(StoreProduitRequest $request)
     {
+        
         $validated = $request->validated();
         if ($request->hasFile('image_rubrique')) {
-            $path = $request->file('image_rubrique')->store('public/Produits');
-            $validated['image_rubrique'] = str_replace('public/', '', $path);
+            $path = $request->file('image_rubrique')->store('Produits');
+            $validated['image_rubrique'] = $path;
         }
-        // Créer le produit avec les données validées
         Produit::create($validated);
-        return Inertia::render('Dashboard', ['success' => 'Produit créé']);
+        return redirect()->route('dashboard')->with('success', 'Produit créé');
     }
 
 

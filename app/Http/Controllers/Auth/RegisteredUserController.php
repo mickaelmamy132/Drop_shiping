@@ -108,7 +108,7 @@ class RegisteredUserController extends Controller
 
             $path = null;
             if ($request->hasFile('documentation') && $request->file('documentation')->isValid()) {
-                $path = $request->file('documentation')->store('Documentation', 'public');
+                $path = $request->file('documentation')->store('Documentation');
             }
 
             // Création de l'utilisateur et du vendeur

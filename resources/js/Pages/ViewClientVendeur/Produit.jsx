@@ -3,51 +3,49 @@ import { StarIcon, ShoppingCartIcon } from '@heroicons/react/24/solid';
 import { Card, Typography, Button, Select, Option } from '@material-tailwind/react';
 import { Link } from '@inertiajs/react';
 
-// Exemple de données de produit
-const product = {
-  name: "Nom du produit",
-  price: "$99.99",
-  status: "premier main",
-  description: "Description détaillée du produit. Cette section peut contenir des spécifications et autres informations pertinentes.",
-  images: [
-    "@images/imm.png')",
-  ],
-  availability: "En stock",
-};
-
-export default function ProductCard() {
+export default function ProductCard({ produit }) {
   const [quantity, setQuantity] = useState(1);
 
   return (
-    <Card className="max-w-lg mx-auto p-6 shadow-lg">
-      <div className="flex gap-6">
-        <img
-          src={product.images}
-          
-          className="w-48 h-48 object-cover rounded-lg"
-        />
-        <div className="flex-1">
-          <Typography variant="h5" color="blue-gray" className="font-bold mb-2">
-            {product.name}
+    <Card className="max-w-lg mx-auto p-8 shadow-2xl rounded-3xl bg-gradient-to-br from-white to-gray-100">
+      <div className="flex flex-col md:flex-row gap-8">
+        {produit.image_rubrique && (
+          <div className="relative group">
+            <img
+              src={`/storage/${produit.image_rubrique}`}
+              alt={produit.nom || 'Product image'}
+              className="w-full md:w-64 h-64 object-cover rounded-2xl shadow-lg transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity duration-300 rounded-2xl"></div>
+          </div>
+        )}
+        <div className="flex-1 space-y-6">
+          <Typography variant="h3" color="blue-gray" className="font-bold text-3xl">
+            {produit.nom}
           </Typography>
-          <Typography variant="h6" color="blue-gray" className="font-medium mb-2">
-            {product.price}
+          <Typography variant="h4" color="blue-gray" className="font-semibold text-2xl">
+            {produit.prix} €
           </Typography>
-          <Typography variant="small" color="gray" className="font-medium mb-2">
-            {product.availability}
+          <div className="space-y-3">
+            <Typography variant="small" color="gray" className="font-medium flex items-center">
+              <span className="w-32">Quantité disponible:</span> 
+              <span className="font-bold">{produit.quantite}</span>
+            </Typography>
+            <Typography variant="small" color="gray" className="font-medium flex items-center">
+              <span className="w-32">État:</span> 
+              <span className="font-bold">{produit.etat}</span>
+            </Typography>
+          </div>
+          <Typography variant="paragraph" color="gray" className="font-medium text-justify">
+            {produit.description}
           </Typography>
-          <Typography variant="small" color="gray" className="font-medium mb-2">
-            {product.status}
-          </Typography>
-          <Typography variant="small" color="gray" className="mb-4 font-medium">
-            {product.description}
-          </Typography>
-          <div className="flex items-center justify-between gap-1">
+
+          <div className="flex flex-wrap items-center gap-6 pt-6">
             <Select
               label="Quantité"
               value={quantity}
               onChange={(e) => setQuantity(Number(e.target.value))}
-              className="w-24 font-medium"
+              className="w-32 font-medium"
             >
               {[1, 2, 3, 4, 5].map((num) => (
                 <Option key={num} value={num}>
@@ -55,14 +53,17 @@ export default function ProductCard() {
                 </Option>
               ))}
             </Select>
-            <Button color="blue" className="font-medium flex items-center rounded">
-              <ShoppingCartIcon className="h-4 w-5 mr-2" />
+
+            <Button color="blue" className="font-medium flex items-center rounded-full px-8 py-3.5 shadow-lg hover:shadow-xl transition-all duration-300 bg-blue-500 hover:bg-blue-600">
+              <ShoppingCartIcon className="h-5 w-5 mr-2" />
               Ajouter au panier
             </Button>
+
             <Link
-              href={route('consulter_article')} className='bg-green-400 px-1 rounded py-1'
+              href={route('consulter_article', { id: produit.id })} 
+              className='bg-green-500 text-white px-8 py-3.5 rounded-full font-medium shadow-lg hover:shadow-xl hover:bg-green-600 transition-all duration-300'
             >
-              consulter
+              Consulter
             </Link>
           </div>
         </div>

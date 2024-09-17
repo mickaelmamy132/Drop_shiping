@@ -16,7 +16,9 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
+    // Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
+
+    Route::get('/dashboard', [ProduirController::class, 'index'])->name('dashboard');
 
     Route::get('Acheteur', fn() => Inertia::render('ViewClientAcheteur/acheteur'))->name('Acheteur');
 
