@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProduirController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -18,11 +19,9 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     // Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
 
-    Route::get('/dashboard', [ProduirController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [ProduirController::class, 'index_vendeur'])->name('dashboard');
 
-    Route::get('Acheteur', fn() => Inertia::render('ViewClientAcheteur/acheteur'))->name('Acheteur');
-
-    Route::get('consulter_article', fn() => Inertia::render('ViewClientAcheteur/Article_infos'))->name('consulter_article');
+    Route::get('Acheteur', [ProduirController::class,'index'])->name('Acheteur');
 
     Route::resource('Produit', ProduirController::class);
 });

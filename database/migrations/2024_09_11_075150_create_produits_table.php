@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('vendeur_id');
             $table->unsignedBigInteger('categorie_id');
             $table->string('nom');
+            $table->integer('quantite');
             $table->text('description');
             $table->decimal('prix', 10, 2);
             $table->string('image_rubrique');

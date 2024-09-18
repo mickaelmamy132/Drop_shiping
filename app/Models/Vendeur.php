@@ -9,6 +9,7 @@ class Vendeur extends Model
 {
 
     use HasFactory;
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'user_id',
@@ -28,11 +29,14 @@ class Vendeur extends Model
         'ville_livraison',
         'code_postal_livraison',
         'documentation',
-        'site_web'
     ];
-    
+
     public function user()
     {
-        return $this->belongsTo(User::class); // Relation avec le modèle user
+        return $this->belongsTo(User::class, 'user_id'); // Relation avec le modèle user
+    }
+    public function produits()
+    {
+        return $this->hasMany(Produit::class, 'vendeur_id');
     }
 }

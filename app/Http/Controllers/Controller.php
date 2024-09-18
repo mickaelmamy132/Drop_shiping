@@ -5,10 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Produit;
 use Inertia\Inertia;
 
-abstract class Controller
-{
-    public function index()
-    {
-        
-    }
+abstract class Controller {
+    
 }

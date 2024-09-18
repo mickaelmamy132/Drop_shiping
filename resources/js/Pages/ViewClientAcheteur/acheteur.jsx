@@ -1,8 +1,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Link, useForm } from '@inertiajs/react';
-import ProductCard from '../ViewClientVendeur/Produit';
+import { useForm } from '@inertiajs/react';
+import ProductCard from '../ViewClientAcheteur/produit';
 
-export default function Acheteur({ auth }) {
+
+export default function Acheteur({ auth, produits }) {
 
     const { post } = useForm();
 
@@ -10,7 +11,6 @@ export default function Acheteur({ auth }) {
         <AuthenticatedLayout
             user={auth.user}
             role={auth.role}
-            profil={auth.profil}
         >
             <main className='flex'>
                 <div className='flex-1 items-center mt-5'>
@@ -34,15 +34,14 @@ export default function Acheteur({ auth }) {
                             </form>
                         </div>
                     </div>
+                    
                     <div className='w-full mt-5 p-2 h-auto overflow-y-scroll'>
-                        <div className='grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 gap-5'>
-                            <ProductCard />
-                            <ProductCard />
-                            <ProductCard />
-                            <ProductCard />
-                            <ProductCard />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                            {produits.map((produit) => (
+                                <ProductCard key={produit.id} produit={produit} />
+                            ))}
                         </div>
-                    </div>
+                    </div> 
                 </div>
             </main>
         </AuthenticatedLayout>

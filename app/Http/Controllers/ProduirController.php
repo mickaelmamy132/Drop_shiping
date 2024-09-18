@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProduitRequest;
 use App\Http\Requests\UpdateProduitRequest;
+use App\Http\Resources\ProduitResource;
 use App\Models\Produit;
 use Illuminate\Container\Attributes\Storage;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ProduirController extends Controller
@@ -13,10 +15,20 @@ class ProduirController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function index_vendeur()
+    {
+        $userId = Auth::user()->id;
+
+        $produits = Produit::where('vendeur_id', $userId)->get();
+
+        return Inertia::render('Dashboard', ['produits' => $produits]);
+    }
+
     public function index()
     {
+
         $produits = Produit::all();
-        return Inertia::render('Dashboard', ['produits' => $produits]);
+        return Inertia::render('ViewClientAcheteur/acheteur', ['produits' => $produits]);
     }
 
     /**
@@ -32,10 +44,10 @@ class ProduirController extends Controller
      */
     public function store(StoreProduitRequest $request)
     {
-        
+
         $validated = $request->validated();
         if ($request->hasFile('image_rubrique')) {
-            $path = $request->file('image_rubrique')->store('Produits');
+            $path = $request->file('image_rubrique')->store('Produits', 'public');
             $validated['image_rubrique'] = $path;
         }
         Produit::create($validated);
@@ -46,9 +58,13 @@ class ProduirController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Produit $produit)
+    public function show($id)
     {
-        //
+        $produit = Produit::with('categorie', 'vendeur.user')->findOrFail($id);
+        // dd($produit->categorie, $produit->vendeur);
+        return Inertia('ViewClientAcheteur/Article_infos', [
+            'produit' => new ProduitResource($produit),
+        ]);
     }
 
     /**

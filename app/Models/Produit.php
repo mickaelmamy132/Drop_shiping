@@ -9,7 +9,10 @@ class Produit extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'id'; // Si la clé primaire est autre, change 'id' par le nom de ta clé
+
     protected $fillable = [
+
         'nom',
         'description',
         'prix',
@@ -25,7 +28,7 @@ class Produit extends Model
      */
     public function vendeur()
     {
-        return $this->belongsTo(User::class, 'vendeur_id');
+        return $this->belongsTo(Vendeur::class, 'vendeur_id');
     }
 
     /**

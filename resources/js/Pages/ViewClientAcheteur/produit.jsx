@@ -43,10 +43,10 @@ export default function ProductCard({ produit }) {
         </div>
       </div>
       <div className="flex items-center gap-6 pt-1">
-        {/* <Select
+        <Select
           label="Quantité"
           value={quantity}
-          onChange={(e) => setQuantity(Number(e.target.value))}
+          onChange={(e) => setQuantity(string(e.target.value))}
           className="w-32 font-medium"
         >
           {[1, 2, 3, 4, 5].map((num) => (
@@ -54,15 +54,15 @@ export default function ProductCard({ produit }) {
               {num}
             </Option>
           ))}
-        </Select> */}
-
+        </Select>
+        
         <Button color="blue" className="font-medium flex items-center rounded-full px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-300 bg-blue-500 hover:bg-blue-600">
           <ShoppingCartIcon className="h-5 w-5 mr-2" />
           Ajouter au panier
         </Button>
 
         <Link
-          // href={route('consulter_article', { id: produit.id })}
+          href={route('Produit.show', produit.id)}
           className='bg-green-500 text-white px-8 py-3.5 rounded-full font-medium shadow-lg hover:shadow-xl hover:bg-green-600 transition-all duration-300'
         >
           Consulter
