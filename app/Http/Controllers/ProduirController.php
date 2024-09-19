@@ -44,6 +44,7 @@ class ProduirController extends Controller
      */
     public function store(StoreProduitRequest $request)
     {
+        // dd($request);
 
         $validated = $request->validated();
         if ($request->hasFile('image_rubrique')) {

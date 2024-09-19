@@ -17,14 +17,15 @@ import {
   InboxIcon,
 } from "@heroicons/react/24/solid";
 import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
- 
+import { Link } from "@inertiajs/react";
+
 export function MultiLevelSidebar_acheteur() {
   const [open, setOpen] = React.useState(0);
- 
+
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
   };
- 
+
   return (
     <Card className="h-screen w-full max-w-[15rem] p-4 shadow-xl shadow-blue-gray-900/5">
       <div className="mb-2 p-4">
@@ -106,7 +107,9 @@ export function MultiLevelSidebar_acheteur() {
                 <ListItemPrefix>
                   <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                 </ListItemPrefix>
-                Products
+                <Link href={route('Panie.index')}>
+                  Mon panier
+                </Link>
               </ListItem>
             </List>
           </AccordionBody>

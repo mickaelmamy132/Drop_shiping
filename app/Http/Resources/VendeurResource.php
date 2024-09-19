@@ -27,7 +27,7 @@ class VendeurResource extends JsonResource
             'nom_de_l_entreprise' => $this->nom_de_l_entreprise,
             'description' => $this->description,
             'ville' => $this->ville,
-            'code_postal' => $this->code_postal,
+            'code_postal' => $this->code_postal, 
             'activite' => $this->activite,
             'facturation' => $this->facturation,
             'adresse_livraison' => $this->adresse_livraison,

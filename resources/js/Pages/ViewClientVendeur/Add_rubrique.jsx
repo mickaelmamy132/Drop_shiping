@@ -72,18 +72,18 @@ export default function Add_rubrique({ auth }) {
       onSuccess: () => {
         notification.success({
           message: 'Succès',
-          description: 'Communication avec le backend réussie!',
+          description: 'Produit créé',
           placement: 'topRight',
         });
-        console.log('Réponse du backend : Succès');
+        console.log('erreur lors de la création du produit veuillez réessayer');
       },
       onError: (errors) => {
         notification.error({
           message: 'Erreur',
-          description: 'Échec de la communication avec le backend.',
+          description: 'erreur lors de la création du produit veuillez réessayer.',
           placement: 'topRight',
         });
-        console.error('Erreurs de communication :', errors);
+        console.error('erreur lors de la création du produit veuillez réessayer:', errors);
       }
     });
   };

@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('commandes', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('acheteur_id');
+            $table->decimal('total_prix', 10, 2);
+            $table->string('status');  // Status global de la commande
             $table->timestamps();
+
+            $table->foreign('acheteur_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

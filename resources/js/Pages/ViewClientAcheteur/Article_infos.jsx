@@ -1,9 +1,42 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Button, Card } from 'antd';
+import { Button, message, Select } from 'antd';
+import { useForm } from '@inertiajs/react';
+
+const { Option } = Select;
 
 export default function Article_infos({ auth, produit }) {
-    console.log(produit);
+
+    const [quantite, setQuantity] = useState(1);
+
+    const { data, post, setData, processing, errors } = useForm({
+        acheteur_id: auth.user.id,
+        produit_id: produit.id,
+        vendeur_id: produit.vendeur.user_id,
+        quantite: quantite,
+    });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        post(route('Panie.store'), {
+            onSuccess: () => {
+                message.success('Produit ajouté au panier avec succès!');
+            },
+            onError: (errors) => {
+                // Afficher le message d'erreur spécifique s'il est présent
+                if (errors.error) {
+                    message.error(errors.error); // Affiche "Quantité insuffisante en stock"
+                } else {
+                    message.error('Une erreur est survenue lors de l\'ajout au panier.');
+                }
+            }
+        });
+    };
+    useEffect(() => {
+        setData('quantite', quantite); // Mettre à jour la clé `quantite` dans le formulaire
+    }, [quantite]);
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -14,12 +47,12 @@ export default function Article_infos({ auth, produit }) {
                     <h3 className='text-center font-bold text-5xl text-gray-800 mb-12'>
                         Informations du produit
                     </h3>
-                    <div className="flex flex-col md:flex-row gap-16">
+                    <div className="flex flex-col sm:flex-col md:flex-col lg:flex-row xl:flex-row gap-16">
                         <div className="w-full md:w-1/2">
                             <img
                                 src={`/storage/${produit.image_rubrique}`}
                                 alt={produit.name}
-                                className="w-full h-auto object-cover rounded-xl shadow-lg transition-transform duration-300 hover:scale-105"
+                                className="w-full h-auto object-contain rounded-xl shadow-lg transition-transform duration-300 hover:scale-105"
                             />
                         </div>
 
@@ -30,18 +63,41 @@ export default function Article_infos({ auth, produit }) {
                                 <span className="text-4xl font-bold text-green-600">${produit.prix}</span>
                             </div>
 
+                            <div className="flex items-center">
+                                <p className="text-4xl font-bold text-green-600">Quantite: {produit.quantite}</p>
+                            </div>
+
                             <div className='mt-10'>
                                 <InfoItem label="Description" value={produit.description} />
                             </div>
 
                             <div className='flex items-center'>
-                                <p className="font-semibold mb-2 text-xl">vendeur: <span> {produit.vendeur.user.name}</span></p>
+                                <p className="font-semibold mb-2 text-xl">Vendeur: <span>{produit.vendeur.user.name}</span></p>
                             </div>
 
-
-                            <Button className="w-full md:w-2/3 bg-blue-600 hover:bg-blue-700 text-white text-xl py-4 rounded-xl transition-all duration-300 transform hover:scale-105">
-                                Ajouter au panier
-                            </Button>
+                            <form onSubmit={handleSubmit} className='flex gap-2'>
+                                <Select
+                                    label="Quantité"
+                                    value={quantite}
+                                    onChange={(value) => setQuantity(String(value))}
+                                    className="w-32 font-medium mb-4"
+                                >
+                                    {[1, 2, 3, 4, 5, 7, 8, 9, 10].map((num) => (
+                                        <Option key={num} value={num}>
+                                            {num}
+                                        </Option>
+                                    ))}
+                                </Select>
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    className="w-full md:w-2/3 bg-blue-600 hover:bg-blue-700 text-white text-center text-xl py-4 rounded-xl transition-all duration-300 transform hover:scale-105"
+                                    disabled={processing}
+                                    loading={processing}
+                                >
+                                    {processing ? 'Ajout en cours...' : 'Ajouter au panier'}
+                                </Button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -55,4 +111,4 @@ const InfoItem = ({ label, value }) => (
         <span className='font-semibold text-gray-700 text-2xl'>{label}: </span>
         <span className='text-gray-600 text-xl'>{value}</span>
     </div>
-)
+);

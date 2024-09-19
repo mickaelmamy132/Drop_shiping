@@ -18,6 +18,7 @@ class Produit extends Model
         'prix',
         'image_rubrique',
         'etat',
+        'quantite',
         'categorie_id',
         'vendeur_id',
     ];
@@ -38,5 +39,10 @@ class Produit extends Model
     public function categorie()
     {
         return $this->belongsTo(Categorie::class, 'categorie_id');
+    }
+
+    public function panier()
+    {
+        return $this->belongsTo(Panie::class, 'vendeur_id');
     }
 }

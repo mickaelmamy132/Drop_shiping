@@ -13,7 +13,7 @@ class Categorie extends Model
         'nom',
         'description_categorie',
     ];
-
+ 
     /**
      * Relation avec le modèle Produit.
      * Une catégorie peut avoir plusieurs produits.

@@ -4,16 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePanieRequest;
 use App\Http\Requests\UpdatePanieRequest;
+use App\Http\Resources\PanieResource;
 use App\Models\Panie;
+use App\Models\Produit;
+use Illuminate\Auth\Events\Validated;
+use Illuminate\Support\Facades\Auth;
 
 class PanieController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Inertia\Response 
+     */
     public function index()
     {
-        //
+        $userId = Auth::user()->id;
+
+        $panier = Panie::with('produits.categorie', 'vendeur.user')->where('acheteur_id', $userId)->get();
+
+        // dd($panier);
+        return inertia('ViewClientAcheteur/Panier', [
+            'panies' => PanieResource::collection($panier)
+        ]);
     }
 
     /**
@@ -29,7 +45,30 @@ class PanieController extends Controller
      */
     public function store(StorePanieRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $product = Produit::findOrFail($validated['produit_id']);
+
+        // Vérifier si le produit est déjà dans le panier
+        $existingPanie = Panie::where('produit_id', $validated['produit_id'])->first();
+        if ($existingPanie) {
+            return back()->withErrors(['error' => 'Ce produit est déjà dans votre panier']);
+        }
+
+        if ($product->quantite < $validated['quantite']) {
+            return back()->withErrors(['error' => 'Quantité insuffisante en stock']);
+        }
+
+        $prix_total = $product->prix * $validated['quantite'];
+        $validated['prix_totale'] = $prix_total;
+        $validated['status'] = 'en attente';
+
+        $panie = Panie::create($validated);
+
+        // Mise à jour de la quantité du produit
+        $product->quantite -= $validated['quantite'];
+        $product->save();
+
+        return back()->with('success', 'Produit ajouté au panier avec succès');
     }
 
     /**

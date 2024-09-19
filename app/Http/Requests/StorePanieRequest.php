@@ -11,7 +11,7 @@ class StorePanieRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,14 @@ class StorePanieRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'acheteur_id' => ['nullable'],
+            'produit_id' => ['required', 'exists:produits,id'],
+            'vendeur_id' => ['required', 'exists:users,id'],
+            'commande_id' => ['nullable'],
+            'quantite' => ['required', 'numeric'],
+            // 'prix' => ['required', 'numeric', 'min:0'],
+            // 'prix_totale' => ['required', 'numeric', 'min:0'],
+            // 'status' => ['required', 'string'],
         ];
     }
 }
