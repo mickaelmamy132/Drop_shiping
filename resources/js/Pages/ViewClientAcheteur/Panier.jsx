@@ -5,6 +5,9 @@ export default function Panier({ auth, panies }) {
     console.log(panies);
     const { data } = panies;
 
+    // Calculer le total de tous les articles dans le panier
+    const totalPanier = data.reduce((total, panie) => total + panie.prix_totale, 0);
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -38,18 +41,18 @@ export default function Panier({ auth, panies }) {
                                 <div className="border-t pt-4">
                                     <p className="font-bold text-xl text-gray-800">Total: <span className="text-indigo-600">{panie.prix_totale} €</span></p>
                                 </div>
-                                <div className="mt-4 bg-gray-100 p-4 rounded-lg">
-                                    <h3 className="font-semibold mb-2">Détails de l'article:</h3>
-                                    <pre className="whitespace-pre-wrap text-sm">
-                                        {JSON.stringify(panie, null, 2)}
-                                    </pre>
-                                </div>
                             </div>
                         ))
                     ) : (
                         <p className="col-span-3 text-center text-xl text-gray-600 animate-pulse">Aucun article dans le panier.</p>
                     )}
                 </div>
+                {Array.isArray(data) && data.length > 0 && (
+                    <div className="mt-8 bg-white shadow-lg rounded-xl p-6">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Total du Panier</h2>
+                        <p className="text-3xl font-bold text-indigo-600">{totalPanier.toFixed(2)} €</p>
+                    </div>
+                )}
             </div>
         </AuthenticatedLayout>
     );
