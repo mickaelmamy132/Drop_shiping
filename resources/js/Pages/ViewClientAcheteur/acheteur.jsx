@@ -17,7 +17,6 @@ export default function Acheteur({ auth, produits }) {
                     <div className='flex justify-between items-center mt-5 bg-gray-300 py-4 px-5 rounded-xl'>
                         <h3 className='font-bold text-2xl ml-3'>Les rubriques en vente</h3>
                         <div className='flex gap-2'>
-                            <button className='bg-green-500 rounded px-2 text-white font-bold'>Mon panier</button>
                             <form className="flex items-center" onSubmit={(e) => {
                                 e.preventDefault();
                                 const newRole = auth.user.role === 'vendeur' ? 'acheteur' : 'vendeur';
@@ -34,14 +33,14 @@ export default function Acheteur({ auth, produits }) {
                             </form>
                         </div>
                     </div>
-                    
+
                     <div className='w-full mt-5 p-2 h-auto overflow-y-scroll'>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5">
                             {produits.map((produit) => (
                                 <ProductCard key={produit.id} produit={produit} />
                             ))}
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </main>
         </AuthenticatedLayout>

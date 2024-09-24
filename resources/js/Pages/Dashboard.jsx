@@ -16,9 +16,9 @@ export default function Dashboard({ auth, produits }) {
             <div className='flex'>
                 {/* Main Content Area */}
                 <div className='w-full  mx-auto px-4 sm:px-6 lg:px-8 mt-20 overflow-y-auto'>
-                    <div className='flex justify-between items-center p-5 bg-white rounded-lg shadow-md'>
+                    <div className='flex justify-between items-center p-5 bg-white rounded-lg shadow-md mb-4'>
                         <h2 className='text-2xl font-bold'>
-                            Liste des achats en cours
+                            Liste des rubrique en cours
                         </h2>
                         <form className="flex items-center" onSubmit={(e) => {
                             e.preventDefault();
@@ -38,20 +38,22 @@ export default function Dashboard({ auth, produits }) {
                         </form>
 
                     </div>
+                    <div className='flex'>
 
                     <Link href={route("Produit.create")}
-                        active={route().current("Produit.create")}
+                        active={route().current("Produit.create")} className='text-white rounded-xl hover:bg-green-400 bg-green-300 mt-5 p-2 transition-all duration-300 transform hover:scale-105 hover:shadow-xl'
                     >
                         ajout rubrique
                     </Link>
+                    </div>
 
                     <div className=' overflow-hidden p-4 mt-5'>
-                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 mb-5'>
+                        {/* <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 mb-5'>
                             <Chartjx />
                             <Chartjx />
-                        </div>
-                
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        </div> */}
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5">
                             {produits.map((produit) => (
                                 <ProductCard key={produit.id} produit={produit} />
                             ))}

@@ -24,7 +24,7 @@ export default function Authenticated({ profil, role, user, header, children }) 
                 </header>
             )}
 
-            <main className='grow  p-6'>
+            <main className='grow p-6 mb-10'>
 
                 <nav className="bg-white border-b border-gray-100">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

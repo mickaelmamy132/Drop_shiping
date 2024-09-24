@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CheckoutControlleur;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PanieController;
 use App\Http\Controllers\ProduirController;
@@ -20,8 +21,15 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [ProduirController::class, 'index_vendeur'])->name('dashboard');
     Route::get('Acheteur', [ProduirController::class, 'index'])->name('Acheteur');
+    Route::get('/Produit/show_vendeur/{produit}', [ProduirController::class, 'show_vendeur'])->name('Produit.show_vendeur');
+    Route::get('/Produit/show_form/{produit}', [ProduirController::class, 'show_vendeur_form'])->name('Produit.show_form');
     Route::resource('Produit', ProduirController::class);
     Route::resource('Panie', PanieController::class);
+
+
+    Route::post('/checkout', [CheckoutControlleur::class, 'createCheckoutSession'])->name('checkout');
+    Route::get('/success', [CheckoutControlleur::class, 'success'])->name('checkout.success');
+    Route::get('/cancel', [CheckoutControlleur::class, 'cancel'])->name('checkout.cancel');
 });
 
 

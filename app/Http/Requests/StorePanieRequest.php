@@ -27,9 +27,6 @@ class StorePanieRequest extends FormRequest
             'vendeur_id' => ['required', 'exists:users,id'],
             'commande_id' => ['nullable'],
             'quantite' => ['required', 'numeric'],
-            // 'prix' => ['required', 'numeric', 'min:0'],
-            // 'prix_totale' => ['required', 'numeric', 'min:0'],
-            // 'status' => ['required', 'string'],
         ];
     }
 }

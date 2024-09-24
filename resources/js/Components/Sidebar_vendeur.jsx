@@ -32,7 +32,7 @@ export function MultiLevelSidebar_vendeur() {
     <Card className="h-screen w-full max-w-[15rem] p-4 shadow-xl shadow-blue-gray-900/5">
       <div className="mb-2 p-4">
         <Typography variant="h5" color="blue-gray">
-          Sidebar
+          Sidebar vendeur
         </Typography>
       </div>
       <List>
@@ -128,18 +128,6 @@ export function MultiLevelSidebar_vendeur() {
             <UserCircleIcon className="h-5 w-5" />
           </ListItemPrefix>
           Profile
-        </ListItem>
-        <ListItem>
-          <ListItemPrefix>
-            <Cog6ToothIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Settings
-        </ListItem>
-        <ListItem>
-          <ListItemPrefix>
-            <PowerIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Log Out
         </ListItem>
       </List>
     </Card>

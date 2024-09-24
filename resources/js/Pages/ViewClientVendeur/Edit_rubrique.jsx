@@ -36,20 +36,22 @@ const tailFormItemLayout = {
   },
 };
 
-export default function Add_rubrique({ auth }) {
-  const { data, setData, post, processing, errors } = useForm({
-    nom: '',
-    categorie_id: '',
-    quantite: '',
-    prix: '',
-    description: '',
-    etat: '',
-    image_rubrique: null,
-    vendeur_id: auth.user.id
+export default function Edit_rubrique({ auth, produit }) {
+  console.log(produit);
+  const { data, setData, put, processing, errors } = useForm({
+    nom: produit.nom || '',
+    categorie_id: produit.categorie.id || '',
+    quantite: produit.quantite || 1,
+    prix: produit.prix || 0,
+    description: produit.description || '',
+    etat: produit.etat || '',
+    image_rubrique: '',
+    vendeur_id: auth.user.id,
   });
 
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
+  const [fileList, setFileList] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -64,26 +66,53 @@ export default function Add_rubrique({ auth }) {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    form.setFieldsValue({
+      nom: produit.nom,
+      categorie_id: produit.categorie.id,
+      quantite: produit.quantite,
+      prix: produit.prix,
+      description: produit.description,
+      etat: produit.etat,
+    });
+
+    if (produit.image_rubrique) {
+      setFileList([
+        {
+          uid: '-1',
+          name: 'image',
+          status: 'done',
+          url: `/storage/${produit.image_rubrique}`,
+        },
+      ]);
+    }
+  }, [produit, form]);
+
+  const handleUploadChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+    if (newFileList.length > 0 && newFileList[0].originFileObj) {
+      setData('image_rubrique', newFileList[0].originFileObj);
+    } else {
+      setData('image_rubrique', null);
+    }
+  };
+
   const onFinish = () => {
-    post(route('Produit.store'), {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
+    console.log(data);  // Vérifie quelles données sont envoyées
+    put(route('Produit.update', produit.id), {
       onSuccess: () => {
         notification.success({
           message: 'Succès',
-          description: 'Produit créé',
+          description: 'Produit mis à jour avec succès.',
           placement: 'topRight',
         });
-        console.log('erreur lors de la création du produit veuillez réessayer');
       },
       onError: (errors) => {
         notification.error({
           message: 'Erreur',
-          description: 'erreur lors de la création du produit veuillez réessayer.',
+          description: 'Erreur lors de la mise à jour du produit.',
           placement: 'topRight',
         });
-        console.error('erreur lors de la création du produit veuillez réessayer:', errors);
       }
     });
   };
@@ -99,24 +128,21 @@ export default function Add_rubrique({ auth }) {
   );
 
   return (
-    <AuthenticatedLayout
-      user={auth.user}
-      role={auth.role}
-      profil={auth.profil}
-    >
-      <div className='w-full py-10 px-5 mt-10 shadow-lg bg-white rounded-lg'>
-        <Title level={2} className="text-center mb-8">Ajouter un nouveau produit</Title>
+    <AuthenticatedLayout user={auth.user} role={auth.role} profil={auth.profil}>
+      <div className="w-full py-10 px-5 mt-10 shadow-lg bg-white rounded-lg">
+        <Title level={2} className="text-center mb-8">Modifier un produit</Title>
         <Form
           {...formItemLayout}
           form={form}
           onFinish={onFinish}
-          initialValues={data}
+          initialValues={produit}
           style={{
             maxWidth: 800,
             margin: '0 auto',
           }}
           scrollToFirstError
         >
+          {/* Nom du produit */}
           <Form.Item
             name="nom"
             label="Nom du produit"
@@ -129,9 +155,10 @@ export default function Add_rubrique({ auth }) {
             validateStatus={errors.nom && 'error'}
             help={errors.nom}
           >
-            <Input className="rounded-md" value={data.nom} onChange={(e) => setData('nom', e.target.value)} />
+            <Input className="rounded-md" onChange={(e) => setData('nom', e.target.value)} />
           </Form.Item>
 
+          {/* Catégorie */}
           <Form.Item
             name="categorie_id"
             label="Catégorie"
@@ -144,13 +171,24 @@ export default function Add_rubrique({ auth }) {
             validateStatus={errors.categorie_id && 'error'}
             help={errors.categorie_id}
           >
-            <Select placeholder="Sélectionnez une catégorie" className="rounded-md" value={data.categorie_id} onChange={(value) => setData('categorie_id', value)}>
-              {categories.map(category => (
-                <Option key={category.id} value={category.id}>{category.nom}</Option>
+            <Select
+              placeholder="Sélectionnez une catégorie"
+              className="rounded-md"
+              onChange={(value) => setData('categorie_id', value)}
+            >
+              {categories.map((category) => (
+                <Option
+                  key={category.id}
+                  value={category.id}
+                >
+                  {category.nom}
+                </Option>
               ))}
             </Select>
           </Form.Item>
 
+
+          {/* Quantité */}
           <Form.Item
             name="quantite"
             label="Quantité"
@@ -163,9 +201,10 @@ export default function Add_rubrique({ auth }) {
             validateStatus={errors.quantite && 'error'}
             help={errors.quantite}
           >
-            <InputNumber min={1} style={{ width: '100%' }} className="rounded-md" value={data.quantite} onChange={(value) => setData('quantite', value)} />
+            <InputNumber min={1} style={{ width: '100%' }} className="rounded-md" onChange={(value) => setData('quantite', value)} />
           </Form.Item>
 
+          {/* Prix */}
           <Form.Item
             name="prix"
             label="Prix unitaire"
@@ -180,16 +219,14 @@ export default function Add_rubrique({ auth }) {
           >
             <InputNumber
               addonAfter={suffixSelector}
-              style={{
-                width: '100%',
-              }}
+              style={{ width: '100%' }}
               min={0}
               className="rounded-md"
-              value={data.prix}
               onChange={(value) => setData('prix', value)}
             />
           </Form.Item>
 
+          {/* Description */}
           <Form.Item
             name="description"
             label="Description"
@@ -202,9 +239,10 @@ export default function Add_rubrique({ auth }) {
             validateStatus={errors.description && 'error'}
             help={errors.description}
           >
-            <Input.TextArea showCount maxLength={100} className="rounded-md" value={data.description} onChange={(e) => setData('description', e.target.value)} />
+            <Input.TextArea showCount maxLength={100} className="rounded-md" onChange={(e) => setData('description', e.target.value)} />
           </Form.Item>
 
+          {/* État */}
           <Form.Item
             name="etat"
             label="État"
@@ -217,7 +255,7 @@ export default function Add_rubrique({ auth }) {
             validateStatus={errors.etat && 'error'}
             help={errors.etat}
           >
-            <Select placeholder="Sélectionnez l'état du produit" className="rounded-md" value={data.etat} onChange={(value) => setData('etat', value)}>
+            <Select placeholder="Sélectionnez l'état du produit" className="rounded-md" onChange={(value) => setData('etat', value)}>
               <Option value="Bon état">Bon état</Option>
               <Option value="Neuf avec emballage d'origine">Neuf avec emballage d'origine</Option>
               <Option value="Premier main">Premier main</Option>
@@ -229,61 +267,40 @@ export default function Add_rubrique({ auth }) {
             </Select>
           </Form.Item>
 
+          {/* Image */}
           <Form.Item
             name="image_rubrique"
             label="Image"
-            valuePropName="fileList"
-            getValueFromEvent={(e) => {
-              if (Array.isArray(e)) {
-                return e;
-              }
-              return e && e.fileList;
-            }}
             validateStatus={errors.image_rubrique && 'error'}
             help={errors.image_rubrique}
           >
             <Upload
               accept="image/*"
               listType="picture-card"
-              beforeUpload={(file) => {
-                const isImage = file.type.startsWith('image/');
-                if (!isImage) {
-                  message.error('Vous ne pouvez télécharger que des fichiers image !');
-                }
-                return false;
-              }}
-              capture="environment"
-              maxCount={3}
-              fileList={data.image_rubrique ? [data.image_rubrique] : []}
-              onChange={(info) => {
-                const fileList = info.fileList.slice(-1);
-                if (fileList.length > 0) {
-                  const file = fileList[0].originFileObj;
-                  if (file.type.startsWith('image/')) {
-                    setData('image_rubrique', file);
-                  } else {
-                    setData('image_rubrique', null);
-                  }
-                } else {
-                  setData('image_rubrique', null);
-                }
-              }}
+              fileList={fileList}
+              beforeUpload={() => false}
+              onChange={handleUploadChange}
+              maxCount={1}
             >
-              <div>
-                <PlusOutlined />
-                <div style={{ marginTop: 8 }}>Télécharger ou Capturer</div>
-              </div>
+              {fileList.length >= 1 ? null : (
+                <div>
+                  <PlusOutlined />
+                  <div style={{ marginTop: 8 }}>Télécharger ou Capturer</div>
+                </div>
+              )}
             </Upload>
           </Form.Item>
 
-          <Form.Item {...tailFormItemLayout}>
-            <Link href={route('dashboard')} className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5">
-              Annuler
-            </Link>
-            <Button type="primary" htmlType="submit" size="large" className="rounded-md" disabled={processing}>
-              {processing ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </Form.Item>
+          <div className='p-3 items-center'>
+            <Form.Item {...tailFormItemLayout}>
+              <Link href={route('dashboard')} className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5">
+                Annuler
+              </Link>
+              <Button type="primary" htmlType="submit" size="large" className="rounded-xl" disabled={processing}>
+                {processing ? 'Enregistrement...' : 'Enregistrer'}
+              </Button>
+            </Form.Item>
+          </div>
         </Form>
       </div>
     </AuthenticatedLayout>

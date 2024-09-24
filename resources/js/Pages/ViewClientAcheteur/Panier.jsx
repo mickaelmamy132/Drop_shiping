@@ -1,12 +1,39 @@
 import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Link, usePage, useForm } from '@inertiajs/react';
+import { Form, Button } from 'antd';
 
 export default function Panier({ auth, panies }) {
     console.log(panies);
     const { data } = panies;
+    const { csrf_token } = usePage().props;
+    const { post, data: formData } = useForm({
+        acheteur_id: data[0].acheteur_id,
+        produits: data.map(item => ({
+            produit_id: item.produit.id,
+            quantite: item.quantite,
+            prix_totale: item.prix_totale,
+            vendeur_id: item.vendeur.user_id
+        }))
+    });
 
-    // Calculer le total de tous les articles dans le panier
-    const totalPanier = data.reduce((total, panie) => total + panie.prix_totale, 0);
+    const totalPanier = data.reduce((total, panie) => total + parseFloat(panie.prix_totale), 0);
+
+    const onFinish = (values) => {
+        console.log('Values:', data);
+        post('/checkout', { data }, {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: (page) => {
+                if (page.url) {
+                    window.location.href = page.url;
+                }
+            },
+            onError: (error) => {
+                console.error('Erreur lors de la création de la session de paiement:', error);
+            },
+        });
+    };
 
     return (
         <AuthenticatedLayout
@@ -14,6 +41,7 @@ export default function Panier({ auth, panies }) {
             role={auth.role}
         >
             <div className="container mx-auto mt-12 px-4">
+                <Link href='/Acheteur' className='bg-red-200 rounded-xl p-2 px-4 font-semibold transition-all duration-300 transform hover:-translate-y-2'>retour</Link>
                 <h1 className="text-3xl font-bold mb-8 text-center text-gray-800 animate-fade-in">Votre Panier</h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {Array.isArray(data) && data.length > 0 ? (
@@ -47,12 +75,27 @@ export default function Panier({ auth, panies }) {
                         <p className="col-span-3 text-center text-xl text-gray-600 animate-pulse">Aucun article dans le panier.</p>
                     )}
                 </div>
-                {Array.isArray(data) && data.length > 0 && (
-                    <div className="mt-8 bg-white shadow-lg rounded-xl p-6">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Total du Panier</h2>
-                        <p className="text-3xl font-bold text-indigo-600">{totalPanier.toFixed(2)} €</p>
-                    </div>
-                )}
+                <div className="mt-12 bg-white shadow-lg rounded-xl p-6">
+                    <h2 className="text-2xl font-bold mb-4 text-gray-800">Total du Panier</h2>
+                    <p className="text-xl mb-6">Montant total: <span className="font-bold text-indigo-600">{totalPanier.toFixed(2)} €</span></p>
+                    <Form
+                        name="checkout"
+                        onFinish={onFinish}
+                        initialValues={{ _token: csrf_token }}
+                    >
+                        <Form.Item
+                            name="_token"
+                            hidden={true}
+                        >
+                            <input type="hidden" />
+                        </Form.Item>
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit" className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-300">
+                                Procéder au paiement avec Stripe
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </div>
             </div>
         </AuthenticatedLayout>
     );

@@ -68,12 +68,24 @@ class ProduirController extends Controller
         ]);
     }
 
+    public function show_vendeur($id)
+    {
+        $produit = Produit::with('categorie', 'vendeur.user')->findOrFail($id);
+        // dd($produit->categorie, $produit->vendeur);
+        return Inertia('ViewClientVendeur/Article_infos', [
+            'produit' => new ProduitResource($produit),
+        ]);
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Produit $produit)
+    public function edit(Produit $produit, $id)
     {
-        //
+        $produit = Produit::with('categorie', 'vendeur.user')->findOrFail($id);
+        return Inertia::render("ViewClientVendeur/Edit_rubrique", [
+            'produit' => new ProduitResource($produit),
+        ]);
     }
 
     /**
@@ -81,7 +93,23 @@ class ProduirController extends Controller
      */
     public function update(UpdateProduitRequest $request, Produit $produit)
     {
-        //
+        dd($request->all());
+        // $validated = $request->validated();
+
+        // if ($request->hasFile('image_rubrique')) {
+        //     // Delete the old image if it exists
+        //     if ($produit->image_rubrique) {
+        //         Storage::delete('public/' . $produit->image_rubrique);
+        //     }
+
+        //     // Store the new image
+        //     $path = $request->file('image_rubrique')->store('Produits', 'public');
+        //     $validated['image_rubrique'] = $path;
+        // }
+
+        // $produit->update($validated);
+
+        // return redirect()->route('dashboard')->with('success', 'Produit mis à jour');
     }
 
     /**
