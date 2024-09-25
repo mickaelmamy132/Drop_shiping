@@ -93,24 +93,18 @@ class ProduirController extends Controller
      */
     public function update(UpdateProduitRequest $request, Produit $produit)
     {
-        dd($request->all());
-        // $validated = $request->validated();
+        if (!$produit) {
+            return response()->json(['error' => 'Produit non trouvé'], 404);
+        } 
+        dd($request, $produit);
+        $validated = $request->validated();
 
-        // if ($request->hasFile('image_rubrique')) {
-        //     // Delete the old image if it exists
-        //     if ($produit->image_rubrique) {
-        //         Storage::delete('public/' . $produit->image_rubrique);
-        //     }
+        // Mise à jour du produit
+        $produit->update($validated);
 
-        //     // Store the new image
-        //     $path = $request->file('image_rubrique')->store('Produits', 'public');
-        //     $validated['image_rubrique'] = $path;
-        // }
-
-        // $produit->update($validated);
-
-        // return redirect()->route('dashboard')->with('success', 'Produit mis à jour');
+        return redirect()->route('dashboard')->with('success', 'Produit mis à jour');
     }
+
 
     /**
      * Remove the specified resource from storage.

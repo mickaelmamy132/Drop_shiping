@@ -9,7 +9,6 @@ import {
   Upload,
   notification,
   Typography,
-  message,
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
@@ -37,21 +36,27 @@ const tailFormItemLayout = {
 };
 
 export default function Edit_rubrique({ auth, produit }) {
-  console.log(produit);
   const { data, setData, put, processing, errors } = useForm({
-    nom: produit.nom || '',
-    categorie_id: produit.categorie.id || '',
-    quantite: produit.quantite || 1,
-    prix: produit.prix || 0,
-    description: produit.description || '',
-    etat: produit.etat || '',
-    image_rubrique: '',
+    nom: produit.nom,
+    categorie_id: produit.categorie.id,
+    quantite: produit.quantite,
+    prix: produit.prix,
+    description: produit.description,
+    etat: produit.etat,
+    image_rubrique: null,
     vendeur_id: auth.user.id,
   });
 
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
-  const [fileList, setFileList] = useState([]);
+  const [fileList, setFileList] = useState(produit.image_rubrique ? [
+    {
+      uid: '-1',
+      name: produit.image_rubrique,
+      status: 'done',
+      url: `/storage/${produit.image_rubrique}`,
+    }
+  ] : []);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -75,17 +80,6 @@ export default function Edit_rubrique({ auth, produit }) {
       description: produit.description,
       etat: produit.etat,
     });
-
-    if (produit.image_rubrique) {
-      setFileList([
-        {
-          uid: '-1',
-          name: 'image',
-          status: 'done',
-          url: `/storage/${produit.image_rubrique}`,
-        },
-      ]);
-    }
   }, [produit, form]);
 
   const handleUploadChange = ({ fileList: newFileList }) => {
@@ -98,8 +92,30 @@ export default function Edit_rubrique({ auth, produit }) {
   };
 
   const onFinish = () => {
-    console.log(data);  // Vérifie quelles données sont envoyées
-    put(route('Produit.update', produit.id), {
+    if (!produit.id) {
+      notification.error({
+        message: 'Erreur',
+        description: 'ID du produit manquant. Impossible de mettre à jour.',
+        placement: 'topRight',
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    for (const key in data) {
+      if (key === 'image_rubrique') {
+        if (data[key] instanceof File) {
+          formData.append(key, data[key]);
+        } else if (fileList.length > 0 && fileList[0].url) {
+          // Si l'image n'a pas été modifiée, on envoie l'URL existante
+          formData.append(key, fileList[0].url.split('/').pop());
+        }
+      } else if (data[key] !== null) {
+        formData.append(key, data[key]);
+      }
+    }
+
+    put(route('Produit.update', produit.id), formData, {
       onSuccess: () => {
         notification.success({
           message: 'Succès',
@@ -110,13 +126,12 @@ export default function Edit_rubrique({ auth, produit }) {
       onError: (errors) => {
         notification.error({
           message: 'Erreur',
-          description: 'Erreur lors de la mise à jour du produit.',
+          description: 'Erreur lors de la mise à jour du produit. Vérifiez les données et réessayez.',
           placement: 'topRight',
         });
       }
     });
   };
-
 
   const suffixSelector = (
     <Form.Item name="suffix" noStyle>
@@ -135,14 +150,13 @@ export default function Edit_rubrique({ auth, produit }) {
           {...formItemLayout}
           form={form}
           onFinish={onFinish}
-          initialValues={produit}
+          initialValues={data}
           style={{
             maxWidth: 800,
             margin: '0 auto',
           }}
           scrollToFirstError
         >
-          {/* Nom du produit */}
           <Form.Item
             name="nom"
             label="Nom du produit"
@@ -158,7 +172,6 @@ export default function Edit_rubrique({ auth, produit }) {
             <Input className="rounded-md" onChange={(e) => setData('nom', e.target.value)} />
           </Form.Item>
 
-          {/* Catégorie */}
           <Form.Item
             name="categorie_id"
             label="Catégorie"
@@ -187,8 +200,6 @@ export default function Edit_rubrique({ auth, produit }) {
             </Select>
           </Form.Item>
 
-
-          {/* Quantité */}
           <Form.Item
             name="quantite"
             label="Quantité"
@@ -204,7 +215,6 @@ export default function Edit_rubrique({ auth, produit }) {
             <InputNumber min={1} style={{ width: '100%' }} className="rounded-md" onChange={(value) => setData('quantite', value)} />
           </Form.Item>
 
-          {/* Prix */}
           <Form.Item
             name="prix"
             label="Prix unitaire"
@@ -226,7 +236,6 @@ export default function Edit_rubrique({ auth, produit }) {
             />
           </Form.Item>
 
-          {/* Description */}
           <Form.Item
             name="description"
             label="Description"
@@ -242,7 +251,6 @@ export default function Edit_rubrique({ auth, produit }) {
             <Input.TextArea showCount maxLength={100} className="rounded-md" onChange={(e) => setData('description', e.target.value)} />
           </Form.Item>
 
-          {/* État */}
           <Form.Item
             name="etat"
             label="État"
@@ -267,7 +275,6 @@ export default function Edit_rubrique({ auth, produit }) {
             </Select>
           </Form.Item>
 
-          {/* Image */}
           <Form.Item
             name="image_rubrique"
             label="Image"
