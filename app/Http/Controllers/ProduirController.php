@@ -91,17 +91,21 @@ class ProduirController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProduitRequest $request, Produit $produit)
+    public function update(UpdateProduitRequest $request, $id)
     {
-        if (!$produit) {
-            return response()->json(['error' => 'Produit non trouvé'], 404);
-        } 
-        dd($request, $produit);
+        $produit = Produit::findOrFail($id);
+    
         $validated = $request->validated();
-
-        // Mise à jour du produit
+    
+        if ($request->hasFile('image_rubrique')) {
+            $path = $request->file('image_rubrique')->store('Produits', 'public');
+            $validated['image_rubrique'] = $path;
+        } else {
+            $validated['image_rubrique'] = $produit->image_rubrique;
+        }
+    
         $produit->update($validated);
-
+    
         return redirect()->route('dashboard')->with('success', 'Produit mis à jour');
     }
 

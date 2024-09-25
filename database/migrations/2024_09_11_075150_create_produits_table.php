@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('quantite');
             $table->text('description');
             $table->decimal('prix', 10, 2);
-            $table->string('image_rubrique')->nullable();
+            $table->string('image_rubrique');
             $table->string('etat');
             $table->timestamps();
         });
