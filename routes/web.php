@@ -22,6 +22,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [ProduirController::class, 'index_vendeur'])->name('dashboard');
     Route::get('Acheteur', [ProduirController::class, 'index'])->name('Acheteur');
+    // Route::get('/Produits_lots', [ProduitControllerLot::class, 'show_acheteur'])->name('Produit.show_acheteur');
     Route::get('/Produit/show_vendeur/{produit}', [ProduirController::class, 'show_vendeur'])->name('Produit.show_vendeur');
     Route::get('/Produit/show_form/{produit}', [ProduirController::class, 'show_vendeur_form'])->name('Produit.show_form');
     Route::resource('Produit', ProduirController::class);

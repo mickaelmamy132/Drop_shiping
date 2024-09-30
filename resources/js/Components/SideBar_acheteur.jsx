@@ -120,7 +120,7 @@ export function MultiLevelSidebar_acheteur() {
                     <ShoppingBagIcon className="h-5 w-5" />
                   </ListItemPrefix>
                   <Typography color="blue-gray" className="mr-auto font-normal">
-                    E-Commerce
+                    Mon panier
                   </Typography>
                 </AccordionHeader>
               </ListItem>
@@ -131,7 +131,19 @@ export function MultiLevelSidebar_acheteur() {
                       <ListItemPrefix>
                         <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                       </ListItemPrefix>
-                      Mon panier
+                      Article
+                    </ListItem>
+                  </Link>
+                </List>
+              </AccordionBody>
+              <AccordionBody className="py-1">
+                <List className="p-0">
+                  <Link href={route('Produits_lots')}>
+                    <ListItem>
+                      <ListItemPrefix>
+                        <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                      </ListItemPrefix>
+                      Lots
                     </ListItem>
                   </Link>
                 </List>

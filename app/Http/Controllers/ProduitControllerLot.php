@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProduit_lotRequest;
 use App\Http\Requests\UpdateProduit_lotRequest;
+use App\Models\Produit;
 use App\Models\Produit_lot;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ProduitControllerLot extends Controller
@@ -14,7 +16,9 @@ class ProduitControllerLot extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $lots = Produit_lot::where('vendeur_id', $user->id)->get();
+        return Inertia::render("ViewClientVendeur/Produit_lot", ['lots' => $lots]);
     }
 
     /**
@@ -30,7 +34,14 @@ class ProduitControllerLot extends Controller
      */
     public function store(StoreProduit_lotRequest $request)
     {
-        //
+        if ($request->hasFile('image_lot')) {
+            $image_lot = $request->file('image_lot');
+            $path = $image_lot->store('Produits_lot', 'public');
+            $validated['image_lot'] = $path;
+        }
+        $validated = $request->validated();
+        Produit_lot::create($validated);
+        return redirect()->route('dashboard')->with('success', 'Lot créé');
     }
 
     /**

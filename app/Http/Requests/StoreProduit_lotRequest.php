@@ -20,7 +20,7 @@ class StoreProduit_lotRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
+    { 
         return [
             'nom' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -29,8 +29,8 @@ class StoreProduit_lotRequest extends FormRequest
             'prix_public' => 'required|numeric|min:0',
             'etat' => 'required|string|max:255',
             'image_lot' => 'required|image|mimes:jpeg,png,jpg,gif|max:50048',
-            'vendeur_id' => 'required|exists:vendeurs,id',
             'categorie_id' => 'required|exists:categories,id',
+            'vendeur_id' => 'required|exists:vendeurs,id',
         ];
     }
 }

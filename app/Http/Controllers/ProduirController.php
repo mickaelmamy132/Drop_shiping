@@ -26,7 +26,6 @@ class ProduirController extends Controller
 
     public function index()
     {
-
         $produits = Produit::all();
         return Inertia::render('ViewClientAcheteur/acheteur', ['produits' => $produits]);
     }

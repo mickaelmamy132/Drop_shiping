@@ -92,7 +92,7 @@ export default function ProductCard({ produit }) {
           <Button variant="text" color="red" onClick={closeModal} className="mr-1">
             <span>Annuler</span>
           </Button>
-          <Button variant="blue" color="green" onClick={handleDelete}>
+          <Button variant="filled" color="green" onClick={handleDelete}>
             <span>Confirmer</span>
           </Button>
         </DialogFooter>
