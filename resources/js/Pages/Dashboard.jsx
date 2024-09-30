@@ -38,13 +38,24 @@ export default function Dashboard({ auth, produits }) {
                         </form>
 
                     </div>
-                    <div className='flex'>
+                    <div className='flex justify-end gap-2'>
 
-                    <Link href={route("Produit.create")}
-                        active={route().current("Produit.create")} className='text-white rounded-xl hover:bg-green-400 bg-green-300 mt-5 p-2 transition-all duration-300 transform hover:scale-105 hover:shadow-xl'
-                    >
-                        ajout rubrique
-                    </Link>
+                        <Link href={route("Produit.create")}
+                            active={route().current("Produit.create")} className='text-gray-600 rounded-xl  bg-white mt-5 p-2 transition-all duration-300 transform hover:scale-105 hover:shadow-xl'
+                        >
+                            ajout rubrique
+                        </Link>
+
+                        <Link
+                            href={route('Produit_Lot.create')}
+                            active={route().current("Produit_Lot.create")}
+                            className='text-gray-600 rounded-xl bg-white mt-5 p-2 transition-all duration-300 transform hover:scale-105 hover:shadow-xl'
+                        >
+                            Ajout Lot
+                        </Link>
+
+
+
                     </div>
 
                     <div className=' overflow-hidden p-4 mt-5'>

@@ -42,7 +42,7 @@ export default function Add_rubrique({ auth }) {
     categorie_id: '',
     quantite: '',
     prix: '',
-    description: '',
+    description: '', 
     etat: '',
     image_rubrique: null,
     vendeur_id: auth.user.id
@@ -75,15 +75,15 @@ export default function Add_rubrique({ auth }) {
           description: 'Produit créé',
           placement: 'topRight',
         });
-        console.log('erreur lors de la création du produit veuillez réessayer');
+        console.log('Erreur lors de la création du produit, veuillez réessayer');
       },
       onError: (errors) => {
         notification.error({
           message: 'Erreur',
-          description: 'erreur lors de la création du produit veuillez réessayer.',
+          description: 'Erreur lors de la création du produit, veuillez réessayer.',
           placement: 'topRight',
         });
-        console.error('erreur lors de la création du produit veuillez réessayer:', errors);
+        console.error('Erreur lors de la création du produit, veuillez réessayer:', errors);
       }
     });
   };

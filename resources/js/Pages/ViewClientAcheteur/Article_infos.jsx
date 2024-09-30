@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button, message, Select } from 'antd';
-import { useForm } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 
 const { Option } = Select;
 
@@ -38,15 +38,18 @@ export default function Article_infos({ auth, produit }) {
     }, [quantite]);
 
     return (
-        <AuthenticatedLayout
+        <AuthenticatedLayout 
             user={auth.user}
             role={auth.role}
         >
             <main className='flex items-center min-h-screen bg-gradient-to-r from-blue-100 to-purple-100'>
                 <div className='bg-white rounded-2xl shadow-2xl p-10 w-full max-w-7xl mx-auto'>
+                <Link href='/Acheteur' className='max-w-20 text-center flex bg-red-200 rounded-xl p-2 px-4 font-semibold transition-all duration-300 transform hover:-translate-y-2'>retour</Link>
+
                     <h3 className='text-center font-bold text-5xl text-gray-800 mb-12'>
                         Informations du produit
                     </h3>
+
                     <div className="flex flex-col sm:flex-col md:flex-col lg:flex-row xl:flex-row gap-16">
                         <div className="w-full md:w-1/2">
                             <img
@@ -76,18 +79,21 @@ export default function Article_infos({ auth, produit }) {
                             </div>
 
                             <form onSubmit={handleSubmit} className='flex gap-2'>
-                                <Select
-                                    label="Quantité"
-                                    value={quantite}
-                                    onChange={(value) => setQuantity(String(value))}
-                                    className="w-32 font-medium mb-4"
-                                >
-                                    {[1, 2, 3, 4, 5, 7, 8, 9, 10].map((num) => (
-                                        <Option key={num} value={num}>
-                                            {num}
-                                        </Option>
-                                    ))}
-                                </Select>
+                                <div className='items-center justify-center text-center'>
+                                    <label htmlFor="">nombres: </label>
+                                    <Select
+                                        label="Quantité"
+                                        value={quantite}
+                                        onChange={(value) => setQuantity(String(value))}
+                                        className="w-32 font-medium mb-4"
+                                    >
+                                        {[1, 2, 3, 4, 5, 7, 8, 9, 10].map((num) => (
+                                            <Option key={num} value={num}>
+                                                {num}
+                                            </Option>
+                                        ))}
+                                    </Select>
+                                </div>
                                 <Button
                                     type="primary"
                                     htmlType="submit"

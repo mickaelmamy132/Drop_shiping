@@ -31,6 +31,7 @@ class ProduirController extends Controller
         return Inertia::render('ViewClientAcheteur/acheteur', ['produits' => $produits]);
     }
 
+
     /**
      * Show the form for creating a new resource.
      */
@@ -93,19 +94,20 @@ class ProduirController extends Controller
      */
     public function update(UpdateProduitRequest $request, $id)
     {
+        // dd($request->all(), $id);
         $produit = Produit::findOrFail($id);
-    
+
         $validated = $request->validated();
-    
+
         if ($request->hasFile('image_rubrique')) {
             $path = $request->file('image_rubrique')->store('Produits', 'public');
             $validated['image_rubrique'] = $path;
         } else {
             $validated['image_rubrique'] = $produit->image_rubrique;
         }
-    
+
         $produit->update($validated);
-    
+
         return redirect()->route('dashboard')->with('success', 'Produit mis à jour');
     }
 

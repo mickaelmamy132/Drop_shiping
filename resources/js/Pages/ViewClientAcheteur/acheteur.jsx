@@ -34,12 +34,10 @@ export default function Acheteur({ auth, produits }) {
                         </div>
                     </div>
 
-                    <div className='w-full mt-5 p-2 h-auto overflow-y-scroll'>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                            {produits.map((produit) => (
-                                <ProductCard key={produit.id} produit={produit} />
-                            ))}
-                        </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5">
+                        {produits.map((produit) => (
+                            <ProductCard key={produit.id} produit={produit} />
+                        ))}
                     </div>
                 </div>
             </main>

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { ShoppingCartIcon } from '@heroicons/react/24/solid';
-import { Card, Typography, Button } from '@material-tailwind/react';
+import { Card, Typography, Button, Dialog, DialogHeader, DialogBody, DialogFooter } from '@material-tailwind/react';
 import { Link } from '@inertiajs/react';
 import { useForm } from '@inertiajs/react';
 
-
 export default function ProductCard({ produit }) {
   const [quantity, setQuantity] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data, get, setData, processing, errors } = useForm({});
 
@@ -15,6 +15,17 @@ export default function ProductCard({ produit }) {
     get(route('Produit.edit', { id: produit.id }))
   };
 
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleDelete = () => {
+    closeModal();
+  };
 
   return (
     <div className="bg-white shadow-lg rounded-xl p-6 transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2">
@@ -53,25 +64,18 @@ export default function ProductCard({ produit }) {
       </div>
 
       <div className="flex flex-wrap items-center gap-4 pt-6">
-        {/* 
-        <Select
-          label="Quantité"
-          value={quantity}
-          onChange={(e) => setQuantity(string(e.target.value))}
-          className="w-32 font-medium"
-        >
-          {[1, 2, 3, 4, 5].map((num) => (
-            <Option key={num} value={num}>
-              {num}
-            </Option>
-          ))}
-        </Select> */}
         <Link
           href={route('Produit.show_vendeur', produit.id)}
           className="bg-green-500 text-white py-2 px-4 rounded-full font-medium shadow-lg hover:shadow-xl hover:bg-green-600 transition-all duration-300 transform hover:scale-105"
         >
           Consulter
         </Link>
+        <Button
+          onClick={showModal}
+          className="bg-red-500 text-white py-2 px-4 rounded-full font-medium shadow-lg hover:shadow-xl hover:bg-red-600 transition-all duration-300 transform hover:scale-105"
+        >
+          Supprimer
+        </Button>
         <form onSubmit={handleSubmit} className='flex gap-2'>
           <button type="submit" className="transition-all duration-300 transform hover:scale-105 hover:shadow-xl bg-yellow-500 hover:bg-yellow-600  text-white font-bold py-2 px-4 rounded-full">
             modifier
@@ -79,6 +83,20 @@ export default function ProductCard({ produit }) {
         </form>
       </div>
 
+      <Dialog open={isModalOpen} handler={closeModal}>
+        <DialogHeader>Confirmer la suppression</DialogHeader>
+        <DialogBody>
+          Êtes-vous sûr de vouloir supprimer ce produit ?
+        </DialogBody>
+        <DialogFooter>
+          <Button variant="text" color="red" onClick={closeModal} className="mr-1">
+            <span>Annuler</span>
+          </Button>
+          <Button variant="blue" color="green" onClick={handleDelete}>
+            <span>Confirmer</span>
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </div>
   );
 }

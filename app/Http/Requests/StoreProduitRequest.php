@@ -20,7 +20,7 @@ class StoreProduitRequest extends FormRequest
             'prix' => ['required', 'numeric', 'min:0'],
             'description' => ['required', 'string'],
             'etat' => ['required', 'string'],
-            'image_rubrique' => ['nullable', 'file', 'mimes:jpeg,png,jpg,gif', 'max:50248'],
+            'image_rubrique' => ['required', 'file', 'mimes:jpeg,png,jpg,gif', 'max:50248'],
             'vendeur_id' => ['nullable'],
         ];
     }

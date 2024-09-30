@@ -4,6 +4,7 @@ use App\Http\Controllers\CheckoutControlleur;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PanieController;
 use App\Http\Controllers\ProduirController;
+use App\Http\Controllers\ProduitControllerLot;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -24,13 +25,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/Produit/show_vendeur/{produit}', [ProduirController::class, 'show_vendeur'])->name('Produit.show_vendeur');
     Route::get('/Produit/show_form/{produit}', [ProduirController::class, 'show_vendeur_form'])->name('Produit.show_form');
     Route::resource('Produit', ProduirController::class);
-    Route::resource('Panie', PanieController::class);
-
-
+    Route::resource('Produit_Lot', ProduitControllerLot::class);
     Route::post('/checkout', [CheckoutControlleur::class, 'createCheckoutSession'])->name('checkout');
+
+
+    Route::resource('Panie', PanieController::class);
     Route::get('/success', [CheckoutControlleur::class, 'success'])->name('checkout.success');
     Route::get('/cancel', [CheckoutControlleur::class, 'cancel'])->name('checkout.cancel');
 });
+
 
 
 Route::middleware('auth')->group(function () {
