@@ -21,14 +21,14 @@ import {
 } from "@heroicons/react/24/solid";
 import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Link } from "@inertiajs/react";
- 
+
 export function MultiLevelSidebar_vendeur() {
   const [open, setOpen] = React.useState(0);
- 
+
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
   };
- 
+
   return (
     <Card className="h-screen w-full max-w-[15rem] p-4 shadow-xl shadow-blue-gray-900/5">
       <div className="mb-2 p-4">
@@ -56,7 +56,7 @@ export function MultiLevelSidebar_vendeur() {
               </Typography>
             </AccordionHeader>
           </ListItem>
-          
+
         </Accordion>
         <Accordion
           open={open === 2}
@@ -73,7 +73,7 @@ export function MultiLevelSidebar_vendeur() {
                 <ShoppingBagIcon className="h-5 w-5" />
               </ListItemPrefix>
               <Typography color="blue-gray" className="mr-auto font-normal">
-                E-Commerce
+                Article/Rubrique
               </Typography>
             </AccordionHeader>
           </ListItem>
@@ -83,14 +83,16 @@ export function MultiLevelSidebar_vendeur() {
                 <ListItemPrefix>
                   <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                 </ListItemPrefix>
-                Rubrique
+                Mes rubrique
               </ListItem>
-              <Link href={route('Produit_Lot.index')}>
+              <Link
+                href={route('Produit_Lot.index')}
+              >
                 <ListItem>
                   <ListItemPrefix>
                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
                   </ListItemPrefix>
-                  Lots
+                  Mes lots
                 </ListItem>
               </Link>
             </List>

@@ -40,8 +40,8 @@ export default function Dashboard({ auth, produits }) {
                     </div>
                     <div className='flex justify-end gap-2'>
 
-                        <Link href={route("Produit.create")}
-                            active={route().current("Produit.create")} className='text-gray-600 rounded-xl  bg-white mt-5 p-2 transition-all duration-300 transform hover:scale-105 hover:shadow-xl'
+                        <Link href={route('Produit.create')}
+                            active={route().current('Produit.create')} className='text-gray-600 rounded-xl  bg-white mt-5 p-2 transition-all duration-300 transform hover:scale-105 hover:shadow-xl'
                         >
                             ajout rubrique
                         </Link>

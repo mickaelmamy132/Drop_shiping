@@ -18,13 +18,10 @@ import {
 } from "@heroicons/react/24/solid";
 import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Link } from "@inertiajs/react";
-import Dropdown from '@/Components/Dropdown';
-
 
 export function MultiLevelSidebar_acheteur() {
   const [open, setOpen] = React.useState(0);
   const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-
 
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
@@ -82,28 +79,6 @@ export function MultiLevelSidebar_acheteur() {
                   </Typography>
                 </AccordionHeader>
               </ListItem>
-              <AccordionBody className="py-1">
-                <List className="p-0">
-                  <ListItem>
-                    <ListItemPrefix>
-                      <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                    </ListItemPrefix>
-                    offres specials
-                  </ListItem>
-                  <ListItem>
-                    <ListItemPrefix>
-                      <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                    </ListItemPrefix>
-                    En attentes
-                  </ListItem>
-                  <ListItem>
-                    <ListItemPrefix>
-                      <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                    </ListItemPrefix>
-                    acquis
-                  </ListItem>
-                </List>
-              </AccordionBody>
             </Accordion>
             <Accordion
               open={open === 2}
@@ -136,19 +111,15 @@ export function MultiLevelSidebar_acheteur() {
                   </Link>
                 </List>
               </AccordionBody>
-              <AccordionBody className="py-1">
-                <List className="p-0">
-                  <Link href={route('Produits_lots')}>
-                    <ListItem>
-                      <ListItemPrefix>
-                        <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                      </ListItemPrefix>
-                      Lots
-                    </ListItem>
-                  </Link>
-                </List>
-              </AccordionBody>
             </Accordion>
+            <ListItem>
+              <ListItemPrefix>
+                <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+              </ListItemPrefix>
+              <Link href={route('Produit_lots')}>
+                Liste des lots
+              </Link>
+            </ListItem>
             <ListItem>
               <ListItemPrefix>
                 <InboxIcon className="h-5 w-5" />

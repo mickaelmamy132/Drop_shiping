@@ -21,6 +21,11 @@ class ProduitControllerLot extends Controller
         return Inertia::render("ViewClientVendeur/Produit_lot", ['lots' => $lots]);
     }
 
+    public function  index_acheteur(){
+        $lots = Produit_lot::all();
+        return Inertia::render("ViewClientAcheteur/Produit_lot", ['lots' => $lots]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */

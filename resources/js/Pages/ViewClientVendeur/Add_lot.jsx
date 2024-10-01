@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Form, Input, InputNumber, Button, Select, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
@@ -19,7 +19,7 @@ export default function Add_lot({ auth }) {
         prix_public: 0,
         etat: '',
         image_lot: null,
-        categorie_id:  '',
+        categorie_id: '',
         vendeur_id: auth.user.id,
     });
 
@@ -35,11 +35,11 @@ export default function Add_lot({ auth }) {
                 // Append other fields
                 formData.append(key, data[key]);
             }
-            
+
         });
 
         // Make a POST request
-        post(route('Produit_Lot.store'),{
+        post(route('Produit_Lot.store'), {
             preserveScroll: true,
             preserveState: true,
             headers: {
@@ -281,6 +281,9 @@ export default function Add_lot({ auth }) {
 
                                     <motion.div variants={itemVariants}>
                                         <Form.Item>
+                                            <Link href={route('dashboard')} className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5">
+                                                Annuler
+                                            </Link>
                                             <Button type="primary" htmlType="submit" className="bg-blue-500 hover:bg-blue-600 transition-colors duration-300" disabled={processing}>
                                                 Ajouter le lot
                                             </Button>
