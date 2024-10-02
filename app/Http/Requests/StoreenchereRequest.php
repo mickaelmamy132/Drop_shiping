@@ -25,7 +25,6 @@ class StoreenchereRequest extends FormRequest
             'lot_id' => 'required|exists:produit_lots,id',
             'acheteur_id' => 'required|exists:users,id',
             'montant' => 'required|numeric',
-            // 'fin_enchere' => 'required|date',
         ];
     }
 }

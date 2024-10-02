@@ -39,24 +39,26 @@ class EnchereController extends Controller
             return back()->withErrors(['montant' => 'Le montant de l\'enchère doit être supérieur à l\'enchère précédente.']);
         }
 
-        $lot = Produit_lot::find($request->lot_id);
-        if ($lot && $lot->fin_enchere && now()->greaterThan($lot->fin_enchere)) {
+        $enchere = Enchere::where('lot_id', $request->lot_id)->first();
+        if ($enchere && $enchere->fin_enchere && now()->greaterThan($enchere->fin_enchere)) {
             return back()->withErrors(['enchere' => 'L\'enchère est terminée.']);
         }
 
-        Enchere::create([
+        $fin_enchere = $enchere ? null : now()->addDays(2);
+
+        $nouvelleEnchere = Enchere::create([
             'montant' => $request->montant,
             'acheteur_id' => $request->acheteur_id,
             'lot_id' => $request->lot_id,
+            'fin_enchere' => $fin_enchere,
+            'statut' => 'en cours',
         ]);
 
-        if (!$lot->fin_enchere) {
-            // Si aucun compte à rebours n'est en cours, définir la fin de l'enchère à 2 heures
-            $lot->fin_enchere = now()->addHours(2);
-            $lot->save();
-
-            // Planifier le job qui va s'exécuter à la fin de l'enchère
-            ProcessEnchereExpiree::dispatch($lot)->delay($lot->fin_enchere);
+        if (!$enchere) {
+            $lot = Produit_lot::find($request->lot_id);
+            if ($lot) {
+                ProcessEnchereExpiree::dispatch($lot)->delay($fin_enchere);
+            }
         }
         return redirect()->back()->with('success', 'Enchère placée avec succès.');
     }

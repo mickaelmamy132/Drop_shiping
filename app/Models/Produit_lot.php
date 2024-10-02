@@ -18,6 +18,7 @@ class Produit_lot extends Model
         'prix_public',
         'etat',
         'image_lot',
+        'statut',
         'vendeur_id',
         'categorie_id',
     ];

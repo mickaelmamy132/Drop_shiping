@@ -64,6 +64,7 @@ class ProduitControllerLot extends Controller
             $path = $image_lot->store('Produits_lot', 'public');
             $validated['image_lot'] = $path;
         }
+        
         $validated = $request->validated();
         Produit_lot::create($validated);
         return redirect()->route('dashboard')->with('success', 'Lot créé');

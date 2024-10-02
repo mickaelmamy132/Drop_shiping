@@ -25,6 +25,7 @@ class UpdateenchereRequest extends FormRequest
             'lot_id' => 'required|exists:produit_lots,id',
             'acheteur_id' => 'required|exists:users,id',
             'montant' => 'required|numeric',
+            'status' => 'required|in:en_cours,terminé',
             'fin_enchere' => 'required|date',
         ];
     }

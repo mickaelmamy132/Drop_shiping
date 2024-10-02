@@ -80,8 +80,13 @@ export default function Produit_lot({ lots, auth }) {
             preserveScroll: true,
             onSuccess: (response) => {
                 closeModal();
-                const newEndDate = new Date();
-                newEndDate.setHours(newEndDate.getHours() + 2);
+
+
+                const currentEndDate = endDates[data.lot_id];
+                const newEndDate = currentEndDate ? new Date(currentEndDate) : new Date();
+                if (!currentEndDate || newEndDate < new Date()) {
+                    newEndDate.setHours(newEndDate.getHours() + 2);
+                }
                 setEndDates(prevEndDates => ({
                     ...prevEndDates,
                     [data.lot_id]: newEndDate.toISOString()

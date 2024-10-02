@@ -35,14 +35,12 @@ class ProcessEnchereExpiree implements ShouldQueue
             ->first();
 
         if ($enchereGagnante) {
-            // Ajouter le lot au panier du vainqueur
             Panie::create([
                 'acheteur_id' => $enchereGagnante->acheteur_id,
                 'lot_id' => $this->lot->id,
                 'quantite' => 1,
             ]);
 
-            // Mettre à jour le statut du lot pour indiquer qu'il a été vendu
             $this->lot->update(['statut' => 'vendu']);
         }
     }
