@@ -41,7 +41,7 @@ export default function Dashboard({ auth, produits }) {
                     <div className='flex justify-end gap-2'>
 
                         <Link href={route('Produit.create')}
-                            active={route().current('Produit.create')} className='text-gray-600 rounded-xl  bg-white mt-5 p-2 transition-all duration-300 transform hover:scale-105 hover:shadow-xl'
+                            active={route().current('Produit.create')} className='text-gray-600 rounded-xl  bg-white mt-5 p-2 transition-all duration-300 transform hover:scale-105 hover:shadow-xl border'
                         >
                             ajout rubrique
                         </Link>
@@ -49,7 +49,7 @@ export default function Dashboard({ auth, produits }) {
                         <Link
                             href={route('Produit_Lot.create')}
                             active={route().current("Produit_Lot.create")}
-                            className='text-gray-600 rounded-xl bg-white mt-5 p-2 transition-all duration-300 transform hover:scale-105 hover:shadow-xl'
+                            className='text-gray-600 rounded-xl bg-white mt-5 p-2 transition-all duration-300 transform hover:scale-105 hover:shadow-xl border'
                         >
                             Ajout Lot
                         </Link>
@@ -59,10 +59,10 @@ export default function Dashboard({ auth, produits }) {
                     </div>
 
                     <div className=' overflow-hidden p-4 mt-5'>
-                        {/* <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 mb-5'>
+                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 mb-5'>
                             <Chartjx />
                             <Chartjx />
-                        </div> */}
+                        </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5">
                             {produits.map((produit) => (

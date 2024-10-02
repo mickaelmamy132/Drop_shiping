@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('acheteur_id');
             $table->decimal('montant', 10, 2);
             $table->timestamp('fin_enchere')->nullable();
+            $table->string('statut')->default('disponible');
             $table->timestamps();
 
             $table->foreign('lot_id')->references('id')->on('produit_lots')->onDelete('cascade');

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StarIcon, ShoppingCartIcon } from '@heroicons/react/24/solid';
+import { StarIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/solid';
 import { Card, Typography, Button, Select, Option } from '@material-tailwind/react';
 import { Link } from '@inertiajs/react';
 
@@ -42,7 +42,7 @@ export default function ProductCard({ produit }) {
         <p className="text-gray-600">État:</p>
         <p className="font-semibold text-green-600">{produit.etat}</p>
       </div>
-      <div className="flex flex-wrap items-center gap-4 pt-6">
+      <div className="flex items-center gap-4 pt-6">
         <Select
           label="Quantité"
           value={quantity}
@@ -56,16 +56,16 @@ export default function ProductCard({ produit }) {
           ))}
         </Select>
 
-        <Button color="blue" className="font-medium flex items-center rounded-full px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-300 bg-blue-500 hover:bg-blue-600">
-          <ShoppingCartIcon className="h-5 w-5 mr-2" />
-          Ajouter au panier
+        <Button color="blue" className="font-medium flex items-center rounded-full shadow-lg hover:shadow-xl transition-all duration-300 bg-blue-500 hover:bg-blue-600">
+          <ShoppingCartIcon className="h-5 w-6" />
+          
         </Button>
 
         <Link
           href={route('Produit.show', produit.id)}
-          className='bg-green-500 text-white px-8 py-3.5 rounded-full font-medium shadow-lg hover:shadow-xl hover:bg-green-600 transition-all duration-300'
+          className='bg-green-500 text-white  rounded-full font-medium shadow-lg hover:shadow-xl hover:bg-green-600 transition-all duration-300'
         >
-          Consulter
+          <EyeIcon className="flex h-5 w-5 mr-2" />
         </Link>
       </div>
     </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProduit_lotRequest;
 use App\Http\Requests\UpdateProduit_lotRequest;
+use App\Http\Resources\EnchereResource;
 use App\Models\Produit;
 use App\Models\Produit_lot;
 use Illuminate\Support\Facades\Auth;
@@ -21,9 +22,28 @@ class ProduitControllerLot extends Controller
         return Inertia::render("ViewClientVendeur/Produit_lot", ['lots' => $lots]);
     }
 
-    public function  index_acheteur(){
-        $lots = Produit_lot::all();
-        return Inertia::render("ViewClientAcheteur/Produit_lot", ['lots' => $lots]);
+    public function  index_acheteur()
+    {
+        // $lots = Produit_lot::with('enchere', 'vendeur.user', 'categorie')->get();
+        // return Inertia::render("ViewClientAcheteur/Produit_lot", [
+        //     'lots' => EnchereResource::collection($lots)
+        // ]);
+
+
+            $lots = Produit_lot::with(['enchere' => function($query) {
+                $query->latest();
+            }, 'vendeur.user', 'categorie'])
+            ->withCount('enchere')
+            ->get();
+
+            $lots = $lots->map(function ($lot) {
+                $lot->montant = $lot->enchere->first()->montant ?? null;
+                return $lot;
+            });
+
+            // dd($lots);
+
+            return Inertia::render("ViewClientAcheteur/Produit_lot", ['lots' => $lots]);
     }
 
     /**

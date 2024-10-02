@@ -11,13 +11,14 @@ class EnchereResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
+     * 
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'lot_id' => $this->lot_id,
+            // 'id' => $this->id,
+            'lot_id' => new ProduitLotResource($this->Load('enchere')),
             'acheteur_id' => $this->acheteur_id,
             'montant' => $this->montant,
             'fin_enchere' => $this->fin_enchere,

@@ -9,8 +9,19 @@ class Produit_lot extends Model
 {
     use HasFactory;
     protected $table = 'produit_lots';
-    protected $fillable = ['nom', 'description', 'quantite', 'prix','prix_public', 'etat', 'image_lot', 'vendeur_id', 'categorie_id'];
-    
+    protected $fillable = [
+        'id',
+        'nom',
+        'description',
+        'quantite',
+        'prix',
+        'prix_public',
+        'etat',
+        'image_lot',
+        'vendeur_id',
+        'categorie_id',
+    ];
+
     public function vendeur()
     {
         return $this->belongsTo(Vendeur::class, 'vendeur_id');
@@ -28,5 +39,10 @@ class Produit_lot extends Model
     public function panier()
     {
         return $this->belongsTo(Panie::class, 'vendeur_id');
+    }
+
+    public function enchere()
+    {
+        return $this->hasMany(enchere::class, 'lot_id');
     }
 }

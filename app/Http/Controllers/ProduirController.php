@@ -62,7 +62,6 @@ class ProduirController extends Controller
     public function show($id)
     {
         $produit = Produit::with('categorie', 'vendeur.user')->findOrFail($id);
-        // dd($produit->categorie, $produit->vendeur);
         return Inertia('ViewClientAcheteur/Article_infos', [
             'produit' => new ProduitResource($produit),
         ]);
@@ -71,7 +70,6 @@ class ProduirController extends Controller
     public function show_vendeur($id)
     {
         $produit = Produit::with('categorie', 'vendeur.user')->findOrFail($id);
-        // dd($produit->categorie, $produit->vendeur);
         return Inertia('ViewClientVendeur/Article_infos', [
             'produit' => new ProduitResource($produit),
         ]);

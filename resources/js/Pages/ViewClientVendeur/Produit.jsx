@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { ShoppingCartIcon } from '@heroicons/react/24/solid';
 import { Card, Typography, Button, Dialog, DialogHeader, DialogBody, DialogFooter } from '@material-tailwind/react';
 import { Link } from '@inertiajs/react';
 import { useForm } from '@inertiajs/react';
+import { EyeIcon } from '@heroicons/react/24/solid';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { CheckIcon } from '@heroicons/react/20/solid';
+import { ArrowTurnUpRightIcon } from '@heroicons/react/16/solid';
 
 export default function ProductCard({ produit }) {
   const [quantity, setQuantity] = useState(1);
@@ -63,22 +66,22 @@ export default function ProductCard({ produit }) {
         <p className="font-semibold text-green-600">{produit.etat}</p>
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 pt-6">
+      <div className="flex flex-wrap items-center justify-between pt-4">
         <Link
           href={route('Produit.show_vendeur', produit.id)}
-          className="bg-green-500 text-white py-2 px-4 rounded-full font-medium shadow-lg hover:shadow-xl hover:bg-green-600 transition-all duration-300 transform hover:scale-105"
+          className="text-white py-2 px-4 rounded-full font-medium shadow-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-105"
         >
-          Consulter
+          <EyeIcon color='green' className="flex h-5 w-5 mr-2"/>
         </Link>
         <Button
           onClick={showModal}
-          className="bg-red-500 text-white py-2 px-4 rounded-full font-medium shadow-lg hover:shadow-xl hover:bg-red-600 transition-all duration-300 transform hover:scale-105"
+          className="text-white py-2 px-4 rounded-full font-medium shadow-lg hover:shadow-xl  transition-all duration-300 transform hover:scale-105"
         >
-          Supprimer
+          <TrashIcon color='red' className="flex h-5 w-5 mr-2"/>
         </Button>
         <form onSubmit={handleSubmit} className='flex gap-2'>
-          <button type="submit" className="transition-all duration-300 transform hover:scale-105 hover:shadow-xl bg-yellow-500 hover:bg-yellow-600  text-white font-bold py-2 px-4 rounded-full">
-            modifier
+          <button type="submit" className="transition-all duration-300 transform hover:scale-105 hover:shadow-xl shadow-lg  hover:bg-yellow-600  text-white font-bold py-2 px-4 rounded-full">
+            <ArrowTurnUpRightIcon color='yellow' className="flex h-5 w-5 mr-2" />
           </button>
         </form>
       </div>
