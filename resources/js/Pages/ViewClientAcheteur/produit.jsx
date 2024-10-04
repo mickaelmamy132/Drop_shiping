@@ -46,12 +46,12 @@ export default function ProductCard({ produit }) {
         <Select
           label="Quantité"
           value={quantity}
-          onChange={(e) => setQuantity(string(e.target.value))}
+          onChange={(e) => setQuantity(parseInt(e))}
           className="w-32 font-medium"
         >
-          {[1, 2, 3, 4, 5].map((num) => (
-            <Option key={num} value={num}>
-              {num}
+          {[...Array(produit.quantite)].map((_, index) => (
+            <Option key={index + 1} value={index + 1}>
+              {index + 1}
             </Option>
           ))}
         </Select>

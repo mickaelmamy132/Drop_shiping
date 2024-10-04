@@ -18,32 +18,34 @@ class ProduitControllerLot extends Controller
     public function index()
     {
         $user = Auth::user();
-        $lots = Produit_lot::where('vendeur_id', $user->id)->get();
+        $lots = Produit_lot::with(['enchere' => function ($query) {
+            $query->latest();
+        }, 'vendeur.user', 'categorie'])
+            ->withCount('enchere')
+            ->where('vendeur_id', $user->id)
+            ->get();
+
+        $lots = $lots->map(function ($lot) {
+            $lot->montant = $lot->enchere->first()->montant ?? null;
+            return $lot;
+        });
+
         return Inertia::render("ViewClientVendeur/Produit_lot", ['lots' => $lots]);
     }
 
     public function  index_acheteur()
     {
-        // $lots = Produit_lot::with('enchere', 'vendeur.user', 'categorie')->get();
-        // return Inertia::render("ViewClientAcheteur/Produit_lot", [
-        //     'lots' => EnchereResource::collection($lots)
-        // ]);
-
-
-            $lots = Produit_lot::with(['enchere' => function($query) {
-                $query->latest();
-            }, 'vendeur.user', 'categorie'])
+        $lots = Produit_lot::with(['enchere' => function ($query) {
+            $query->latest();
+        }, 'vendeur.user', 'categorie'])
             ->withCount('enchere')
             ->get();
 
-            $lots = $lots->map(function ($lot) {
-                $lot->montant = $lot->enchere->first()->montant ?? null;
-                return $lot;
-            });
-
-            // dd($lots);
-
-            return Inertia::render("ViewClientAcheteur/Produit_lot", ['lots' => $lots]);
+        $lots = $lots->map(function ($lot) {
+            $lot->montant = $lot->enchere->first()->montant ?? null;
+            return $lot;
+        });
+        return Inertia::render("ViewClientAcheteur/Produit_lot", ['lots' => $lots]);
     }
 
     /**
@@ -59,13 +61,14 @@ class ProduitControllerLot extends Controller
      */
     public function store(StoreProduit_lotRequest $request)
     {
+        $validated = $request->validated();
+
         if ($request->hasFile('image_lot')) {
             $image_lot = $request->file('image_lot');
             $path = $image_lot->store('Produits_lot', 'public');
             $validated['image_lot'] = $path;
         }
-        
-        $validated = $request->validated();
+
         Produit_lot::create($validated);
         return redirect()->route('dashboard')->with('success', 'Lot créé');
     }
@@ -73,9 +76,16 @@ class ProduitControllerLot extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Produit_lot $produit_lot)
+    public function show(Produit_lot $produit_lot,  $produit_lost)
     {
-        //
+        $produit_lot = Produit_lot::with(['enchere' => function ($query) {
+            $query->latest();
+        }, 'vendeur.user', 'categorie'])
+            ->withCount('enchere')
+            ->where('id', $produit_lost)
+            ->get();
+        // dd($produit_lot);
+        return Inertia::render("ViewClientAcheteur/Produit_lot_infos", ['produit_lot' => $produit_lot]);
     }
 
     /**

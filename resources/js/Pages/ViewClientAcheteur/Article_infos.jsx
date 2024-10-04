@@ -87,9 +87,9 @@ export default function Article_infos({ auth, produit }) {
                                         onChange={(value) => setQuantity(String(value))}
                                         className="w-32 font-medium mb-4"
                                     >
-                                        {[1, 2, 3, 4, 5, 7, 8, 9, 10].map((num) => (
-                                            <Option key={num} value={num}>
-                                                {num}
+                                        {[...Array(produit.quantite)].map((_, index) => (
+                                            <Option key={index + 1} value={index + 1}>
+                                                {index + 1}
                                             </Option>
                                         ))}
                                     </Select>

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Enchere extends Model
 {
     use HasFactory;
-    protected $fillable = ['lot_id', 'acheteur_id', 'montant', 'fin_enchere'];
+    protected $fillable = ['lot_id', 'acheteur_id', 'montant', 'fin_enchere', 'statut'];
 
     public function produit_lot()
     {

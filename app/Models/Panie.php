@@ -16,6 +16,7 @@ class Panie extends Model
         'vendeur_id',
         'commande_id',
         'quantite',
+        'prix',
         'prix_totale',
         'status',
     ];

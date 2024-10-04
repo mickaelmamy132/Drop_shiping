@@ -20,23 +20,16 @@ export default function Produit_lot({ lots, auth }) {
 
     useEffect(() => {
         const timers = {};
-        
-        lots.forEach(lot => {
-            if (!endDates[lot.id]) {
-                const newEndDate = new Date();
-                newEndDate.setHours(newEndDate.getHours() + 48);
-                setEndDates(prevEndDates => ({
-                    ...prevEndDates,
-                    [lot.id]: newEndDate.toISOString()
-                }));
-            }
 
-            timers[lot.id] = setInterval(() => {
-                setTimesLeft(prevTimesLeft => ({
-                    ...prevTimesLeft,
-                    [lot.id]: calculateTimeLeft(endDates[lot.id])
-                }));
-            }, 1000);
+        lots.forEach(lot => {
+            if (endDates[lot.id]) {
+                timers[lot.id] = setInterval(() => {
+                    setTimesLeft(prevTimesLeft => ({
+                        ...prevTimesLeft,
+                        [lot.id]: calculateTimeLeft(endDates[lot.id])
+                    }));
+                }, 1000);
+            }
         });
 
         return () => {
@@ -87,11 +80,8 @@ export default function Produit_lot({ lots, auth }) {
             preserveScroll: true,
             onSuccess: (response) => {
                 closeModal();
-                const currentEndDate = endDates[data.lot_id];
-                const newEndDate = currentEndDate ? new Date(currentEndDate) : new Date();
-                if (!currentEndDate || newEndDate < new Date()) {
-                    newEndDate.setHours(newEndDate.getHours() + 48);
-                }
+                const newEndDate = new Date();
+                newEndDate.setHours(newEndDate.getHours() + 48);
                 setEndDates(prevEndDates => ({
                     ...prevEndDates,
                     [data.lot_id]: newEndDate.toISOString()
@@ -175,8 +165,8 @@ export default function Produit_lot({ lots, auth }) {
                                         <div>
                                             <h1>{auth.user.vendeur.nom_de_l_entreprise}</h1>
                                         </div>
-                                        <div className="grid grid-cols-3 gap-4 mb-4">
-                                            <img src={`/storage/${lot.image_lot}`} alt={lot.nom} className="h-24" />
+                                        <div className="mb-4 h-48 overflow-hidden">
+                                            <img src={`/storage/${lot.image_lot}`} alt={lot.nom} className="w-full h-full object-cover" />
                                         </div>
 
                                         <p className="font-semibold text-lg">{lot.nom} - {lot.description}</p>
@@ -220,14 +210,23 @@ export default function Produit_lot({ lots, auth }) {
                                                 </div>
                                             </div>
                                         </div>
-                                        <motion.button
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            onClick={() => openModal(lot)}
-                                            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                        >
-                                            Enchérir
-                                        </motion.button>
+                                        <div className="mt-4 text-center items-center gap-2">
+                                            <motion.button
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                onClick={() => openModal(lot)}
+                                                className="mr-2 mt-4 mb-2 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
+                                            >
+                                                Enchérir
+                                            </motion.button>
+                                            <Link
+                                                href={route('Produit_Lot.show', lot.id )}
+                                                className="mt-2 inline-block bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
+                                            >
+                                                Consulter
+                                            </Link>
+                                        </div>
+
                                     </motion.div>
                                 ))}
                             </motion.div>

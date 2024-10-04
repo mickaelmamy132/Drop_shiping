@@ -61,6 +61,7 @@ class PanieController extends Controller
         $prix_total = $product->prix * $validated['quantite'];
         $validated['prix_totale'] = $prix_total;
         $validated['status'] = 'en attente';
+        $validated['prix'] = $product->prix;
 
         $panie = Panie::create($validated);
 

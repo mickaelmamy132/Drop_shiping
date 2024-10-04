@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Jobs\ProcessEnchereExpiree;
 use App\Models\enchere;
 use App\Models\Panie;
+use App\Models\Produit_lot;
 use Illuminate\Console\Command;
 
 class CheckExpiredEncheres extends Command
@@ -40,22 +41,26 @@ class CheckExpiredEncheres extends Command
                 ->orderBy('montant', 'desc')
                 ->first();
 
-            if ($enchereGagnante) {
+            if ($enchereGagnante && $produit_lot->statut != 'vendu') {
                 try {
-                    // Insérer dans la table Panie
-                    Panie::create([
-                        'acheteur_id' => $enchereGagnante->acheteur_id,
-                        'produit_id' => null,
-                        'produit_lot_id' => $produit_lot->id,
-                        'vendeur_id' => $produit_lot->vendeur_id,
-                        'prix' => $enchereGagnante->montant,
-                        'prix_totale' => $enchereGagnante->montant,
-                        'status' => 'en attente',
-                        'quantite' => 1,
-                    ]);
+                    $existingPanie = Panie::where('produit_lot_id', $produit_lot->id)
+                        ->where('acheteur_id', $enchereGagnante->acheteur_id)
+                        ->first();
+                    // dd($enchereGagnante);
+                    if (!$existingPanie) {
+                        Panie::create([
+                            'acheteur_id' => $enchereGagnante->acheteur_id,
+                            'produit_id' => null,
+                            'produit_lot_id' => $produit_lot->id,
+                            'vendeur_id' => $produit_lot->vendeur_id,
+                            'prix_totale' => $enchereGagnante->montant,
+                            'prix' => $enchereGagnante->montant,
+                            'status' => 'en attente',
+                            'quantite' => 1,
+                        ]);
 
-                    // Mise à jour du statut du lot
-                    $produit_lot->update(['statut' => 'vendu']);
+                        $enchereGagnante->update(['statut' => 'gagnée']);
+                    }
                 } catch (\Illuminate\Database\QueryException $e) {
                     $this->error("Erreur lors de la création du panier pour l'enchère ID: " . $enchere->id);
                     $this->error($e->getMessage());
@@ -63,7 +68,6 @@ class CheckExpiredEncheres extends Command
                 }
             }
         }
-
 
         $this->info('Les enchères expirées ont été traitées.');
     }
