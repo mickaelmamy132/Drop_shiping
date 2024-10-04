@@ -72,9 +72,9 @@ export default function Produit_lot({ lots, auth }) {
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                                 transition={{ duration: 0.5, delay: 0.2 * index + 0.2 }}
-                                                className="grid grid-cols-3 gap-4 mb-4"
+                                                className="mb-4 h-48 overflow-hidden"
                                             >
-                                                <img src={`/storage/${lot.image_lot}`} alt={lot.nom} className="h-24" />
+                                                <img src={`/storage/${lot.image_lot}`} alt={lot.nom} className="w-full h-full object-cover" />
                                             </motion.div>
 
                                             {/* Lot Details */}
