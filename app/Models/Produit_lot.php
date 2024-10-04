@@ -39,11 +39,17 @@ class Produit_lot extends Model
 
     public function panier()
     {
-        return $this->belongsTo(Panie::class, 'vendeur_id');
+        return $this->belongsTo(Panie::class, 'produit_id');
     }
 
     public function enchere()
     {
         return $this->hasMany(enchere::class, 'lot_id');
     }
+
+    public function produit()
+    {
+        return $this->belongsTo(Produit::class, 'produit_id');
+    }
 }
+

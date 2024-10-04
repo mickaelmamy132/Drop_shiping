@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('panies', function (Blueprint $table) {
             $table->id();
             $table->foreignId('acheteur_id')->constrained('users');
-            $table->foreignId('produit_id')->constrained();
-            $table->foreignId('vendeur_id')->constrained('users');
+            $table->foreignId('produit_id')->nullable()->constrained('produits');
+            $table->foreignId('produit_lot_id')->nullable()->constrained('produit_lots');            $table->foreignId('vendeur_id')->constrained('users');
             $table->foreignId('commande_id')->nullable()->constrained();
             $table->integer('quantite');
             $table->decimal('prix', 8, 2);
+            $table->decimal('prix_totale', 8, 2);
             $table->string('status');
             $table->timestamps();
         });

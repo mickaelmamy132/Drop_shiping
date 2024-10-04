@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,7 +10,7 @@ class Enchere extends Model
     use HasFactory;
     protected $fillable = ['lot_id', 'acheteur_id', 'montant', 'fin_enchere'];
 
-    public function lot()
+    public function produit_lot()
     {
         return $this->belongsTo(Produit_lot::class, 'lot_id');
     }
@@ -19,4 +20,3 @@ class Enchere extends Model
         return $this->belongsTo(User::class, 'acheteur_id');
     }
 }
-

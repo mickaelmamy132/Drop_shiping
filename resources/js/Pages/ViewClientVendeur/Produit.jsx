@@ -3,7 +3,7 @@ import { Card, Typography, Button, Dialog, DialogHeader, DialogBody, DialogFoote
 import { Link } from '@inertiajs/react';
 import { useForm } from '@inertiajs/react';
 import { EyeIcon } from '@heroicons/react/24/solid';
-import { TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import { ArrowTurnUpRightIcon } from '@heroicons/react/16/solid';
 
@@ -66,22 +66,23 @@ export default function ProductCard({ produit }) {
         <p className="font-semibold text-green-600">{produit.etat}</p>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between pt-4">
+      <div className="flex flex-wrap items-center justify-between pt-4 space-x-4">
         <Link
           href={route('Produit.show_vendeur', produit.id)}
-          className="text-white py-2 px-4 rounded-full font-medium shadow-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-105"
+          className="flex items-center text-green-500 py-2 px-4 rounded-full font-medium shadow-lg hover:text-green-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
         >
-          <EyeIcon color='green' className="flex h-5 w-5 mr-2"/>
+          <EyeIcon className="h-5 w-5 mr-2 stroke-2 animate-pulse"/>
         </Link>
         <Button
           onClick={showModal}
-          className="text-white py-2 px-4 rounded-full font-medium shadow-lg hover:shadow-xl  transition-all duration-300 transform hover:scale-105"
+          className="flex items-center text-red-500 py-2 px-4 rounded-full font-medium shadow-lg hover:text-red-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl bg-white"
         >
-          <TrashIcon color='red' className="flex h-5 w-5 mr-2"/>
+          <TrashIcon className="h-5 w-5 mr-2 stroke-2 animate-bounce"/>
         </Button>
-        <form onSubmit={handleSubmit} className='flex gap-2'>
-          <button type="submit" className="transition-all duration-300 transform hover:scale-105 hover:shadow-xl shadow-lg  hover:bg-yellow-600  text-white font-bold py-2 px-4 rounded-full">
-            <ArrowTurnUpRightIcon color='yellow' className="flex h-5 w-5 mr-2" />
+        
+        <form onSubmit={handleSubmit}>
+          <button type="submit" className="flex items-center text-yellow-500 py-2 px-4 rounded-full font-medium shadow-lg hover:text-yellow-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl">
+            <PencilIcon className="h-5 w-5 mr-2 stroke-2" />
           </button>
         </form>
       </div>

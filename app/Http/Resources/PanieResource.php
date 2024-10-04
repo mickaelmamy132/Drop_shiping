@@ -19,6 +19,7 @@ class PanieResource extends JsonResource
         return [
             'acheteur_id' => $this->acheteur_id,
             'produit' => new ProduitResource($this->whenLoaded('produits')),
+            'produit_lot_id' => new ProduitLotResource($this->whenLoaded('produit_lot')),
             'vendeur' => new VendeurResource($this->whenLoaded('vendeur')),
             'commande_id' => $this->commande_id,
             'quantite' => $this->quantite,

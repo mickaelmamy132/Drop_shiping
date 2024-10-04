@@ -24,6 +24,7 @@ class StorePanieRequest extends FormRequest
         return [
             'acheteur_id' => ['nullable'],
             'produit_id' => ['required', 'exists:produits,id'],
+            'produit_lot_id' => ['nullable'],
             'vendeur_id' => ['required', 'exists:users,id'],
             'commande_id' => ['nullable'],
             'quantite' => ['required', 'numeric'],

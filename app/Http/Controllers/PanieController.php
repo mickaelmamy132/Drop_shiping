@@ -24,7 +24,7 @@ class PanieController extends Controller
     {
         $userId = Auth::user()->id;
 
-        $panier = Panie::with('produits.categorie', 'vendeur.user')->where('acheteur_id', $userId)->get();
+        $panier = Panie::with('produits.categorie', 'vendeur.user','produit_lot')->where('acheteur_id', $userId)->get();
 
         // dd($panier);
         return inertia('ViewClientAcheteur/Panier', [

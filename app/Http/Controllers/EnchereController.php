@@ -53,13 +53,6 @@ class EnchereController extends Controller
             'fin_enchere' => $fin_enchere,
             'statut' => 'en cours',
         ]);
-
-        if (!$enchere) {
-            $lot = Produit_lot::find($request->lot_id);
-            if ($lot) {
-                ProcessEnchereExpiree::dispatch($lot)->delay($fin_enchere);
-            }
-        }
         return redirect()->back()->with('success', 'Enchère placée avec succès.');
     }
 

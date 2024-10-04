@@ -21,13 +21,20 @@ export default function Produit_lot({ lots, auth }) {
     useEffect(() => {
         const timers = {};
         
-        Object.keys(endDates).forEach(lotId => {
-            if (!endDates[lotId]) return;
+        lots.forEach(lot => {
+            if (!endDates[lot.id]) {
+                const newEndDate = new Date();
+                newEndDate.setHours(newEndDate.getHours() + 48);
+                setEndDates(prevEndDates => ({
+                    ...prevEndDates,
+                    [lot.id]: newEndDate.toISOString()
+                }));
+            }
 
-            timers[lotId] = setInterval(() => {
+            timers[lot.id] = setInterval(() => {
                 setTimesLeft(prevTimesLeft => ({
                     ...prevTimesLeft,
-                    [lotId]: calculateTimeLeft(endDates[lotId])
+                    [lot.id]: calculateTimeLeft(endDates[lot.id])
                 }));
             }, 1000);
         });
@@ -35,7 +42,7 @@ export default function Produit_lot({ lots, auth }) {
         return () => {
             Object.values(timers).forEach(timer => clearInterval(timer));
         };
-    }, [endDates]);
+    }, [lots, endDates]);
 
     useEffect(() => {
         localStorage.setItem('endDates', JSON.stringify(endDates));
@@ -50,7 +57,7 @@ export default function Produit_lot({ lots, auth }) {
 
         if (difference > 0) {
             timeLeft = {
-                hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                hours: Math.floor(difference / (1000 * 60 * 60)),
                 minutes: Math.floor((difference / 1000 / 60) % 60),
                 seconds: Math.floor((difference / 1000) % 60),
             };
@@ -80,12 +87,10 @@ export default function Produit_lot({ lots, auth }) {
             preserveScroll: true,
             onSuccess: (response) => {
                 closeModal();
-
-
                 const currentEndDate = endDates[data.lot_id];
                 const newEndDate = currentEndDate ? new Date(currentEndDate) : new Date();
                 if (!currentEndDate || newEndDate < new Date()) {
-                    newEndDate.setHours(newEndDate.getHours() + 2);
+                    newEndDate.setHours(newEndDate.getHours() + 48);
                 }
                 setEndDates(prevEndDates => ({
                     ...prevEndDates,
