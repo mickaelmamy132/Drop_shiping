@@ -46,7 +46,6 @@ class CheckExpiredEncheres extends Command
                     $existingPanie = Panie::where('produit_lot_id', $produit_lot->id)
                         ->where('acheteur_id', $enchereGagnante->acheteur_id)
                         ->first();
-                    // dd($enchereGagnante);
                     if (!$existingPanie) {
                         Panie::create([
                             'acheteur_id' => $enchereGagnante->acheteur_id,

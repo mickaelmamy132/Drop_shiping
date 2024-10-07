@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('Produit', ProduirController::class);
     Route::resource('Produit_Lot', ProduitControllerLot::class);
     Route::resource('enchere', EnchereController::class);
+    Route::delete('PanieLot/destroy/{produit_lot}', [PanieController::class, 'destroy_lot'])->name('panieLot.destroy');
     Route::get('Produit_lots', [ProduitControllerLot::class, 'index_acheteur'])->name('Produit_lots');
     Route::post('/checkout', [CheckoutControlleur::class, 'createCheckoutSession'])->name('checkout');
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProduit_lotRequest;
 use App\Http\Requests\UpdateProduit_lotRequest;
 use App\Http\Resources\EnchereResource;
+use App\Models\Panie;
 use App\Models\Produit;
 use App\Models\Produit_lot;
 use Illuminate\Support\Facades\Auth;
@@ -107,8 +108,8 @@ class ProduitControllerLot extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Produit_lot $produit_lot)
+    public function destroy(Produit_lot $produit_lot, $id)
     {
-        //
+       //
     }
 }

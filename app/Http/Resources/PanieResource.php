@@ -1,5 +1,5 @@
 <?php
- 
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -17,6 +17,7 @@ class PanieResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'acheteur_id' => $this->acheteur_id,
             'produit' => new ProduitResource($this->whenLoaded('produits')),
             'produit_lot_id' => new ProduitLotResource($this->whenLoaded('produit_lot')),

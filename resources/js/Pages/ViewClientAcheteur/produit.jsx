@@ -4,10 +4,9 @@ import { Card, Typography, Button, Select, Option } from '@material-tailwind/rea
 import { Link } from '@inertiajs/react';
 
 export default function ProductCard({ produit }) {
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState('1');
 
   return (
-
     <div className="bg-white shadow-lg rounded-xl p-6 transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2">
       <div className="relative group overflow-hidden rounded-2xl mb-4">
         {produit.image_rubrique && (
@@ -42,33 +41,32 @@ export default function ProductCard({ produit }) {
         <p className="text-gray-600">État:</p>
         <p className="font-semibold text-green-600">{produit.etat}</p>
       </div>
-      <div className="flex items-center gap-4 pt-6">
+
+      <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
         <Select
           label="Quantité"
           value={quantity}
-          onChange={(e) => setQuantity(parseInt(e))}
-          className="w-32 font-medium"
+          onChange={(e) => setQuantity(e)}
+          className="w-full sm:w-32 font-medium mb-4 sm:mb-0"
         >
           {[...Array(produit.quantite)].map((_, index) => (
-            <Option key={index + 1} value={index + 1}>
+            <Option key={index + 1} value={(index + 1).toString()}>
               {index + 1}
             </Option>
           ))}
         </Select>
-
-        <Button color="blue" className="font-medium flex items-center rounded-full shadow-lg hover:shadow-xl transition-all duration-300 bg-blue-500 hover:bg-blue-600">
-          <ShoppingCartIcon className="h-5 w-6" />
-          
-        </Button>
-
-        <Link
-          href={route('Produit.show', produit.id)}
-          className='bg-green-500 text-white  rounded-full font-medium shadow-lg hover:shadow-xl hover:bg-green-600 transition-all duration-300'
-        >
-          <EyeIcon className="flex h-5 w-5 mr-2" />
-        </Link>
+        <div className="flex gap-4 justify-center sm:justify-end">
+          <Button color="blue" className="font-medium flex items-center justify-center w-12 h-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 bg-blue-500 hover:bg-blue-600">
+            <ShoppingCartIcon className="h-5 w-5" />
+          </Button>
+          <Link
+            href={route('Produit.show', produit.id)}
+            className='bg-green-500 text-white flex items-center justify-center w-12 h-12 rounded-full font-medium shadow-lg hover:shadow-xl hover:bg-green-600 transition-all duration-300'
+          >
+            <EyeIcon className="h-5 w-5" />
+          </Link>
+        </div>
       </div>
     </div>
-
   );
 }

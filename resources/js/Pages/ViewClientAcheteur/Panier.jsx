@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Link, usePage, useForm } from '@inertiajs/react';
-import { Form, Button } from 'antd';
+import { Form, Button, notification } from 'antd';
 import Modal from '../../Components/Modal';
+import { motion, AnimatePresence } from 'framer-motion';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 export default function Panier({ auth, panies }) {
     const { data } = panies;
     const { csrf_token } = usePage().props;
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpenLot, setIsModalOpenLot] = useState(false);
     const [selectedPanieId, setSelectedPanieId] = useState(null);
+    const [selectedPanieIdLot, setSelectedPanieIdLot] = useState(null);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     const { post, processing } = useForm({
         acheteur_id: data[0]?.acheteur_id,
@@ -19,6 +24,16 @@ export default function Panier({ auth, panies }) {
             vendeur_id: item.vendeur.user_id
         }))
     })
+
+    const {
+        data: formData,
+        delete: destroy,
+        processing: deleteProcessing,
+    } = useForm();
+
+    useEffect(() => {
+        setIsLoaded(true);
+    }, []);
 
     const totalPanier = data.reduce((total, panie) => total + parseFloat(panie.prix_totale), 0);
 
@@ -38,18 +53,75 @@ export default function Panier({ auth, panies }) {
         });
     };
 
+
+
     const handleDelete = (panieId) => {
+        console.log(panieId);
         setSelectedPanieId(panieId);
         setIsModalOpen(true);
     };
 
+    const handleDeleteLot = (panieId) => {
+        console.log(panieId);
+        setSelectedPanieIdLot(panieId);
+        setIsModalOpenLot(true);
+    };
+
     const confirmDelete = () => {
         if (selectedPanieId !== null) {
-            console.log('Deleting panie with id:', selectedPanieId);
-            // Implement delete logic here
+            destroy(route('Panie.destroy', selectedPanieId), {
+                preserveState: true,
+                preserveScroll: true,
+                onSuccess: () => {
+                    setIsModalOpen(false);
+                    setSelectedPanieId(null);
+                    notification.success({
+                        message: 'Succès',
+                        description: 'Produit retiré du panier avec succès',
+                        placement: 'topRight',
+                    });
+                },
+                onError: (error) => {
+                    notification.error({
+                        message: 'Erreur',
+                        description: 'Erreur lors du retirement du panier, veuillez réessayer.',
+                        placement: 'topRight',
+                    });
+                    console.error('Error deleting panie:', error);
+                },
+            });
+        } else {
+            setIsModalOpen(false);
+            setSelectedPanieId(null);
         }
-        setIsModalOpen(false);
-        setSelectedPanieId(null);
+    };
+    const confirmDeleteLot = () => {
+        if (selectedPanieIdLot !== null) {
+            destroy(route('panieLot.destroy', selectedPanieIdLot), {
+                preserveState: true,
+                preserveScroll: true,
+                onSuccess: () => {
+                    setIsModalOpenLot(false);
+                    setSelectedPanieIdLot(null);
+                    notification.success({
+                        message: 'Succès',
+                        description: 'Produit retiré du panier avec succès',
+                        placement: 'topRight',
+                    });
+                },
+                onError: (error) => {
+                    notification.error({
+                        message: 'Erreur',
+                        description: 'Erreur lors du retirement du panier, veuillez réessayer.',
+                        placement: 'topRight',
+                    });
+                    console.error('Error deleting panie:', error);
+                },
+            });
+        } else {
+            setIsModalOpenLot(false);
+            setSelectedPanieIdLot(null);
+        }
     };
 
     return (
@@ -57,15 +129,56 @@ export default function Panier({ auth, panies }) {
             user={auth.user}
             role={auth.role}
         >
-            <div className="container mx-auto mt-12 px-4 text-center">
-                <Link href='/Acheteur' className='max-w-20 text-center flex bg-red-200 rounded-xl p-2 px-4 font-semibold transition-all duration-300 transform hover:-translate-y-2'>retour</Link>
-                <h1 className="text-3xl font-bold mb-8 text-center text-gray-800 animate-fade-in">Votre Panier</h1>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="container mx-auto mt-12 px-4 text-center"
+            >
+                <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                >
+                    <Link href='/Acheteur' className='max-w-20 text-center flex bg-red-200 rounded-xl p-2 px-4 font-semibold transition-all duration-300 transform hover:-translate-y-2'>retour</Link>
+                </motion.div>
+                <motion.h1
+                    initial={{ y: -50 }}
+                    animate={{ y: 0 }}
+                    transition={{ type: "spring", stiffness: 100 }}
+                    className="text-3xl font-bold mb-8 text-center text-gray-800"
+                >
+                    Votre Panier
+                </motion.h1>
                 {Array.isArray(data) && data.length > 0 ? (
                     <>
-                        <h1 className='mb-5 text-3xl font-bold text-center text-gray-800 animate-bounce flex'>total des articles: {data.length}</h1>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <AnimatePresence>
+                            {isLoaded && (
+                                <motion.h1
+                                    key="total-articles"
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    transition={{ duration: 0.5 }}
+                                    className='mb-5 text-3xl font-bold text-center text-gray-800 flex justify-center'
+                                >
+                                    total des articles: {data.length}
+                                </motion.h1>
+                            )}
+                        </AnimatePresence>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ staggerChildren: 0.1 }}
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                        >
                             {data.map((panie, index) => (
-                                <div key={index} className="bg-white shadow-lg rounded-xl p-6 transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2">
+                                <motion.div
+                                    key={index}
+                                    className="bg-white shadow-lg rounded-xl p-6 transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                >
                                     {panie.produit_lot_id ? (
                                         <img
                                             src={`/storage/${panie.produit_lot?.image_lot || 'default-image.jpg'}`}
@@ -129,27 +242,54 @@ export default function Panier({ auth, panies }) {
                                     </div>
                                     <div className='flex justify-between space-x-4'>
                                         <form className="w-full flex space-x-4">
-                                            <Button
-                                                htmlType="submit"
-                                                className="flex-1 bg-amber-400 hover:bg-amber-500 text-white font-semibold text-lg py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
-                                                disabled={processing}
-                                                loading={processing}
-                                            >
-                                                Modifier
-                                            </Button>
-                                            <Button
-                                                type="button"
-                                                className="flex-1 bg-rose-500 hover:bg-rose-600 text-white font-semibold text-lg py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
-                                                onClick={() => handleDelete(panie.id)}
-                                            >
-                                                Supprimer
-                                            </Button>
+                                            {panie.produit_lot_id ? (
+                                                <div className="flex justify-center space-x-4">
+                                                    <Button
+                                                        htmlType="submit"
+                                                        className="bg-amber-400 hover:bg-amber-500 text-white  shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+                                                        disabled={processing}
+                                                        loading={processing}
+                                                        icon={<EditOutlined />}
+                                                    >
+                                                    </Button>
+                                                    <Button
+                                                        type="button"
+                                                        className=" bg-rose-500 hover:bg-rose-600 text-white font-semibold text-lg py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+                                                        onClick={() => handleDeleteLot(panie.id)}
+                                                        icon={<DeleteOutlined />}
+                                                    >
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <div className="flex justify-center space-x-4">
+                                                    <Button
+                                                        htmlType="submit"
+                                                        className=" bg-blue-400 hover:bg-blue-500 text-white font-semibold text-lg py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+                                                        disabled={processing}
+                                                        loading={processing}
+                                                        icon={<EditOutlined />}
+                                                    >
+                                                    </Button>
+                                                    <Button
+                                                        type="button"
+                                                        className=" bg-red-500 hover:bg-red-600 text-white font-semibold text-lg py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+                                                        onClick={() => handleDelete(panie.id)}
+                                                        icon={<DeleteOutlined />}
+                                                    >
+                                                    </Button>
+                                                </div>
+                                            )}
                                         </form>
                                     </div>
-                                </div>
+                                </motion.div>
                             ))}
-                        </div>
-                        <div className="mt-12 bg-white shadow-lg rounded-xl p-6">
+                        </motion.div>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5 }}
+                            className="mt-12 bg-white shadow-lg rounded-xl p-6"
+                        >
                             <h2 className="text-2xl font-bold mb-4 text-gray-800">Total du Panier</h2>
                             <p className="text-xl mb-6">Montant total: <span className="font-bold text-indigo-600">{totalPanier.toFixed(2)} €</span></p>
                             <Form
@@ -164,45 +304,96 @@ export default function Panier({ auth, panies }) {
                                     <input type="hidden" />
                                 </Form.Item>
                                 <Form.Item>
-                                    <Button type="primary" htmlType="submit" className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-300">
-                                        Procéder au paiement avec Stripe
-                                    </Button>
+                                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                        <Button type="primary" htmlType="submit" className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-300">
+                                            Procéder au paiement avec Stripe
+                                        </Button>
+                                    </motion.div>
                                 </Form.Item>
                             </Form>
-                        </div>
+                        </motion.div>
                     </>
                 ) : (
-                    <div className="col-span-3 text-center">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="col-span-3 text-center"
+                    >
                         <p className="text-xl text-gray-600 animate-pulse mb-4">Le panier est vide.</p>
-                        <Link href='/Acheteur' className='inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-300'>
-                            Continuer vos achats
-                        </Link>
-                    </div>
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                            <Link href='/Acheteur' className='inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-300'>
+                                Continuer vos achats
+                            </Link>
+                        </motion.div>
+                    </motion.div>
                 )}
-            </div>
+            </motion.div>
             <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <div className="p-6">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="p-6"
+                >
                     <h3 className="text-lg font-medium text-gray-900">Confirmer la suppression</h3>
                     <p className="mt-2 text-sm text-gray-500">
                         Êtes-vous sûr de vouloir supprimer cet article du panier ?
                     </p>
                     <div className="mt-4 flex justify-end space-x-3">
-                        <button
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             type="button"
                             className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
                             onClick={confirmDelete}
                         >
                             Supprimer
-                        </button>
-                        <button
+                        </motion.button>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             type="button"
                             className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
                             onClick={() => setIsModalOpen(false)}
                         >
                             Annuler
-                        </button>
+                        </motion.button>
                     </div>
-                </div>
+                </motion.div>
+            </Modal>
+            <Modal show={isModalOpenLot} onClose={() => setIsModalOpenLot(false)}>
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="p-6"
+                >
+                    <h3 className="text-lg font-medium text-gray-900">Confirmer la suppression</h3>
+                    <p className="mt-2 text-sm text-gray-500">
+                        Êtes-vous sûr de vouloir supprimer cet lot du panier ?
+                    </p>
+                    <div className="mt-4 flex justify-end space-x-3">
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            type="button"
+                            className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+                            onClick={confirmDeleteLot}
+                        >
+                            Supprimer
+                        </motion.button>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            type="button"
+                            className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
+                            onClick={() => setIsModalOpenLot(false)}
+                        >
+                            Annuler
+                        </motion.button>
+                    </div>
+                </motion.div>
             </Modal>
         </AuthenticatedLayout>
     );

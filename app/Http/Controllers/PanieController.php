@@ -24,7 +24,7 @@ class PanieController extends Controller
     {
         $userId = Auth::user()->id;
 
-        $panier = Panie::with('produits.categorie', 'vendeur.user','produit_lot')->where('acheteur_id', $userId)->get();
+        $panier = Panie::with('produits.categorie', 'vendeur.user', 'produit_lot')->where('acheteur_id', $userId)->get();
 
         // dd($panier);
         return inertia('ViewClientAcheteur/Panier', [
@@ -46,6 +46,7 @@ class PanieController extends Controller
     public function store(StorePanieRequest $request)
     {
         $validated = $request->validated();
+        // dd($validated);
         $product = Produit::findOrFail($validated['produit_id']);
 
         // Vérifier si le produit est déjà dans le panier
@@ -99,8 +100,29 @@ class PanieController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Panie $panie)
+    public function destroy(Panie $panie, $id)
     {
-        //
+        $panie = Panie::findOrFail($id);
+        $product = Produit::findOrFail($panie->produit_id);
+        $product->quantite += $panie->quantite;
+        $product->save();
+        
+        $panie->delete();
+
+        return back()->with('success', 'Produit retiré du panier avec succès');
+    }
+
+    public function destroy_lot($id)
+    {
+        $panie = Panie::findOrFail($id);
+        // dd($panie);
+        // $product = Produit_lot::findOrFail($panie->produit_lot_id);
+        // dd($product);
+        // $product->quantite += $panie->quantite;
+        // $product->save();
+
+        $panie->delete();
+
+        return back()->with('success', 'lot retiré du panier avec succès');
     }
 }
