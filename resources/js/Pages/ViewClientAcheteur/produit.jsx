@@ -41,7 +41,7 @@ export default function ProductCard({ produit }) {
         <p className="text-gray-600">État:</p>
         <p className="font-semibold text-green-600">{produit.etat}</p>
       </div>
-
+ 
       <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
         <Select
           label="Quantité"

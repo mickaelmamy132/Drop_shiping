@@ -11,7 +11,7 @@ class UpdatePanieRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,14 @@ class UpdatePanieRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'acheteur_id' => ['required'],
+            'produit_id' => ['required', 'exists:produits,id'],
+            'produit_lot_id' => ['nullable'],
+            'vendeur_id' => ['required', 'exists:users,id'],
+            'commande_id' => ['nullable'],
+            'quantite' => ['required', 'numeric'],
+            'prix_totale' => ['required', 'numeric'],
+            'prix' => ['required', 'numeric'],
         ];
     }
 }

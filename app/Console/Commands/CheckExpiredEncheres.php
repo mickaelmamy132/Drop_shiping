@@ -58,7 +58,7 @@ class CheckExpiredEncheres extends Command
                             'quantite' => 1,
                         ]);
 
-                        $enchereGagnante->update(['statut' => 'gagnée']);
+                        $enchereGagnante->update(['statut' => 'vendu']);
                     }
                 } catch (\Illuminate\Database\QueryException $e) {
                     $this->error("Erreur lors de la création du panier pour l'enchère ID: " . $enchere->id);

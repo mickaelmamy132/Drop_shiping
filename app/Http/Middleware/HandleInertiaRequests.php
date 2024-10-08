@@ -38,8 +38,6 @@ class HandleInertiaRequests extends Middleware
             }
         }
 
-        // dd($acheteurInfo);
-
         return [
             ...parent::share($request),
             'auth' => [

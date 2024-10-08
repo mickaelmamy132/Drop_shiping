@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useForm } from '@inertiajs/react';
 import ProductCard from '../ViewClientAcheteur/produit';
 import { motion } from 'framer-motion';
+import Chartjx from '../../Components/Chart';
 
 export default function Acheteur({ auth, produits }) {
 
@@ -11,7 +12,7 @@ export default function Acheteur({ auth, produits }) {
         <AuthenticatedLayout
             user={auth.user}
             role={auth.role}
-        >
+        > 
             <motion.main 
                 className='flex'
                 initial={{ opacity: 0 }}
@@ -46,6 +47,15 @@ export default function Acheteur({ auth, produits }) {
                                 </motion.button>
                             </form>
                         </div>
+                    </motion.div>
+
+                    <motion.div 
+                        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5 mb-8"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2, staggerChildren: 0.1 }}
+                    >
+                        <Chartjx />
                     </motion.div>
 
                     <motion.div 

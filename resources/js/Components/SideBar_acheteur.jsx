@@ -7,32 +7,50 @@ import {
   ListItemPrefix,
   ListItemSuffix,
   Chip,
-  Accordion,
-  AccordionHeader,
-  AccordionBody,
 } from "@material-tailwind/react";
 import {
   PresentationChartBarIcon,
-  ShoppingBagIcon,
+  ShoppingCartIcon,
   InboxIcon,
+  ListBulletIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
 } from "@heroicons/react/24/solid";
-import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
+import { motion, AnimatePresence } from "framer-motion";
 
-export function MultiLevelSidebar_acheteur() {
-  const [open, setOpen] = React.useState(0);
+export function MultiLevelSidebar_acheteur({ darkMode }) {
   const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+  const [showLotsSubMenu, setShowLotsSubMenu] = useState(false);
+  const { url } = usePage();
 
-  const handleOpen = (value) => {
-    setOpen(open === value ? 0 : value);
+  const isActive = (path) => {
+    return url.startsWith(path);
+  };
+
+  const sidebarVariants = {
+    open: { opacity: 1, x: 0 },
+    closed: { opacity: 0, x: "-100%" },
+  };
+
+  const listItemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  const subMenuVariants = {
+    hidden: { opacity: 0, height: 0 },
+    visible: { opacity: 1, height: "auto" },
   };
 
   return (
     <>
       <div className="sm:hidden fixed top-0 left-0 right-4 z-50 p-4">
-        <button
-          onClick={() => setShowingNavigationDropdown((previousState) => !previousState)}
-          className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => setShowingNavigationDropdown((prev) => !prev)}
+          className={`inline-flex items-center justify-center p-2 rounded-md ${darkMode ? 'text-gray-400 hover:text-gray-300 hover:bg-gray-700' : 'text-gray-400 hover:text-gray-500 hover:bg-gray-100'} focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out`}
         >
           <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
             <path
@@ -50,88 +68,100 @@ export function MultiLevelSidebar_acheteur() {
               d="M6 18L18 6M6 6l12 12"
             />
           </svg>
-        </button>
+        </motion.button>
       </div>
-      <div className={`${showingNavigationDropdown ? 'block' : 'hidden'} sm:block`}>
-        <Card className="h-screen w-full max-w-[15rem] p-4 shadow-xl shadow-blue-gray-900/5">
-          <div className="mb-2 p-4">
-            <Typography variant="h5" color="blue-gray">
-              Sidebar
-            </Typography>
-          </div>
-          <List>
-            <Accordion
-              open={open === 1}
-              icon={
-                <ChevronDownIcon
-                  strokeWidth={2.5}
-                  className={`mx-auto h-4 w-4 transition-transform ${open === 1 ? "rotate-180" : ""}`}
-                />
-              }
-            >
-              <ListItem className="p-0" selected={open === 1}>
-                <AccordionHeader onClick={() => handleOpen(1)} className="border-b-0 p-3">
-                  <ListItemPrefix>
-                    <PresentationChartBarIcon className="h-5 w-5" />
-                  </ListItemPrefix>
-                  <Typography color="blue-gray" className="mr-auto font-normal">
-                    Dashboard
-                  </Typography>
-                </AccordionHeader>
-              </ListItem>
-            </Accordion>
-            <Accordion
-              open={open === 2}
-              icon={
-                <ChevronDownIcon
-                  strokeWidth={2.5}
-                  className={`mx-auto h-4 w-4 transition-transform ${open === 2 ? "rotate-180" : ""}`}
-                />
-              }
-            >
-              <ListItem className="p-0" selected={open === 2}>
-                <AccordionHeader onClick={() => handleOpen(2)} className="border-b-0 p-3">
-                  <ListItemPrefix>
-                    <ShoppingBagIcon className="h-5 w-5" />
-                  </ListItemPrefix>
-                  <Typography color="blue-gray" className="mr-auto font-normal">
-                    Mon panier
-                  </Typography>
-                </AccordionHeader>
-              </ListItem>
-              <AccordionBody className="py-1">
-                <List className="p-0">
-                  <Link href={route('Panie.index')}>
-                    <ListItem>
-                      <ListItemPrefix>
-                        <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                      </ListItemPrefix>
-                      Article
-                    </ListItem>
+      <AnimatePresence>
+        {(showingNavigationDropdown || window.innerWidth > 640) && (
+          <motion.div
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={sidebarVariants}
+            transition={{ duration: 0.3 }}
+            className="sm:block"
+          >
+            <Card className={`h-screen w-full max-w-[25rem] p-4 shadow-xl shadow-blue-gray-900/5 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+              <div className="mb-2 p-4">
+                <Typography variant="h5" color={darkMode ? "white" : "blue-gray"} className="font-bold">
+                  Menu Principal
+                </Typography>
+              </div>
+              <List>
+                <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.1 }}>
+                  <Link href={route('Acheteur')} className={`flex items-center ${isActive('/Acheteur') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}>
+                    <ListItemPrefix>
+                      <PresentationChartBarIcon className="h-5 w-5 mr-3" />
+                    </ListItemPrefix>
+                    <Typography color={isActive('/Acheteur') ? "blue" : darkMode ? "white" : "blue-gray"} className="font-normal">
+                      Tableau de bord
+                    </Typography>
                   </Link>
-                </List>
-              </AccordionBody>
-            </Accordion>
-            <ListItem>
-              <ListItemPrefix>
-                <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-              </ListItemPrefix>
-              <Link href={route('Produit_lots')}>
-                Liste des lots
-              </Link>
-            </ListItem>
-            <ListItem>
-              <ListItemPrefix>
-                <InboxIcon className="h-5 w-5" />
-              </ListItemPrefix>
-              Inbox
-              <ListItemSuffix>
-                <Chip value="14" size="sm" variant="ghost" color="blue-gray" className="rounded-full" />
-              </ListItemSuffix>
-            </ListItem>
-          </List>
-        </Card>
-      </div>
+                </motion.div>
+                <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.2 }}>
+                  <Link href={route('Panie.index')} className={`flex items-center ${isActive('/Panie') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}>
+                    <ListItemPrefix>
+                      <ShoppingCartIcon className="h-5 w-5 mr-3" />
+                    </ListItemPrefix>
+                    <Typography color={isActive('/Panie') ? "blue" : darkMode ? "white" : "blue-gray"} className="font-normal">
+                      Mon panier
+                    </Typography>
+                  </Link>
+                </motion.div>
+                <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
+                  <div
+                    onClick={() => setShowLotsSubMenu(!showLotsSubMenu)}
+                    className={`flex items-center justify-between cursor-pointer ${isActive('/Produit_lots') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}
+                  >
+                    <div className="flex items-center">
+                      <ListItemPrefix>
+                        <ListBulletIcon className="h-5 w-5 mr-3" />
+                      </ListItemPrefix>
+                      <Typography color={isActive('/Produit_lots') ? "blue" : darkMode ? "white" : "blue-gray"} className="font-normal">
+                        Liste des lots
+                      </Typography>
+                    </div>
+                    {showLotsSubMenu ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
+                  </div>
+                  <AnimatePresence>
+                    {showLotsSubMenu && (
+                      <motion.div
+                        variants={subMenuVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="hidden"
+                        className="ml-8"
+                      >
+                        <Link
+                          href={route('Produit_lots')}
+                          className={`block py-2 ${darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500`}>
+                          Tous les lots
+                        </Link>
+                        <Link
+                          // href={route('Produit_lots.create')}
+                          className={`block py-2 ${darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500`}>
+                          Tous les articles
+                        </Link>
+                        {/* Add more sub-menu items as needed */}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+                <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.4 }}>
+                  <ListItem className={`hover:bg-blue-50 transition-colors duration-300 ${darkMode ? 'text-gray-300 hover:bg-gray-700' : ''}`}>
+                    <ListItemPrefix>
+                      <InboxIcon className="h-5 w-5" />
+                    </ListItemPrefix>
+                    Inbox
+                    <ListItemSuffix>
+                      <Chip value="14" size="sm" variant="ghost" color="blue" className="rounded-full" />
+                    </ListItemSuffix>
+                  </ListItem>
+                </motion.div>
+              </List>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

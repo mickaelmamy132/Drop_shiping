@@ -56,7 +56,7 @@ export default function Dashboard({ auth, produits }) {
                     >
                         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                             <Link href={route('Produit.create')}
-                                active={route().current('Produit.create')} className='text-gray-600 rounded-xl  bg-white mt-5 p-2 transition-all duration-300 transform hover:shadow-xl border'
+                                className='text-gray-600 rounded-xl  bg-white mt-5 p-2 transition-all duration-300 transform hover:shadow-xl border'
                             >
                                 ajout rubrique
                             </Link>
@@ -65,7 +65,6 @@ export default function Dashboard({ auth, produits }) {
                         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                             <Link
                                 href={route('Produit_Lot.create')}
-                                active={route().current("Produit_Lot.create")}
                                 className='text-gray-600 rounded-xl bg-white mt-5 p-2 transition-all duration-300 transform hover:shadow-xl border'
                             >
                                 Ajout Lot

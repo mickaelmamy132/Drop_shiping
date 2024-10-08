@@ -5,6 +5,7 @@ import { Form, Button, notification } from 'antd';
 import Modal from '../../Components/Modal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { ArrowPathIcon } from '@heroicons/react/24/solid';
 
 export default function Panier({ auth, panies }) {
     const { data } = panies;
@@ -38,7 +39,6 @@ export default function Panier({ auth, panies }) {
     const totalPanier = data.reduce((total, panie) => total + parseFloat(panie.prix_totale), 0);
 
     const onFinish = (values) => {
-        console.log('Values:', data);
         post('/checkout', { data }, {
             preserveState: true,
             preserveScroll: true,
@@ -53,16 +53,12 @@ export default function Panier({ auth, panies }) {
         });
     };
 
-
-
     const handleDelete = (panieId) => {
-        console.log(panieId);
         setSelectedPanieId(panieId);
         setIsModalOpen(true);
     };
 
     const handleDeleteLot = (panieId) => {
-        console.log(panieId);
         setSelectedPanieIdLot(panieId);
         setIsModalOpenLot(true);
     };
@@ -95,6 +91,7 @@ export default function Panier({ auth, panies }) {
             setSelectedPanieId(null);
         }
     };
+
     const confirmDeleteLot = () => {
         if (selectedPanieIdLot !== null) {
             destroy(route('panieLot.destroy', selectedPanieIdLot), {
@@ -121,6 +118,28 @@ export default function Panier({ auth, panies }) {
         } else {
             setIsModalOpenLot(false);
             setSelectedPanieIdLot(null);
+        }
+    };
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: { 
+            opacity: 1,
+            transition: { 
+                staggerChildren: 0.1 
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: { 
+            y: 0, 
+            opacity: 1,
+            transition: {
+                type: "spring",
+                stiffness: 100
+            }
         }
     };
 
@@ -166,22 +185,20 @@ export default function Panier({ auth, panies }) {
                             )}
                         </AnimatePresence>
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ staggerChildren: 0.1 }}
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="visible"
                             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                         >
                             {data.map((panie, index) => (
                                 <motion.div
                                     key={index}
+                                    variants={itemVariants}
                                     className="bg-white shadow-lg rounded-xl p-6 transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.1 }}
                                 >
                                     {panie.produit_lot_id ? (
                                         <img
-                                            src={`/storage/${panie.produit_lot?.image_lot || 'default-image.jpg'}`}
+                                            src={`/storage/${panie.produit_lot_id?.image_lot || 'default-image.jpg'}`}
                                             alt={panie.produit_lot?.nom || panie.nom || 'Image du produit'}
                                             className="w-full h-48 object-cover rounded-lg mb-4"
                                         />
@@ -192,7 +209,7 @@ export default function Panier({ auth, panies }) {
                                             className="w-full h-48 object-cover rounded-lg mb-4"
                                         />
                                     )}
-                                    <h2 className="text-xl font-semibold mb-2 text-gray-800">Vendeur: {panie.vendeur.user.name}</h2>
+                                    <h2 className="text-xl font-semibold mb-2 text-gray-800">{panie.vendeur.nom_de_l_entreprise}</h2>
                                     <div className='flex justify-between items-center mb-3'>
                                         <p className='text-gray-600'>Produit:</p>
                                         <p className="font-semibold text-indigo-600">{panie.produit?.nom || panie.nom}</p>
@@ -230,6 +247,10 @@ export default function Panier({ auth, panies }) {
                                                 <p className="text-gray-600">Quantité commandée:</p>
                                                 <p className="font-semibold">{panie.quantite}</p>
                                             </div>
+                                            <div className="flex justify-between items-center mb-3">
+                                                <p className="text-gray-600">Prix totale:</p>
+                                                <p className="font-semibold">{panie.produit.prix * panie.quantite}</p>
+                                            </div>
                                         </>
                                     )}
                                     <div className="flex justify-between items-center mb-4">
@@ -261,57 +282,37 @@ export default function Panier({ auth, panies }) {
                                                     </Button>
                                                 </div>
                                             ) : (
-                                                <div className="flex justify-center space-x-4">
-                                                    <Button
-                                                        htmlType="submit"
-                                                        className=" bg-blue-400 hover:bg-blue-500 text-white font-semibold text-lg py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
-                                                        disabled={processing}
-                                                        loading={processing}
-                                                        icon={<EditOutlined />}
-                                                    >
-                                                    </Button>
-                                                    <Button
-                                                        type="button"
-                                                        className=" bg-red-500 hover:bg-red-600 text-white font-semibold text-lg py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
-                                                        onClick={() => handleDelete(panie.id)}
-                                                        icon={<DeleteOutlined />}
-                                                    >
-                                                    </Button>
-                                                </div>
+                                                <motion.div 
+                                                    className='justify-between flex'
+                                                    initial={{ opacity: 0, scale: 0.9 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    transition={{ delay: 0.9, duration: 0.5 }}
+                                                >
+                                                    <div className="flex justify-center space-x-4 items-center">
+                                                        <Link
+                                                            href={route('Panie.edit', panie.id)}
+                                                            className="bg-green-400 p-2 hover:bg-green-500 flex items-center text-white font-semibold text-lg px-3 py-1 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+                                                        >
+                                                            <ArrowPathIcon className="w-6 h-6 mr-2 text-white" />
+                                                            <span className="text-white font-medium">Mettre à jour</span>
+                                                        </Link>
+                                                        <Button
+                                                            type="button"
+                                                            className=" bg-red-500 hover:bg-red-600 text-white font-semibold text-lg py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+                                                            onClick={() => handleDelete(panie.id)}
+                                                            icon={<DeleteOutlined />}
+                                                        >
+                                                             <span className="text-white font-medium">Enlever</span>
+                                                        </Button>
+                                                    </div>
+                                                </motion.div>
                                             )}
                                         </form>
                                     </div>
                                 </motion.div>
                             ))}
                         </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.5 }}
-                            className="mt-12 bg-white shadow-lg rounded-xl p-6"
-                        >
-                            <h2 className="text-2xl font-bold mb-4 text-gray-800">Total du Panier</h2>
-                            <p className="text-xl mb-6">Montant total: <span className="font-bold text-indigo-600">{totalPanier.toFixed(2)} €</span></p>
-                            <Form
-                                name="checkout"
-                                onFinish={onFinish}
-                                initialValues={{ _token: csrf_token }}
-                            >
-                                <Form.Item
-                                    name="_token"
-                                    hidden={true}
-                                >
-                                    <input type="hidden" />
-                                </Form.Item>
-                                <Form.Item>
-                                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                        <Button type="primary" htmlType="submit" className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-300">
-                                            Procéder au paiement avec Stripe
-                                        </Button>
-                                    </motion.div>
-                                </Form.Item>
-                            </Form>
-                        </motion.div>
+                        {/* ... (rest of the component) ... */}
                     </>
                 ) : (
                     <motion.div

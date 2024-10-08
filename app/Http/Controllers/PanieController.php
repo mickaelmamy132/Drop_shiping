@@ -9,6 +9,7 @@ use App\Models\Panie;
 use App\Models\Produit;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class PanieController extends Controller
 {
@@ -84,17 +85,55 @@ class PanieController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Panie $panie)
+    public function edit($panie)
     {
-        //
+        $userId = Auth::user()->id;
+        $panier = Panie::with('produits.categorie', 'vendeur.user', 'produit_lot')
+            ->where('acheteur_id', $userId)
+            ->where('id', $panie)
+            ->first();
+
+            // dd($panier);
+
+        return inertia('ViewClientAcheteur/Article_edit', [
+            'panier' => new PanieResource($panier)
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePanieRequest $request, Panie $panie)
+    public function update(UpdatePanieRequest $request, $id)
     {
-        //
+        $validated = $request->validated();
+        // dd($validated);
+
+        $panie = Panie::findOrFail($id);
+        $product = Produit::findOrFail($panie->produit_id);
+
+        $ancienneQuantitePanier = $panie->quantite;
+        $nouvelleQuantitePanier = $validated['quantite'];
+
+        // Additionner la quantité du produit avec l'ancienne valeur du panier
+        $product->quantite += $ancienneQuantitePanier;
+
+        // Vérifier si la nouvelle quantité est disponible
+        if ($product->quantite < $nouvelleQuantitePanier) {
+            return back()->withErrors(['error' => 'Quantité insuffisante en stock']);
+        }
+
+        // Soustraire la nouvelle quantité du panier
+        $product->quantite -= $nouvelleQuantitePanier;
+
+        $panie->quantite = $nouvelleQuantitePanier;
+        $panie->prix_totale = $validated['prix_totale'];
+        $panie->prix = $validated['prix'];
+        $panie->status = 'en attente';
+        $panie->save();
+
+        $product->save();
+
+        return redirect()->route('Panie.index')->with('success', 'Article dans le panier modifié avec succès');
     }
 
     /**

@@ -136,7 +136,7 @@ export default function Produit_lot({ lots, auth }) {
                     className="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-5"
                 >
                     <div className="p-6 text-gray-900">
-                        <h2 className="font-bold text-xl mb-4">Lot d'Electroménager</h2>
+                        <h2 className="font-bold text-xl mb-4">Liste des Lots</h2>
 
                         {lots === null || lots.length === 0 ? (
                             <p>Il n'y a pas de lots disponibles</p>
@@ -162,11 +162,13 @@ export default function Produit_lot({ lots, auth }) {
                                         }}
                                         className="border border-gray-200 rounded-lg p-6"
                                     >
-                                        <div>
-                                            <h1>{auth.user.vendeur.nom_de_l_entreprise}</h1>
-                                        </div>
+
                                         <div className="mb-4 h-48 overflow-hidden">
                                             <img src={`/storage/${lot.image_lot}`} alt={lot.nom} className="w-full h-full object-cover" />
+                                        </div>
+
+                                        <div>
+                                            <h1>{auth.user.vendeur.nom_de_l_entreprise}</h1>
                                         </div>
 
                                         <p className="font-semibold text-lg">{lot.nom} - {lot.description}</p>
@@ -197,7 +199,7 @@ export default function Produit_lot({ lots, auth }) {
                                         <div className="border-t border-gray-200 mt-4 pt-4">
                                             <div className="flex justify-between text-gray-700">
                                                 <div>
-                                                    <p className="text-sm">Prix public</p>
+                                                    <p className="text-sm">Prix public totale</p>
                                                     <p className="font-bold">{lot.prix_public} €</p>
                                                 </div>
                                                 <div>
@@ -220,7 +222,7 @@ export default function Produit_lot({ lots, auth }) {
                                                 Enchérir
                                             </motion.button>
                                             <Link
-                                                href={route('Produit_Lot.show', lot.id )}
+                                                href={route('Produit_Lot.show', lot.id)}
                                                 className="mt-2 inline-block bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
                                             >
                                                 Consulter

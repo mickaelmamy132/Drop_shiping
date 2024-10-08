@@ -123,7 +123,7 @@ export default function Produit_lot_infos({ auth, produit_lot }) {
                             >
                                 <StyledTitle>Enchère</StyledTitle>
                                 <motion.div variants={staggerAnimation}>
-                                    <motion.div variants={fadeIn}><StyledInfo><StyledStrong>Montant de l'enchère:</StyledStrong> {produit_lot[0].enchere[0].montant || 'Non disponible'} €</StyledInfo></motion.div>
+                                    <motion.div variants={fadeIn}><StyledInfo><StyledStrong>Montant du dernier enchère:</StyledStrong> {produit_lot[0].enchere[0].montant || 'Non disponible'} €</StyledInfo></motion.div>
                                     <motion.div variants={fadeIn}><StyledInfo><StyledStrong>Nombre d'enchères:</StyledStrong> {produit_lot[0].enchere.length}</StyledInfo></motion.div>
                                     <motion.div variants={fadeIn}><StyledInfo><StyledStrong>Fin de l'enchère:</StyledStrong> {produit_lot[0].enchere[0].fin_enchere ? new Date(produit_lot[0].enchere[0].fin_enchere).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Non disponible'}</StyledInfo></motion.div>
                                 </motion.div>
