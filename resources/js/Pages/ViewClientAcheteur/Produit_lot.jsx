@@ -4,6 +4,7 @@ import { Link, useForm } from '@inertiajs/react';
 import { notification } from 'antd';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Option } from 'antd/es/mentions';
 
 export default function Produit_lot({ lots, auth }) {
     const [endDates, setEndDates] = useState(() => {
@@ -16,6 +17,11 @@ export default function Produit_lot({ lots, auth }) {
     const [categories, setCategories] = useState([]);
     const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 1068);
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [isQualiteOpen, setIsQualiteOpen] = useState(false);
+    const [selectedQualites, setSelectedQualites] = useState([]);
+    const toggleQualite = () => setIsQualiteOpen(!isQualiteOpen);
+
     const { data, setData, post, processing, errors } = useForm({
         montant: '',
         acheteur_id: auth.user.id,
@@ -144,6 +150,29 @@ export default function Produit_lot({ lots, auth }) {
     };
 
 
+    const handleCategoryChange = (categoryId) => {
+        setSelectedCategories((prevSelected) => {
+            if (prevSelected.includes(categoryId)) {
+                return prevSelected.filter((id) => id !== categoryId);
+            } else {
+                return [...prevSelected, categoryId];
+            }
+        });
+    };
+
+
+
+    const handleQualiteChange = (option) => {
+        if (selectedQualites.includes(option)) {
+            setSelectedQualites(selectedQualites.filter((qualite) => qualite !== option));
+        } else {
+            setSelectedQualites([...selectedQualites, option]);
+        }
+    };
+
+    const filteredLots = lots.filter(lot => {
+        return selectedCategories.length === 0 || selectedCategories.includes(lot.categorie.id);
+    });
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -202,30 +231,100 @@ export default function Produit_lot({ lots, auth }) {
                                                     type="checkbox"
                                                     className="form-checkbox"
                                                     value={category.id}
+                                                    onChange={() => handleCategoryChange(category.id)} // Ajoutez cette ligne
+                                                    checked={selectedCategories.includes(category.id)} // Assurez-vous que la case à cocher soit marquée si elle est sélectionnée
                                                 />
                                                 <label className="ml-2">{category.nom}</label>
                                             </div>
                                         ))}
+
                                     </div>
                                 )}
+                                {/* Qualité toggleQualite */}
+                                <div className="flex justify-between items-center cursor-pointer" onClick={toggleQualite}>
+                                    <h3 className="text-lg font-semibold mt-4">Qualité</h3>
+                                    <span>{isQualiteOpen ? '>' : '<'}</span>
+                                </div>
+
+                                {/* Affiche les options de qualité uniquement si le panneau est ouvert */}
+                                {isQualiteOpen && (
+                                    <div className="flex flex-col mt-2 space-y-2">
+                                        {[
+                                            "Bon état",
+                                            "Retour client fonctionnel",
+                                            "Neuf avec emballage d'origine",
+                                            "Neuf sans emballage d'origine",
+                                            "Premier main",
+                                            "Dommage dus au transport",
+                                            "Reconditionné",
+                                            "Occasion fonctionnel",
+                                            "Non fonctionnel",
+                                            "Non testé"
+                                        ].map((option, idx) => (
+                                            <div key={idx} className="flex items-center">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-checkbox"
+                                                    value={option}
+                                                    onChange={() => handleQualiteChange(option)} // Gérer la sélection
+                                                    checked={selectedQualites.includes(option)} // Assurez-vous que la case à cocher soit marquée si sélectionnée
+                                                />
+                                                <label className="ml-2">{option}</label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
                             </>
                         ) : null}
 
                         {isSmallScreen && isCategoriesOpen && (
-                            <div className="mt-2">
-                                <h3 className="text-lg font-semibold">Catégories</h3>
-                                {categories.map((category, idx) => (
-                                    <div key={idx} className="flex items-center mt-2">
-                                        <input
-                                            type="checkbox"
-                                            className="form-checkbox"
-                                            value={category.id}
-                                        />
-                                        <label className="ml-2">{category.nom}</label>
-                                    </div>
-                                ))}
-                            </div>
+                            <>
+                                <div className="mt-2">
+                                    <h3 className="text-lg font-semibold">Catégories</h3>
+                                    {categories.map((category, idx) => (
+                                        <div key={idx} className="flex items-center mt-2">
+                                            <input
+                                                type="checkbox"
+                                                className="form-checkbox"
+                                                value={category.id} onChange={() => handleCategoryChange(category.id)} // Ajoutez cette ligne
+                                                checked={selectedCategories.includes(category.id)}
+                                            />
+                                            <label className="ml-2">{category.nom}</label>
+                                        </div>
+                                    ))}
+                                </div>
+                                <h3 className="text-lg font-semibold">Qualite</h3>
+                                <div className="flex flex-col mt-2 space-y-2">
+                                    {[
+                                        "Bon état",
+                                        "Retour client fonctionnel",
+                                        "Neuf avec emballage d'origine",
+                                        "Neuf sans emballage d'origine",
+                                        "Premier main",
+                                        "Dommage dus au transport",
+                                        "Reconditionné",
+                                        "Occasion fonctionnel",
+                                        "Non fonctionnel",
+                                        "Non testé"
+                                    ].map((option, idx) => (
+                                        <div key={idx} className="flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                className="form-checkbox"
+                                                value={option}
+                                                onChange={() => handleQualiteChange(option)} // Gérer la sélection
+                                                checked={selectedQualites.includes(option)} // Assurez-vous que la case à cocher soit marquée si sélectionnée
+                                            />
+                                            <label className="ml-2">{option}</label>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
                         )}
+
+
+
                     </div>
 
                     <motion.div
@@ -257,7 +356,7 @@ export default function Produit_lot({ lots, auth }) {
                             </div>
 
 
-                            {lots === null || lots.length === 0 ? (
+                            {filteredLots === null || filteredLots.length === 0 ? (
                                 <p>Il n'y a pas de lots disponibles</p>
                             ) : (
                                 <motion.div
@@ -272,7 +371,7 @@ export default function Produit_lot({ lots, auth }) {
                                     }}
                                     className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5 text-center"
                                 >
-                                    {lots.map((lot) => (
+                                    {filteredLots.map((lot) => (
                                         <motion.div
                                             key={lot.id}
                                             variants={{

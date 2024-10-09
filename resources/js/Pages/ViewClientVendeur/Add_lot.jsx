@@ -247,7 +247,9 @@ export default function Add_lot({ auth }) {
                                         >
                                             <Select placeholder="Sélectionnez l'état du produit" className="rounded-md" value={data.etat} onChange={(value) => setData('etat', value)}>
                                                 <Option value="Bon état">Bon état</Option>
+                                                <Option value="Retour client fonctionnel">Retour client fonctionnel</Option>
                                                 <Option value="Neuf avec emballage d'origine">Neuf avec emballage d'origine</Option>
+                                                <Option value="Neuf sans emballage d'origine">Neuf sans emballage d'origine</Option>
                                                 <Option value="Premier main">Premier main</Option>
                                                 <Option value="Dommage dus au transport">Dommage dus au transport</Option>
                                                 <Option value="reconditionne">Reconditionné</Option>

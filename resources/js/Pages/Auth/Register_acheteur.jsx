@@ -47,7 +47,6 @@ export default function register_acheteur() {
     };
 
     const onFinish = () => {
-        console.log('Form submitted:', data);
         post(route('register_acheteur'), {
             onSuccess: () => reset('password', 'password_confirmation'),
         });

@@ -175,7 +175,6 @@ export default function RegisterVendeur() {
                 formData.append(key, data[key]);
             }
         });
-        console.log(formData)
         post(route('register_vendeur'), formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
