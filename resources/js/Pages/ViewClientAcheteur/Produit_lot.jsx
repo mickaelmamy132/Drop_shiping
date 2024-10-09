@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Link, useForm } from '@inertiajs/react';
-import { message, notification } from 'antd';
+import { notification } from 'antd';
+import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Produit_lot({ lots, auth }) {
@@ -12,6 +13,9 @@ export default function Produit_lot({ lots, auth }) {
     const [timesLeft, setTimesLeft] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedLot, setSelectedLot] = useState(null);
+    const [categories, setCategories] = useState([]);
+    const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 1068);
     const { data, setData, post, processing, errors } = useForm({
         montant: '',
         acheteur_id: auth.user.id,
@@ -40,6 +44,27 @@ export default function Produit_lot({ lots, auth }) {
     useEffect(() => {
         localStorage.setItem('endDates', JSON.stringify(endDates));
     }, [endDates]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get('/categories');
+                setCategories(response.data);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des catégories:', error);
+            }
+        };
+
+        fetchCategories();
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < 1068);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        // Nettoyage de l'écouteur d'événement
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     function calculateTimeLeft(endTime) {
         const now = new Date();
@@ -114,127 +139,223 @@ export default function Produit_lot({ lots, auth }) {
         });
     };
 
+    const toggleCategories = () => {
+        setIsCategoriesOpen(!isCategoriesOpen); // Inverse l'état d'affichage
+    };
+
+
     return (
         <AuthenticatedLayout
             user={auth.user}
             role={auth.role}
         >
-            <div className="py-12">
+            <div className="py-12 min-h-screen">
+
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
+                    className='mb-5'
                 >
-                    <Link href={route('Acheteur')} className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5">
+                    <Link href={route('Acheteur')} className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5 items-center justify-center">
                         retour
                     </Link>
                 </motion.div>
+
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-5"
+                    transition={{ duration: 0.5 }}
+                    className="mb-4"
                 >
-                    <div className="p-6 text-gray-900">
-                        <h2 className="font-bold text-xl mb-4">Liste des Lots</h2>
+                    <ul className="flex space-x-4">
+                        <li>
+                            <Link
+                                href="/Produit_lots"
+                                className={`text-gray-500 font-semibold text-lg transition duration-300 ease-in-out hover:text-blue-800 border rounded-full px-3 py-1 shadow-md ${route().current('Produit_lots') ? 'bg-white text-blue-600' : 'text-blue-600'}`}
+                                aria-label="Voir tous les lots"
+                            >Tous les Lots</Link>
+                        </li>
+                        <li>
+                            <Link href="/orders" className="text-gray-500 font-semibold text-lg transition duration-300 ease-in-out hover:text-blue-800 border rounded-full px-3 py-1 bg-white shadow-md">Lots Mobiliers</Link>
+                        </li>
+                        <li>
+                            <Link href="/profile" className="text-gray-500 font-semibold text-lg transition duration-300 ease-in-out hover:text-blue-800 border rounded-full px-3 py-1 bg-white shadow-md">Lots Véhicules</Link>
+                        </li>
+                    </ul>
+                </motion.div>
 
-                        {lots === null || lots.length === 0 ? (
-                            <p>Il n'y a pas de lots disponibles</p>
-                        ) : (
-                            <motion.div
-                                initial="hidden"
-                                animate="visible"
-                                variants={{
-                                    visible: {
-                                        transition: {
-                                            staggerChildren: 0.1
-                                        }
-                                    }
-                                }}
-                                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5 text-center"
-                            >
-                                {lots.map((lot) => (
-                                    <motion.div
-                                        key={lot.id}
-                                        variants={{
-                                            hidden: { opacity: 0, y: 20 },
-                                            visible: { opacity: 1, y: 0 }
-                                        }}
-                                        className="border border-gray-200 rounded-lg p-6"
-                                    >
+                <div className='flex flex-row'>
+                    <div className="">
+                        {!isSmallScreen ? ( // Affiche la liste des catégories sur les grands écrans
+                            <>
+                                <div className="flex justify-between items-center cursor-pointer" onClick={toggleCategories}>
+                                    <h3 className="text-lg font-semibold">Catégories</h3>
+                                    <span>{isCategoriesOpen ? '>' : '<'}</span>
+                                </div>
 
-                                        <div className="mb-4 h-48 overflow-hidden">
-                                            <img src={`/storage/${lot.image_lot}`} alt={lot.nom} className="w-full h-full object-cover" />
-                                        </div>
-
-                                        <div>
-                                            <h1>{auth.user.vendeur.nom_de_l_entreprise}</h1>
-                                        </div>
-
-                                        <p className="font-semibold text-lg">{lot.nom} - {lot.description}</p>
-                                        <p className="text-sm text-gray-500">Enchère #{lot.id}</p>
-
-                                        <div className="mt-4">
-                                            <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                                                {lot.etat}
-                                            </span>
-                                            <div className="mt-4 flex justify-between">
-                                                <div>
-                                                    <p className="text-gray-600">Dernière enchère</p>
-                                                    <p className="font-bold text-lg">{lot.montant} €</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-gray-600">Nombre d'enchères</p>
-                                                    <p className="font-bold text-lg">{lot.enchere_count} 🔥</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-gray-600">Fin de l'enchère</p>
-                                                    <p className="font-bold text-red-500 text-lg">
-                                                        {endDates[lot.id] ? `${timesLeft[lot.id]?.hours || 0}h ${timesLeft[lot.id]?.minutes || 0}m ${timesLeft[lot.id]?.seconds || 0}s` : 'Pas encore enchéri'}
-                                                    </p>
-                                                </div>
+                                {isCategoriesOpen && (
+                                    <div className="mt-2">
+                                        {categories.map((category, idx) => (
+                                            <div key={idx} className="flex items-center mt-2">
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-checkbox"
+                                                    value={category.id}
+                                                />
+                                                <label className="ml-2">{category.nom}</label>
                                             </div>
-                                        </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </>
+                        ) : null}
 
-                                        <div className="border-t border-gray-200 mt-4 pt-4">
-                                            <div className="flex justify-between text-gray-700">
-                                                <div>
-                                                    <p className="text-sm">Prix public totale</p>
-                                                    <p className="font-bold">{lot.prix_public} €</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-sm">Unités</p>
-                                                    <p className="font-bold">{lot.quantite}</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-sm">Coût / unité</p>
-                                                    <p className="font-bold">{lot.prix} €</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="mt-4 text-center items-center gap-2">
-                                            <motion.button
-                                                whileHover={{ scale: 1.05 }}
-                                                whileTap={{ scale: 0.95 }}
-                                                onClick={() => openModal(lot)}
-                                                className="mr-2 mt-4 mb-2 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
-                                            >
-                                                Enchérir
-                                            </motion.button>
-                                            <Link
-                                                href={route('Produit_Lot.show', lot.id)}
-                                                className="mt-2 inline-block bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
-                                            >
-                                                Consulter
-                                            </Link>
-                                        </div>
-
-                                    </motion.div>
+                        {/* Affiche les catégories si l'icône est cliquée */}
+                        {isSmallScreen && isCategoriesOpen && (
+                            <div className="mt-2">
+                                {categories.map((category, idx) => (
+                                    <div key={idx} className="flex items-center mt-2">
+                                        <input
+                                            type="checkbox"
+                                            className="form-checkbox"
+                                            value={category.id}
+                                        />
+                                        <label className="ml-2">{category.nom}</label>
+                                    </div>
                                 ))}
-                            </motion.div>
+                            </div>
                         )}
                     </div>
-                </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="bg-white overflow-hidden shadow-sm sm:rounded-xl mt-5"
+                    >
+                        <div className="p-6 text-gray-900">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                                <h2 className="font-bold text-xl mb-2 sm:mb-0">Liste des Lots</h2>
+                                {isSmallScreen && (
+                                    <div className="flex items-center cursor-pointer" onClick={toggleCategories}>
+                                        <h3 className="text-lg font-semibold">Filtrer</h3>
+                                        <span className="ml-2">🔽</span> {/* Icône de filtrage */}
+                                    </div>
+                                )}
+                                <div className="w-full sm:w-auto mt-2 sm:mt-0">
+                                    <select
+                                        id="sorting-options"
+                                        className="block w-full sm:w-auto px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out text-gray-700 hover:bg-gray-50 cursor-pointer"
+                                    >
+                                        <option value="" disabled selected>...</option>
+                                        <option value="date">Date d'ajout</option>
+                                        <option value="units">Unités</option>
+                                        <option value="auction-end">Fin de l'enchère</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            {lots === null || lots.length === 0 ? (
+                                <p>Il n'y a pas de lots disponibles</p>
+                            ) : (
+                                <motion.div
+                                    initial="hidden"
+                                    animate="visible"
+                                    variants={{
+                                        visible: {
+                                            transition: {
+                                                staggerChildren: 0.1
+                                            }
+                                        }
+                                    }}
+                                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5 text-center"
+                                >
+                                    {lots.map((lot) => (
+                                        <motion.div
+                                            key={lot.id}
+                                            variants={{
+                                                hidden: { opacity: 0, y: 20 },
+                                                visible: { opacity: 1, y: 0 }
+                                            }}
+                                            className="border border-gray-200 rounded-lg p-6"
+                                        >
+
+                                            <div className="mb-4 h-48 overflow-hidden">
+                                                <img src={`/storage/${lot.image_lot}`} alt={lot.nom} className="w-full h-full object-cover" />
+                                            </div>
+
+                                            <div>
+                                                <h1>{auth.user.vendeur.nom_de_l_entreprise}</h1>
+                                            </div>
+
+                                            <p className="font-semibold text-lg">{lot.nom} - {lot.description}</p>
+                                            <p className="text-sm text-gray-500">Enchère #{lot.id}</p>
+
+                                            <div className="mt-4">
+                                                <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                                    {lot.etat}
+                                                </span>
+                                                <div className="mt-4 flex justify-between">
+                                                    <div>
+                                                        <p className="text-gray-600">Dernière enchère</p>
+                                                        <p className="font-bold text-lg">{lot.montant} €</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-gray-600">Nombre d'enchères</p>
+                                                        <p className="font-bold text-lg">{lot.enchere_count} 🔥</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-gray-600">Fin de l'enchère</p>
+                                                        <p className="font-bold text-red-500 text-lg">
+                                                            {endDates[lot.id] ? `${timesLeft[lot.id]?.hours || 0}h ${timesLeft[lot.id]?.minutes || 0}m ${timesLeft[lot.id]?.seconds || 0}s` : 'Pas encore enchéri'}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="border-t border-gray-200 mt-4 pt-4">
+                                                <div className="flex justify-between text-gray-700">
+                                                    <div>
+                                                        <p className="text-sm">Prix public totale</p>
+                                                        <p className="font-bold">{lot.prix_public} €</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm">Unités</p>
+                                                        <p className="font-bold">{lot.quantite}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm">Coût / unité</p>
+                                                        <p className="font-bold">{lot.prix} €</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="mt-4 text-center items-center gap-2">
+                                                <motion.button
+                                                    whileHover={{ scale: 1.05 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                    onClick={() => openModal(lot)}
+                                                    className="mr-2 mt-4 mb-2 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
+                                                >
+                                                    Enchérir
+                                                </motion.button>
+                                                <Link
+                                                    href={route('Produit_Lot.show', lot.id)}
+                                                    className="mt-2 inline-block bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
+                                                >
+                                                    Consulter
+                                                </Link>
+                                            </div>
+
+                                        </motion.div>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </div>
+                    </motion.div>
+                </div>
+
             </div>
             <AnimatePresence>
                 {isModalOpen && (

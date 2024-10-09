@@ -123,18 +123,18 @@ export default function Panier({ auth, panies }) {
 
     const containerVariants = {
         hidden: { opacity: 0 },
-        visible: { 
+        visible: {
             opacity: 1,
-            transition: { 
-                staggerChildren: 0.1 
+            transition: {
+                staggerChildren: 0.1
             }
         }
     };
 
     const itemVariants = {
         hidden: { y: 20, opacity: 0 },
-        visible: { 
-            y: 0, 
+        visible: {
+            y: 0,
             opacity: 1,
             transition: {
                 type: "spring",
@@ -155,8 +155,6 @@ export default function Panier({ auth, panies }) {
                 className="container mx-auto mt-12 px-4 text-center"
             >
                 <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
                 >
                     <Link href='/Acheteur' className='max-w-20 text-center flex bg-red-200 rounded-xl p-2 px-4 font-semibold transition-all duration-300 transform hover:-translate-y-2'>retour</Link>
                 </motion.div>
@@ -282,7 +280,7 @@ export default function Panier({ auth, panies }) {
                                                     </Button>
                                                 </div>
                                             ) : (
-                                                <motion.div 
+                                                <motion.div
                                                     className='justify-between flex'
                                                     initial={{ opacity: 0, scale: 0.9 }}
                                                     animate={{ opacity: 1, scale: 1 }}
@@ -302,7 +300,7 @@ export default function Panier({ auth, panies }) {
                                                             onClick={() => handleDelete(panie.id)}
                                                             icon={<DeleteOutlined />}
                                                         >
-                                                             <span className="text-white font-medium">Enlever</span>
+                                                            <span className="text-white font-medium">Enlever</span>
                                                         </Button>
                                                     </div>
                                                 </motion.div>

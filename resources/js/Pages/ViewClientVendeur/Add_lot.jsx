@@ -3,7 +3,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Form, Input, InputNumber, Button, Select, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const { Option } = Select;
 

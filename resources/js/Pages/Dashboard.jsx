@@ -4,6 +4,8 @@ import Chartjx from '../Components/Chart';
 import ProductCard from './ViewClientVendeur/Produit';
 import { useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
+import Chart_vendeur from '../Components/Chart_vendeur';
+import Diagramme from '../Components/Diagramme';
 
 export default function Dashboard({ auth, produits }) {
     const { data, setData, post, processing, errors, reset } = useForm();
@@ -78,20 +80,22 @@ export default function Dashboard({ auth, produits }) {
                         transition={{ duration: 0.5, delay: 0.4 }}
                         className=' overflow-hidden p-4 mt-5'
                     >
-                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 mb-5'>
+                        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 mb-5'>
                             <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
                                 <Chartjx />
                             </motion.div>
                             <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
-                                <Chartjx />
+                                <Chart_vendeur />
                             </motion.div>
+
+                            <Diagramme/>
                         </div>
 
                         <motion.div 
                             initial={{ y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ duration: 0.5, delay: 0.6 }}
-                            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5"
+                            className="grid grid-cols-1 lg:grid-cols-3 gap-5"
                         >
                             {produits.map((produit, index) => (
                                 <motion.div
