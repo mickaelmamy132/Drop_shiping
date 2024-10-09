@@ -187,7 +187,7 @@ export default function Produit_lot({ lots, auth }) {
 
                 <div className='flex flex-row'>
                     <div className="">
-                        {!isSmallScreen ? ( // Affiche la liste des catégories sur les grands écrans
+                        {!isSmallScreen ? (
                             <>
                                 <div className="flex justify-between items-center cursor-pointer" onClick={toggleCategories}>
                                     <h3 className="text-lg font-semibold">Catégories</h3>
@@ -211,9 +211,9 @@ export default function Produit_lot({ lots, auth }) {
                             </>
                         ) : null}
 
-                        {/* Affiche les catégories si l'icône est cliquée */}
                         {isSmallScreen && isCategoriesOpen && (
                             <div className="mt-2">
+                                <h3 className="text-lg font-semibold">Catégories</h3>
                                 {categories.map((category, idx) => (
                                     <div key={idx} className="flex items-center mt-2">
                                         <input
