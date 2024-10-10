@@ -106,19 +106,23 @@ export default function Produit_lot({ lots, auth }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
+    
         post(route('enchere.store'), {
             preserveScroll: true,
             onSuccess: (response) => {
                 closeModal();
-
-                const newEndDate = new Date();
-                newEndDate.setHours(newEndDate.getHours() + 48);
-                setEndDates(prevEndDates => ({
-                    ...prevEndDates,
-                    [data.lot_id]: newEndDate.toISOString(),
-                }));
-
+    
+                // Vérifier si le compte à rebours est déjà défini pour ce lot
+                if (!response.data.fin_enchere) {
+                    // Démarrer un compte à rebours de 48 heures seulement si ce n'est pas déjà en cours
+                    const newEndDate = new Date();
+                    newEndDate.setHours(newEndDate.getHours() + 48);
+                    setEndDates(prevEndDates => ({
+                        ...prevEndDates,
+                        [data.lot_id]: newEndDate.toISOString(),
+                    }));
+                }
+    
                 notification.success({
                     message: "Enchère placée avec succès",
                     description: "Enchère enregistrée dans votre historique",
@@ -136,6 +140,7 @@ export default function Produit_lot({ lots, auth }) {
             },
         });
     };
+    
 
 
     const toggleCategories = () => {

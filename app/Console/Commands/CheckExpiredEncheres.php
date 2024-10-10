@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\ProcessEnchereExpiree;
-use App\Models\enchere;
+use App\Models\Enchere;
 use App\Models\Panie;
 use App\Models\Produit_lot;
 use Illuminate\Console\Command;
@@ -40,7 +40,6 @@ class CheckExpiredEncheres extends Command
             $enchereGagnante = Enchere::where('lot_id', $produit_lot->id)
                 ->orderBy('montant', 'desc')
                 ->first();
-
             if ($enchereGagnante && $produit_lot->statut != 'vendu') {
                 try {
                     $existingPanie = Panie::where('produit_lot_id', $produit_lot->id)

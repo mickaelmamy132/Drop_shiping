@@ -95,7 +95,7 @@ class PanieController extends Controller
             ->where('id', $panie)
             ->first();
 
-            // dd($panier);
+        // dd($panier);
 
         return inertia('ViewClientAcheteur/Article_edit', [
             'panier' => new PanieResource($panier)
@@ -147,7 +147,7 @@ class PanieController extends Controller
         $product = Produit::findOrFail($panie->produit_id);
         $product->quantite += $panie->quantite;
         $product->save();
-        
+
         $panie->delete();
 
         return back()->with('success', 'Produit retiré du panier avec succès');
@@ -157,9 +157,14 @@ class PanieController extends Controller
     {
         $panie = Panie::findOrFail($id);
         $product_lot = Produit_lot::findOrFail($panie->produit_lot_id);
-        $enchere = Enchere::with('produit_lot')->where('lot_id', $product_lot->id)->first();
-        $enchere->delete();
+
+        Enchere::where('lot_id', $product_lot->id)->delete();
         $panie->delete();
+
         return back()->with('success', 'lot retiré du panier avec succès');
+        // return response()->json([
+        //     'success' => 'Enchère placée avec succès.',
+        //     'fin_enchere' => $enchere->fin_enchere ?? null, // Renvoyer la date de fin si elle existe
+        // ]);
     }
 }
