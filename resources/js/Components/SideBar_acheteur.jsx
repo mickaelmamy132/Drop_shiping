@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Typography,
@@ -22,11 +22,17 @@ import { motion, AnimatePresence } from "framer-motion";
 export function MultiLevelSidebar_acheteur({ darkMode }) {
   const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
   const [showLotsSubMenu, setShowLotsSubMenu] = useState(false);
+  const [isScreenSmall, setIsScreenSmall] = useState(window.innerWidth < 1000);
   const { url } = usePage();
 
-  const isActive = (path) => {
-    return url.startsWith(path);
-  };
+  const isActive = (path) => url.startsWith(path);
+
+  // Watch for screen resize to handle menu visibility
+  useEffect(() => {
+    const handleResize = () => setIsScreenSmall(window.innerWidth < 1000);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const sidebarVariants = {
     open: { opacity: 1, x: 0 },
@@ -45,33 +51,38 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
 
   return (
     <>
-      <div className="sm:hidden fixed top-0 left-0 right-4 z-50 p-4">
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => setShowingNavigationDropdown((prev) => !prev)}
-          className={`inline-flex items-center justify-center p-2 rounded-md ${darkMode ? 'text-gray-400 hover:text-gray-300 hover:bg-gray-700' : 'text-gray-400 hover:text-gray-500 hover:bg-gray-100'} focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out`}
-        >
-          <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-            <path
-              className={!showingNavigationDropdown ? 'inline-flex' : 'hidden'}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-            <path
-              className={showingNavigationDropdown ? 'inline-flex' : 'hidden'}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </motion.button>
-      </div>
+      {/* Button to toggle the sidebar on small screens */}
+      {isScreenSmall && (
+        <div className="fixed top-0 left-0 right-4 z-50 p-4">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setShowingNavigationDropdown((prev) => !prev)}
+            className={`inline-flex items-center justify-center p-2 rounded-md ${darkMode ? 'text-gray-400 hover:text-gray-300 hover:bg-gray-700' : 'text-gray-400 hover:text-gray-500 hover:bg-gray-100'} focus:outline-none transition duration-150 ease-in-out`}
+          >
+            <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+              <path
+                className={!showingNavigationDropdown ? 'inline-flex' : 'hidden'}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+              <path
+                className={showingNavigationDropdown ? 'inline-flex' : 'hidden'}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </motion.button>
+        </div>
+      )}
+
+      {/* Sidebar with animation */}
       <AnimatePresence>
-        {(showingNavigationDropdown || window.innerWidth > 640) && (
+        {(showingNavigationDropdown || !isScreenSmall) && (
           <motion.div
             initial="closed"
             animate="open"
@@ -141,7 +152,6 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                           className={`block py-2 ${darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500`}>
                           Tous les articles
                         </Link>
-                        {/* Add more sub-menu items as needed */}
                       </motion.div>
                     )}
                   </AnimatePresence>

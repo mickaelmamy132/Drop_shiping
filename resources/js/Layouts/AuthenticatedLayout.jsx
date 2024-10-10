@@ -162,6 +162,44 @@ export default function Authenticated({ user, header, children, role }) {
                         </div>
                     </div>
                 </main>
+                <footer className="bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 body-font">
+                    <div className="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
+                        <Link href="/" className="flex title-font font-medium items-center md:justify-start justify-center text-gray-900 dark:text-white">
+                            <ApplicationLogo className="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full" />
+                            <span className="ml-3 text-xl">VotreSite</span>
+                        </Link>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 dark:sm:border-gray-700 sm:py-2 sm:mt-0 mt-4">
+                            © 2024 VotreSite —
+                            <a href="https://twitter.com/votresite" className="text-gray-600 dark:text-gray-300 ml-1" target="_blank" rel="noopener noreferrer">
+                                @votresite
+                            </a>
+                        </p>
+                        <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
+                            <a href="https://facebook.com/votresite" className="text-gray-500 dark:text-gray-400 hover:text-indigo-500">
+                                <svg fill="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
+                                    <path d="M18 2h-3a4 4 0 00-4 4v3H8v4h3v8h4v-8h3l1-4h-4V6a1 1 0 011-1h3z"></path>
+                                </svg>
+                            </a>
+                            <a href="https://twitter.com/votresite" className="ml-3 text-gray-500 dark:text-gray-400 hover:text-indigo-500">
+                                <svg fill="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
+                                    <path d="M23 3a10.9 10.9 0 01-3.14 1.53A4.48 4.48 0 0016.92 2a4.48 4.48 0 00-4.62 5.56A12.94 12.94 0 013 4.1a4.48 4.48 0 001.39 5.96A4.48 4.48 0 012.8 10v.05a4.48 4.48 0 003.56 4.39 4.48 4.48 0 01-2.2.08 4.48 4.48 0 004.17 3.11A9 9 0 013 18.29 12.94 12.94 0 008 21c7.69 0 11.89-6.36 11.89-11.89 0-.18 0-.35-.01-.53A8.5 8.5 0 0023 3z"></path>
+                                </svg>
+                            </a>
+                            <a href="https://instagram.com/votresite" className="ml-3 text-gray-500 dark:text-gray-400 hover:text-indigo-500">
+                                <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
+                                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                                    <path d="M16 11.37a4 4 0 11-4.73-4.73 4 4 0 014.73 4.73z"></path>
+                                    <path d="M17.5 6.5h.01"></path>
+                                </svg>
+                            </a>
+                            <a href="https://linkedin.com/votresite" className="ml-3 text-gray-500 dark:text-gray-400 hover:text-indigo-500">
+                                <svg fill="currentColor" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="0" className="w-5 h-5" viewBox="0 0 24 24">
+                                    <path stroke="none" d="M16 8a6 6 0 00-12 0v8a6 6 0 0012 0V8zm-7 6H8v-4h1v4zm1-4h1v4H9v-4z"></path>
+                                </svg>
+                            </a>
+                        </span>
+                    </div>
+                </footer>
             </div>
         </div>
     );

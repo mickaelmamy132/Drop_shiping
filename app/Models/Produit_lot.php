@@ -44,7 +44,7 @@ class Produit_lot extends Model
 
     public function enchere()
     {
-        return $this->hasMany(enchere::class, 'lot_id');
+        return $this->hasMany(Enchere::class, 'lot_id');
     }
 
     public function produit()

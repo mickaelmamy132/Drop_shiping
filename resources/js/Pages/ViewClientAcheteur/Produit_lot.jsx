@@ -4,7 +4,6 @@ import { Link, useForm } from '@inertiajs/react';
 import { notification } from 'antd';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Option } from 'antd/es/mentions';
 
 export default function Produit_lot({ lots, auth }) {
     const [endDates, setEndDates] = useState(() => {
@@ -162,17 +161,28 @@ export default function Produit_lot({ lots, auth }) {
 
 
 
-    const handleQualiteChange = (option) => {
-        if (selectedQualites.includes(option)) {
-            setSelectedQualites(selectedQualites.filter((qualite) => qualite !== option));
-        } else {
-            setSelectedQualites([...selectedQualites, option]);
-        }
+    const handleQualiteChange = (qualite) => {
+        setSelectedQualites((prevSelected) => {
+            if (prevSelected.includes(qualite)) {
+                return prevSelected.filter((q) => q !== qualite);
+            } else {
+                return [...prevSelected, qualite];
+            }
+        });
     };
 
     const filteredLots = lots.filter(lot => {
-        return selectedCategories.length === 0 || selectedCategories.includes(lot.categorie.id);
+        const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(lot.categorie.id);
+        const matchesQualite = selectedQualites.length === 0 || selectedQualites.includes(lot.etat);
+        return matchesCategory && matchesQualite;
     });
+
+
+    const fadeInVariant = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 },
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -197,24 +207,12 @@ export default function Produit_lot({ lots, auth }) {
                     transition={{ duration: 0.5 }}
                     className="mb-4"
                 >
-                    <ul className="flex space-x-4">
-                        <li>
-                            <Link
-                                href="/Produit_lots"
-                                className={`text-gray-500 font-semibold text-lg transition duration-300 ease-in-out hover:text-blue-800 border rounded-full px-3 py-1 shadow-md ${route().current('Produit_lots') ? 'bg-white text-blue-600' : 'text-blue-600'}`}
-                                aria-label="Voir tous les lots"
-                            >Tous les Lots</Link>
-                        </li>
-                        <li>
-                            <Link href="/orders" className="text-gray-500 font-semibold text-lg transition duration-300 ease-in-out hover:text-blue-800 border rounded-full px-3 py-1 bg-white shadow-md">Lots Mobiliers</Link>
-                        </li>
-                        <li>
-                            <Link href="/profile" className="text-gray-500 font-semibold text-lg transition duration-300 ease-in-out hover:text-blue-800 border rounded-full px-3 py-1 bg-white shadow-md">Lots Véhicules</Link>
-                        </li>
-                    </ul>
+                    <h1 className="text-2xl font-semibold mb-4">Lot revendeur : acheter des lots déstockage en toute confiance</h1>
+                    <p className='text-gray-500 font-semibold'>Découvrez des lots revendeur, palettes solderie & grossiste déstockage, invendus et faillites en direct des plus grandes marques et retailers.</p>
+
                 </motion.div>
 
-                <div className='flex flex-row'>
+                <div className='flex flex-row mx-auto'>
                     <div className="">
                         {!isSmallScreen ? (
                             <>
@@ -240,13 +238,12 @@ export default function Produit_lot({ lots, auth }) {
 
                                     </div>
                                 )}
-                                {/* Qualité toggleQualite */}
+
                                 <div className="flex justify-between items-center cursor-pointer" onClick={toggleQualite}>
-                                    <h3 className="text-lg font-semibold mt-4">Qualité</h3>
+                                    <h3 className="text-lg font-semibold">Qualité</h3>
                                     <span>{isQualiteOpen ? '>' : '<'}</span>
                                 </div>
 
-                                {/* Affiche les options de qualité uniquement si le panneau est ouvert */}
                                 {isQualiteOpen && (
                                     <div className="flex flex-col mt-2 space-y-2">
                                         {[
@@ -331,7 +328,7 @@ export default function Produit_lot({ lots, auth }) {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
-                        className="bg-white overflow-hidden shadow-sm sm:rounded-xl mt-5"
+                        className="bg-white overflow-hidden shadow-sm sm:rounded-xl mt-5 mx-auto"
                     >
                         <div className="p-6 text-gray-900">
                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
@@ -454,7 +451,105 @@ export default function Produit_lot({ lots, auth }) {
                         </div>
                     </motion.div>
                 </div>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="bg-white overflow-hidden shadow-sm sm:rounded-xl mt-5"
+                >
 
+                    <div className="container mx-auto p-4">
+                        {/* Qu'est-ce qu'un lot revendeur ? */}
+                        <motion.div
+                            className="mb-6"
+                            variants={fadeInVariant}
+                            initial="hidden"
+                            animate="visible"
+                            transition={{ duration: 0.5 }}
+                        >
+                            <h2 className="text-2xl font-bold mb-4">Qu'est-ce qu'un lot revendeur ?</h2>
+                            <p>On parle de lot revendeur car il s’agit de lot qui sont destinés à la revente auprès de consommateurs finaux. Il peut exister des contraintes de distributions. Cependant, elles sont toujours spécifiées dans le descriptif des lots. Certains lots trouveront comme preneurs des revendeurs marchés.</p>
+                        </motion.div>
+
+                        {/* Provenance des lots */}
+                        <motion.div
+                            className="mb-6"
+                            variants={fadeInVariant}
+                            initial="hidden"
+                            animate="visible"
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                        >
+                            <h2 className="text-2xl font-bold mb-4">Provenance des lots</h2>
+                            <p>Les lots proviennent d’opérations de déstockages de marques, faillites, etc. Ils sont proposés à la vente directement par les marques et les distributeurs.</p>
+                        </motion.div>
+
+                        {/* Déstockage de grandes enseignes */}
+                        <motion.div
+                            className="mb-6"
+                            variants={fadeInVariant}
+                            initial="hidden"
+                            animate="visible"
+                            transition={{ duration: 0.5, delay: 0.4 }}
+                        >
+                            <h2 className="text-2xl font-bold mb-4">Déstockage de grandes enseignes</h2>
+                            <p>Il s’agit de lot de déstockage provenant de marques ou de distributeurs. Il s’agit généralement de collections n-1, n-2. Il peut s’agir également de références pour lesquelles le packaging a évolué ou qui ne sont plus produites.</p>
+                        </motion.div>
+
+                        {/* Invendus et faillites */}
+                        <motion.div
+                            className="mb-6"
+                            variants={fadeInVariant}
+                            initial="hidden"
+                            animate="visible"
+                            transition={{ duration: 0.5, delay: 0.6 }}
+                        >
+                            <h2 className="text-2xl font-bold mb-4">Invendus et faillites</h2>
+                            <p>Certains lots peuvent provenir de faillites, auquel cas c’est indiqué très clairement dans la description. De plus, la qualité est toujours indiquée, vous permettant de savoir si les produits sont fonctionnels ou non. Plus d’infos dans notre FAQ acheteur.</p>
+                        </motion.div>
+
+                        {/* Retours SAV */}
+                        <motion.div
+                            className="mb-6"
+                            variants={fadeInVariant}
+                            initial="hidden"
+                            animate="visible"
+                            transition={{ duration: 0.5, delay: 0.8 }}
+                        >
+                            <h2 className="text-2xl font-bold mb-4">Retours SAV</h2>
+                            <p>Nous proposons également des lots retours sav (ou lots retours clients). Les retailers proposent à la vente des retours clients de toutes les familles de produit. Il sera toujours précisé dans la description de l’offre si ces lots sont fonctionnels ou non-fonctionnels.</p>
+                        </motion.div>
+
+                        {/* Conditionnement lot revendeur */}
+                        <motion.div
+                            className="mb-6"
+                            variants={fadeInVariant}
+                            initial="hidden"
+                            animate="visible"
+                            transition={{ duration: 0.5, delay: 1 }}
+                        >
+                            <h2 className="text-2xl font-bold mb-4">Conditionnement lot revendeur</h2>
+                            <p>Les lots sont conditionnés sous forme de palette de déstockage (ou palette de solderie). Vous retrouverez dans la description des lots :
+                                <ul className="list-disc ml-6 mt-2">
+                                    <li>le nombre de palette et les dimensions,</li>
+                                    <li>la localisation des lots,</li>
+                                    <li>Vous aurez la possibilité de télécharger le listing reprenant toutes les informations utiles liées à ces lots.</li>
+                                </ul>
+                                La grande majorité des lots de solderie sont conditionnés sur des palettes perdues (il peut arriver qu’ils soient sur des palettes Europe - auquel cas, cela est mentionné très clairement dans la description).</p>
+                        </motion.div>
+
+                        {/* Qui peut participer aux enchères ? */}
+                        <motion.div
+                            className="mb-6"
+                            variants={fadeInVariant}
+                            initial="hidden"
+                            animate="visible"
+                            transition={{ duration: 0.5, delay: 1.2 }}
+                        >
+                            <h2 className="text-2xl font-bold mb-4">Qui peut participer aux enchères ?</h2>
+                            <p>Tous les professionnels de l'achat-vente de produits de déstockage, acheteurs en gros, revendeurs solderies, friperies qui revendent en gros soit au détail via leur magasin ou leur réseau d'enseignes. Pour cela, vous devez posséder un numéro d'entreprise, en fonction de votre pays cela peut être un numéro SIRET, SIREN ou de TVA.</p>
+                        </motion.div>
+                    </div>
+                </motion.div>
             </div>
             <AnimatePresence>
                 {isModalOpen && (

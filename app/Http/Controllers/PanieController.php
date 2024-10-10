@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePanieRequest;
 use App\Http\Requests\UpdatePanieRequest;
 use App\Http\Resources\PanieResource;
+use App\Models\Enchere;
 use App\Models\Panie;
 use App\Models\Produit;
+use App\Models\Produit_lot;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -154,14 +156,10 @@ class PanieController extends Controller
     public function destroy_lot($id)
     {
         $panie = Panie::findOrFail($id);
-        // dd($panie);
-        // $product = Produit_lot::findOrFail($panie->produit_lot_id);
-        // dd($product);
-        // $product->quantite += $panie->quantite;
-        // $product->save();
-
+        $product_lot = Produit_lot::findOrFail($panie->produit_lot_id);
+        $enchere = Enchere::with('produit_lot')->where('lot_id', $product_lot->id)->first();
+        $enchere->delete();
         $panie->delete();
-
         return back()->with('success', 'lot retiré du panier avec succès');
     }
 }
