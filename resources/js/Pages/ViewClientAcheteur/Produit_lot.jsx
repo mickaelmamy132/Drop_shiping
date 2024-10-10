@@ -106,32 +106,25 @@ export default function Produit_lot({ lots, auth }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
         post(route('enchere.store'), {
             preserveScroll: true,
             onSuccess: (response) => {
                 closeModal();
+
                 const newEndDate = new Date();
                 newEndDate.setHours(newEndDate.getHours() + 48);
                 setEndDates(prevEndDates => ({
                     ...prevEndDates,
-                    [data.lot_id]: newEndDate.toISOString()
+                    [data.lot_id]: newEndDate.toISOString(),
                 }));
 
-                if (Object.keys(errors).length > 0) {
-                    notification.error({
-                        message: "Erreur lors de l'enchère",
-                        description: "Veuillez vérifier les informations saisies",
-                        placement: "topRight",
-                        duration: 4,
-                    });
-                } else {
-                    notification.success({
-                        message: "Enchère placée avec succès",
-                        description: "Enchère enregistrée dans votre historique",
-                        placement: "topRight",
-                        duration: 4,
-                    });
-                }
+                notification.success({
+                    message: "Enchère placée avec succès",
+                    description: "Enchère enregistrée dans votre historique",
+                    placement: "topRight",
+                    duration: 4,
+                });
             },
             onError: (errors) => {
                 notification.error({
@@ -140,9 +133,10 @@ export default function Produit_lot({ lots, auth }) {
                     placement: "topRight",
                     duration: 4,
                 });
-            }
+            },
         });
     };
+
 
     const toggleCategories = () => {
         setIsCategoriesOpen(!isCategoriesOpen); // Inverse l'état d'affichage
