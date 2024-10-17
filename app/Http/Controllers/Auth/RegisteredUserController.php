@@ -81,6 +81,38 @@ class RegisteredUserController extends Controller
         }
     }
 
+    public function store_acheteur_2(Request $request): RedirectResponse
+    {
+        try {
+            $request->validate([
+                'numero' => 'required|string|max:15',
+                'genre' => 'required|string|max:10',
+                'pays' => 'required|string|max:50',
+                'tva' => 'required|string|max:50',
+                'nif' => 'required|string|max:50',
+            ]);
+            $role = 'acheteur';
+            
+            $user = Auth::user();
+
+            $acheteur = new Acheteur();
+            $acheteur->user_id = $user->id;
+            $acheteur->numero = $request->numero;
+            $acheteur->genre = $request->genre;
+            $acheteur->pays = $request->pays;
+            $acheteur->tva = $request->tva;
+            $acheteur->nif = $request->nif;
+            $acheteur->save();
+            $user->switchRole($role);
+            return redirect()->route('Acheteur');
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            exit;
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+
     public function store_vendeur(Request $request): RedirectResponse
     {
         try {
@@ -149,18 +181,24 @@ class RegisteredUserController extends Controller
 
     public function switchRole($role)
     {
+        // dd($role);
         $user = Auth::user();
-
-        if (in_array($role, ['acheteur', 'vendeur'])) {
-            $user->switchRole($role);
-
-            // $user->refresh();
-
-            if ($user->role === 'acheteur') {
-                return Inertia::location(route('Acheteur'));
-            } elseif ($user->role === 'vendeur') {
-                return Inertia::location(route('dashboard'));
+        if ($role === 'acheteur') {
+            if ($user->acheteur === null) {
+                return Inertia::render('Auth/Register_acheteur_2', [
+                    'user' => $user,
+                ]);
             }
+            $user->switchRole($role);
+            return Inertia::location(route('Acheteur'));
+        } elseif ($role === 'vendeur') {
+            if ($user->vendeur === null) {
+                return redirect()->route('register_vendeur');
+            }
+            $user->switchRole($role);
+            return Inertia::location(route('dashboard'));
+        } else {
+            return response()->json(['error' => 'Rôle invalide'], 400);
         }
 
         return back()->withErrors(['error' => 'Rôle invalide']);

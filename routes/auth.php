@@ -20,12 +20,17 @@ Route::middleware('guest')->group(function () {
         ->name('register_acheteur');
 
     Route::post('register_acheteur', [RegisteredUserController::class, 'store_acheteur']);
+
     Route::post('register_vendeur', [RegisteredUserController::class, 'store_vendeur']);
-    
+
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
+    Route::get('login_acheteur', [AuthenticatedSessionController::class, 'create_acheteur'])
+        ->name('login_acheteur');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
+    Route::post('login_acheteur', [AuthenticatedSessionController::class, 'store_acheteur']);
+
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');
@@ -41,6 +46,9 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::post('register_acheteur_2', [RegisteredUserController::class, 'store_acheteur_2'])->name('register_acheteur_2');
+
+
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 

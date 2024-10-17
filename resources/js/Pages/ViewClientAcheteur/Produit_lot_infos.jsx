@@ -124,7 +124,7 @@ export default function Produit_lot_infos({ auth, produit_lot }) {
                     variants={staggerAnimation}
                 >
                     <motion.div variants={fadeIn}>
-                        <StyledButton href='/Acheteur'>Retour</StyledButton>
+                        <StyledButton href='/Produit_lots'>Retour</StyledButton>
                     </motion.div>
 
                     <motion.div variants={fadeIn}>

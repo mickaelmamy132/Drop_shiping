@@ -12,8 +12,7 @@ export default function Produit_lot({ lots, auth }) {
             user={auth.user}
         >
             <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    
+                <div className="mx-auto sm:px-6 lg:px-8">
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -24,11 +23,39 @@ export default function Produit_lot({ lots, auth }) {
                             retour
                         </Link>
                     </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="mb-4"
+                    >
+                        <h1 className="text-2xl font-semibold mb-4">Lot revendeur : acheter des lots déstockage en toute confiance</h1>
+                        <p className='text-gray-500 font-semibold'>Découvrez des lots revendeur, palettes solderie & grossiste déstockage, invendus et faillites en direct des plus grandes marques et retailers.</p>
+
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className='flex justify-end gap-2'
+                    >
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                            <Link
+                                href={route('Produit_Lot.create')}
+                                className='text-gray-600 rounded-xl bg-white mt-5 p-2 transition-all duration-300 transform hover:shadow-xl border'
+                            >
+                                Ajout Lot
+                            </Link>
+                        </motion.div> 
+                    </motion.div>
+
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
-                        className="bg-white overflow-hidden shadow-sm sm:rounded-lg"
+                        className="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-5"
                     >
                         <div className="p-6 text-gray-900">
                             <motion.h2
@@ -101,7 +128,7 @@ export default function Produit_lot({ lots, auth }) {
                                                     </div>
                                                     <div>
                                                         <p className="text-gray-600">Fin de l'enchère</p>
-                                                        <p className="font-bold text-red-500 text-lg">{lot.time_left}</p>
+                                                        <p className="font-bold text-red-500 text-lg">{lot.fin_enchere}</p>
                                                     </div>
                                                 </div>
                                             </div>

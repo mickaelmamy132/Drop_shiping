@@ -2,8 +2,13 @@ import { Link, Head } from '@inertiajs/react';
 import NavLink from '../Components/NavLink';
 import { CarouselCustomArrows } from '../Components/Carousel';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 export default function Welcome({ auth }) {
+    const [isOpen, setIsOpen] = useState(false);
+    const [isAcheteurOpen, setIsAcheteurOpen] = useState(false);
+    const [isVendeurOpen, setIsVendeurOpen] = useState(false);
+
     const handleImageError = () => {
         document.getElementById('screenshot-container')?.classList.add('!hidden');
         document.getElementById('docs-card')?.classList.add('!row-span-1');
@@ -19,44 +24,100 @@ export default function Welcome({ auth }) {
                         <img className="w-20 h-25" src="/icons/Fuji-Dark.png" alt="Logo" />
                     </div>
                     <div className="nav-links duration-500 md:static absolute bg-white md:min-h-fit min-h-[60vh] left-0 top-0 md:w-auto w-full flex items-left px-5">
-                        <ul className="flex md:flex-row flex-col md:items-center md:gap-[4vw] items-center gap-[4vw]">
-                            {auth.user ? (
-                                <NavLink
-                                    href={route('dashboard')}
-                                    className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                >
-                                    Dashboard
-                                </NavLink>
-                            ) : (
-                                <>
-                                    <NavLink
-                                        href={route('register_acheteur')}
-                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                    >
-                                        Acheteur
-                                    </NavLink>
-
-                                    <NavLink
-                                        href={route('register_vendeur')}
-                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                    >
-                                        Vendeur
-                                    </NavLink>
-
-
-                                    <NavLink
-                                        href={route('login')}
-                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                    >
-                                        Log in
-                                    </NavLink>
-                                </>
-                            )}
-                        </ul>
+                        <div className="relative">
+                            <button
+                                className="flex md:hidden items-center rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                onClick={() => setIsOpen(!isOpen)}
+                            >
+                                Menu
+                                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <ul
+                                className={`absolute z-10 mt-2 w-48 rounded-md bg-white shadow-lg md:static md:flex md:w-auto md:shadow-none ${isOpen ? 'block' : 'hidden md:block'}`}
+                            >
+                                {auth.user ? (
+                                    <li>
+                                        <NavLink
+                                            href={route('dashboard')}
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        >
+                                            Dashboard
+                                        </NavLink>
+                                    </li>
+                                ) : (
+                                    <>
+                                        <li className="relative">
+                                            <button
+                                                onClick={() => setIsAcheteurOpen(!isAcheteurOpen)}
+                                                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                            >
+                                                Acheteur
+                                                <svg className="w-4 h-4 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </button>
+                                            {isAcheteurOpen && (
+                                                <ul className="absolute left-full top-0 w-48 rounded-md bg-white shadow-lg md:static md:flex md:w-auto md:shadow-none">
+                                                    <li>
+                                                        <NavLink
+                                                            href={route('register_acheteur')}
+                                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                        >
+                                                            Register
+                                                        </NavLink>
+                                                    </li>
+                                                    <li>
+                                                        <NavLink
+                                                            href={route('login_acheteur')}
+                                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                        >
+                                                            Login
+                                                        </NavLink>
+                                                    </li>
+                                                </ul>
+                                            )}
+                                        </li>
+                                        <li className="relative">
+                                            <button
+                                                onClick={() => setIsVendeurOpen(!isVendeurOpen)}
+                                                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                            >
+                                                Vendeur
+                                                <svg className="w-4 h-4 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </button>
+                                            {isVendeurOpen && (
+                                                <ul className="absolute left-full top-0 w-48 rounded-md bg-white shadow-lg md:static md:flex md:w-auto md:shadow-none">
+                                                    <li>
+                                                        <NavLink
+                                                            href={route('register_vendeur')}
+                                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                        >
+                                                            Register
+                                                        </NavLink>
+                                                    </li>
+                                                    <li>
+                                                        <NavLink
+                                                            href={route('login')}
+                                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                        >
+                                                            Login
+                                                        </NavLink>
+                                                    </li>
+                                                </ul>
+                                            )}
+                                        </li>
+                                    </>
+                                )}
+                            </ul>
+                        </div>
                     </div>
                     <div className="flex items-center gap-6">
                         <button className="text-white px-5 py-2 bg-[#a6c1ee] rounded-full hover:bg-[#87a8e7] transition-colors duration-300">Connecter!</button>
-                        <i className="fas fa-bars text-3xl cursor-pointer md:hidden" onClick={() => onToggleMenu()} data-menu="fas fa-bars"></i>
+                        <i className="fas fa-bars text-3xl cursor-pointer md:hidden" onClick={() => setIsOpen(!isOpen)} data-menu="fas fa-bars"></i>
                     </div>
                 </nav>
             </header>

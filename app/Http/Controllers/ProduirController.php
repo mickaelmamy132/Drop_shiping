@@ -17,17 +17,28 @@ class ProduirController extends Controller
      */
     public function index_vendeur()
     {
-        $userId = Auth::user()->id;
 
-        $produits = Produit::where('vendeur_id', $userId)->get();
-
-        return Inertia::render('Dashboard', ['produits' => $produits]);
+        return Inertia::render('Dashboard');
     }
 
     public function index()
     {
-        $produits = Produit::all();
-        return Inertia::render('ViewClientAcheteur/acheteur', ['produits' => $produits]);
+        $produits = Produit::with('categorie', 'vendeur')->get();
+        return Inertia::render('ViewClientAcheteur/View_produit', ['produits' => $produits]);
+    }
+
+    public function view_article_all()
+    {
+        $userId = Auth::user()->id;
+
+        $produits = Produit::where('vendeur_id', $userId)->get();
+
+        return Inertia::render('ViewClientVendeur/View_article', ['produits' => $produits]);
+    }
+
+    public function view_produit_all()
+    {
+        return Inertia::render('ViewClientAcheteur/acheteur');
     }
 
 
@@ -52,7 +63,7 @@ class ProduirController extends Controller
             $validated['image_rubrique'] = $path;
         }
         Produit::create($validated);
-        return redirect()->route('dashboard')->with('success', 'Produit créé');
+        return redirect()->route('Mes_rubrique/show')->with('success', 'Produit créé');
     }
 
 
@@ -91,7 +102,6 @@ class ProduirController extends Controller
      */
     public function update(UpdateProduitRequest $request, $id)
     {
-        // dd($request->all(), $id);
         $produit = Produit::findOrFail($id);
 
         $validated = $request->validated();
@@ -105,7 +115,7 @@ class ProduirController extends Controller
 
         $produit->update($validated);
 
-        return redirect()->route('dashboard')->with('success', 'Produit mis à jour');
+        return redirect()->route('Mes_rubrique/show')->with('success', 'Produit mis à jour');
     }
 
 

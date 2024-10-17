@@ -273,7 +273,7 @@ export default function Edit_rubrique({ auth, produit }) {
           </Form.Item>
 
           <Form.Item {...tailFormItemLayout}>
-            <Link href={route('dashboard')} className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5">
+            <Link href={route('Mes_rubrique/show')} className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5">
               Annuler
             </Link>
             <Button type="primary" htmlType="submit" size="large" className="rounded-md" disabled={processing}>

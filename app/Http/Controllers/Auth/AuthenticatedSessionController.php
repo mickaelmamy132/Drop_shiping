@@ -25,6 +25,14 @@ class AuthenticatedSessionController extends Controller
         ]);
     }
 
+    public function create_acheteur(): Response
+    {
+        return Inertia::render('Auth/Login_acheteur', [
+            'canResetPassword' => Route::has('password.request'),
+            'status' => session('status'),
+        ]);
+    }
+
     /**
      * Handle an incoming authentication request.
      */
@@ -39,6 +47,19 @@ class AuthenticatedSessionController extends Controller
         $this->authenticated($request, $user);
 
         return redirect()->intended(route('dashboard', ['absolute' => false]));
+    }
+
+    public function store_acheteur(LoginRequest $request): RedirectResponse
+    {
+        $request->authenticate();
+
+        $request->session()->regenerate();
+
+        $user = Auth::user();
+
+        $this->authenticated($request, $user);
+
+        return redirect()->intended(route('Acheteur', ['absolute' => false]));
     }
 
     /**

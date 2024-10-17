@@ -41,4 +41,9 @@ class Panie extends Model
         return $this->belongsTo(Vendeur::class, 'vendeur_id');
     }
 
+    public function acheteur()
+    {
+        return $this->belongsTo(Acheteur::class, 'acheteur_id');
+    }
+
 }

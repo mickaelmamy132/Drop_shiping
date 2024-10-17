@@ -8,6 +8,7 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 
 export default function Panier({ auth, panies }) {
+    // console.log(panies);
     const { data } = panies;
     const { csrf_token } = usePage().props;
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,14 +18,17 @@ export default function Panier({ auth, panies }) {
     const [isLoaded, setIsLoaded] = useState(false);
 
     const { post, processing } = useForm({
-        acheteur_id: data[0]?.acheteur_id,
+        acheteur_id: auth.user.id,
         produits: data.map(item => ({
-            produit_id: item.produit?.id || item.produit_lot_id,
+            produit_id: item.produit ? item.produit.id : null,   // produit_id pour produit normal
+            produit_lot_id: item.produit_lot_id ? item.produit_lot_id : null, // produit_lot_id pour produit lot
             quantite: item.quantite,
             prix_totale: item.prix_totale,
-            vendeur_id: item.vendeur.user_id
+            vendeur_id: item.produit ? item.vendeur.user_id : (item.produit_lot_id ? item.vendeur.user_id : null)  // Vendeur selon le type de produit
         }))
-    })
+    });
+
+
 
     const {
         data: formData,
@@ -39,6 +43,7 @@ export default function Panier({ auth, panies }) {
     const totalPanier = data.reduce((total, panie) => total + parseFloat(panie.prix_totale), 0);
 
     const onFinish = (values) => {
+        // console.log(data);
         post('/checkout', { data }, {
             preserveState: true,
             preserveScroll: true,
@@ -309,8 +314,31 @@ export default function Panier({ auth, panies }) {
                                     </div>
                                 </motion.div>
                             ))}
+
                         </motion.div>
-                        {/* ... (rest of the component) ... */}
+                        <div className="mt-8 mx-auto">
+                            <motion.div
+                                className="text-xl font-bold text-gray-800 text-right pr-4"
+                            >
+                                <p>Total du panier : {totalPanier.toFixed(2)} €</p>
+                            </motion.div>
+
+                            {/* Formulaire pour procéder au paiement */}
+                            <Form
+                                onFinish={onFinish}
+                                className="mt-4 text-right"
+                            >
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    loading={processing}
+                                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg"
+                                >
+                                    Procéder au paiement
+                                </Button>
+                            </Form>
+                        </div>
+
                     </>
                 ) : (
                     <motion.div
@@ -327,6 +355,8 @@ export default function Panier({ auth, panies }) {
                         </motion.div>
                     </motion.div>
                 )}
+
+
             </motion.div>
             <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <motion.div

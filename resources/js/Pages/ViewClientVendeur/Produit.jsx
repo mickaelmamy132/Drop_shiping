@@ -48,7 +48,6 @@ export default function ProductCard({ produit }) {
       </Typography>
 
       <Typography variant="h4" color="blue-gray" className="font-medium text-lg text-gray-700 mb-3">
-        <span className="text-gray-600">Vendeur:</span> {produit.vendeur && produit.vendeur.user.name}
       </Typography>
 
       <div className="flex justify-between items-center mb-3">
@@ -71,15 +70,15 @@ export default function ProductCard({ produit }) {
           href={route('Produit.show_vendeur', produit.id)}
           className="flex items-center text-green-500 py-2 px-4 rounded-full font-medium shadow-lg hover:text-green-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
         >
-          <EyeIcon className="h-5 w-5 mr-2 stroke-2 animate-pulse"/>
+          <EyeIcon className="h-5 w-5 mr-2 stroke-2 animate-pulse" />
         </Link>
         <Button
           onClick={showModal}
           className="flex items-center text-red-500 py-2 px-4 rounded-full font-medium shadow-lg hover:text-red-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl bg-white"
         >
-          <TrashIcon className="h-5 w-5 mr-2 stroke-2 animate-bounce"/>
+          <TrashIcon className="h-5 w-5 mr-2 stroke-2 animate-bounce" />
         </Button>
-        
+
         <form onSubmit={handleSubmit}>
           <button type="submit" className="flex items-center text-yellow-500 py-2 px-4 rounded-full font-medium shadow-lg hover:text-yellow-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl">
             <PencilIcon className="h-5 w-5 mr-2 stroke-2" />

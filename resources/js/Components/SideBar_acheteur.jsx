@@ -27,7 +27,6 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
 
   const isActive = (path) => url.startsWith(path);
 
-  // Watch for screen resize to handle menu visibility
   useEffect(() => {
     const handleResize = () => setIsScreenSmall(window.innerWidth < 1000);
     window.addEventListener("resize", handleResize);
@@ -121,13 +120,13 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                 <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
                   <div
                     onClick={() => setShowLotsSubMenu(!showLotsSubMenu)}
-                    className={`flex items-center justify-between cursor-pointer ${isActive('/Produit_lots') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}
+                    className={`flex items-center justify-between cursor-pointer ${isActive('/Produit_lots') || isActive('/Produit') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}
                   >
                     <div className="flex items-center">
                       <ListItemPrefix>
-                        <ListBulletIcon className="h-5 w-5 mr-3" />
+                        <ListBulletIcon classNapathme="h-5 w-5 mr-3" />
                       </ListItemPrefix>
-                      <Typography color={isActive('/Produit_lots') ? "blue" : darkMode ? "white" : "blue-gray"} className="font-normal">
+                      <Typography color={isActive('/Produit_lots') || isActive('/Produit') ? "blue" : darkMode ? "white" : "blue-gray"} className="font-normal">
                         Liste des lots
                       </Typography>
                     </div>
@@ -148,7 +147,7 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                           Tous les lots
                         </Link>
                         <Link
-                          // href={route('Produit_lots.create')}
+                          href={route('Produit.index')}
                           className={`block py-2 ${darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500`}>
                           Tous les articles
                         </Link>

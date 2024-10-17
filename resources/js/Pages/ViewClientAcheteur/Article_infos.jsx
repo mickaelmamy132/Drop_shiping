@@ -60,7 +60,7 @@ export default function Article_infos({ auth, produit }) {
                     transition={{ duration: 0.5 }}
                     className='bg-white rounded-2xl shadow-2xl p-10 w-full max-w-7xl mx-auto'
                 >
-                    <Link href='/Acheteur' className='max-w-20 text-center flex bg-red-200 rounded-xl p-2 px-4 font-semibold transition-all duration-300 transform hover:-translate-y-2'>retour</Link>
+                    <Link href={route('Produit.index')} className='max-w-20 text-center flex bg-red-200 rounded-xl p-2 px-4 font-semibold transition-all duration-300 transform hover:-translate-y-2'>retour</Link>
 
                     <motion.h3 
                         initial={{ opacity: 0 }}

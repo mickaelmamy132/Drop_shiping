@@ -1,13 +1,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import Chartjx from '../Components/Chart';
-import ProductCard from './ViewClientVendeur/Produit';
 import { useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import Chart_vendeur from '../Components/Chart_vendeur';
 import Diagramme from '../Components/Diagramme';
 
-export default function Dashboard({ auth, produits }) {
+export default function Dashboard({ auth }) {
     const { data, setData, post, processing, errors, reset } = useForm();
     return (
         <AuthenticatedLayout
@@ -15,66 +14,48 @@ export default function Dashboard({ auth, produits }) {
             role={auth.role}
         >
             <Head title="Dashboard" />
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
                 className='flex'
             >
                 {/* Main Content Area */}
-                <div className='w-full  mx-auto px-4 sm:px-6 lg:px-8 mt-20 overflow-y-auto'>
-                    <motion.div 
+                <div className='flex-1 items-center mt-5'>
+                    <motion.div
                         initial={{ y: -20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ duration: 0.5 }}
                         className='flex justify-between items-center p-5 bg-white rounded-lg shadow-md mb-4'
                     >
                         <h2 className='text-2xl font-bold'>
-                            Liste des rubrique en cours
+                           Bienvenu sur votre dashboard vendeur
                         </h2>
-                        <form className="flex items-center" onSubmit={(e) => {
-                            e.preventDefault();
-                            const newRole = auth.user.role === 'vendeur' ? 'acheteur' : 'vendeur';
-                            post(`/switch/${newRole}`, {
-                                onError: (errors) => {
-                                    console.error(errors);
-                                }
-                            });
-                        }}>
-                            <motion.button 
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                type="submit"
-                            >
-                                {auth.user.role === 'vendeur' ? 'Se connecter en tant qu\'acheteur' : 'Se connecter en tant que vendeur'}
-                            </motion.button>
-                        </form>
-                    </motion.div>
-                    <motion.div 
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                        className='flex justify-end gap-2'
-                    >
-                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                            <Link href={route('Produit.create')}
-                                className='text-gray-600 rounded-xl  bg-white mt-5 p-2 transition-all duration-300 transform hover:shadow-xl border'
-                            >
-                                ajout rubrique
-                            </Link>
-                        </motion.div>
+                        <div className='flex gap-2'>
 
-                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                            <Link
-                                href={route('Produit_Lot.create')}
-                                className='text-gray-600 rounded-xl bg-white mt-5 p-2 transition-all duration-300 transform hover:shadow-xl border'
-                            >
-                                Ajout Lot
-                            </Link>
-                        </motion.div>
+                            <form className="flex items-center" onSubmit={(e) => {
+                                e.preventDefault();
+                                const newRole = auth.user.role === 'vendeur' ? 'acheteur' : 'vendeur';
+                                post(`/switch/${newRole}`, {
+                                    onError: (errors) => {
+                                        console.error(errors);
+                                    }
+                                });
+                            }}>
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    type="submit"
+                                    className='bg-gray-100 py-2 px-2 rounded-xl mx-auto text-center text-black hover:bg-gray-150'
+                                >
+                                    Se connecter en tant que acheteur
+                                </motion.button>
+                            </form>
+                        </div>
                     </motion.div>
+                    
 
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
@@ -88,10 +69,10 @@ export default function Dashboard({ auth, produits }) {
                                 <Chart_vendeur />
                             </motion.div>
 
-                            <Diagramme/>
+                            <Diagramme />
                         </div>
 
-                        <motion.div 
+                        {/* <motion.div
                             initial={{ y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ duration: 0.5, delay: 0.6 }}
@@ -107,7 +88,7 @@ export default function Dashboard({ auth, produits }) {
                                     <ProductCard produit={produit} />
                                 </motion.div>
                             ))}
-                        </motion.div>
+                        </motion.div> */}
                     </motion.div>
                 </div>
             </motion.div>

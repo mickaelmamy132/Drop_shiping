@@ -101,13 +101,13 @@ export function MultiLevelSidebar_vendeur({ darkMode }) {
                 <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.2 }}>
                   <div
                     onClick={() => setShowLotsSubMenu(!showLotsSubMenu)}
-                    className={`flex items-center justify-between cursor-pointer ${isActive('/Produit_Lot') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}
+                    className={`flex items-center justify-between cursor-pointer ${isActive('/Produit_Lot') || isActive('/Mes_rubrique/show') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}
                   >
                     <div className="flex items-center">
                       <ListItemPrefix>
                         <ShoppingCartIcon className="h-5 w-5 mr-3" />
                       </ListItemPrefix>
-                      <Typography color={isActive('/Produit_Lot') ? "blue" : darkMode ? "white" : "blue-gray"} className="font-normal">
+                      <Typography color={isActive('/Produit_Lot') || isActive('/Mes_rubrique/show') ? "blue" : darkMode ? "white" : "blue-gray"} className="font-normal">
                         Article/Rubrique
                       </Typography>
                     </div>
@@ -123,7 +123,7 @@ export function MultiLevelSidebar_vendeur({ darkMode }) {
                         className="ml-8"
                       >
                         <Link
-                          // href={route('Mes_rubrique')}
+                          href={route('Mes_rubrique/show')}
                           className={`block py-2 ${darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500`}>
                           Mes rubrique
                         </Link>
