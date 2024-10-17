@@ -92,7 +92,7 @@ class RegisteredUserController extends Controller
                 'nif' => 'required|string|max:50',
             ]);
             $role = 'acheteur';
-            
+
             $user = Auth::user();
 
             $acheteur = new Acheteur();
@@ -134,13 +134,11 @@ class RegisteredUserController extends Controller
                 'ville_livraison' => 'nullable|string|max:100',
                 'code_postal_livraison' => 'nullable|string|max:20',
                 'documentation' => 'required|file|mimes:pdf,doc,docx|max:20048',
-                'nom' => 'required|string|max:255',
-                'prenom' => 'required|string|max:255',
             ]);
 
             $path = null;
             if ($request->hasFile('documentation') && $request->file('documentation')->isValid()) {
-                $path = $request->file('documentation')->store('Documentation');
+                $path = $request->file('documentation')->store('Documentation', 'public');
             }
 
             // Création de l'utilisateur et du vendeur
@@ -179,9 +177,58 @@ class RegisteredUserController extends Controller
         }
     }
 
+    public function store_vendeur_2(Request $request): RedirectResponse
+    {
+        try {
+            $request->validate([
+                'numero' => 'required|string|max:15',
+                'facturation' => 'required|string',
+                'industrie' => 'required|array',
+                'nom_de_l_entreprise' => 'required|string',
+                'description' => 'required|string|max:100',
+                'ville' => 'required|string|max:100',
+                'code_postal' => 'required|string|max:20',
+                'activite' => 'required|array',
+                'adresse_livraison' => 'nullable|string|max:255',
+                'ville_livraison' => 'nullable|string|max:100',
+                'code_postal_livraison' => 'nullable|string|max:20',
+                'documentation' => 'required|file|mimes:pdf,doc,docx|max:20048',
+            ]);
+
+
+            $path = null;
+            if ($request->hasFile('documentation') && $request->file('documentation')->isValid()) {
+                $path = $request->file('documentation')->store('Documentation', 'public');
+            }
+            $user = Auth::user();
+            $role = 'vendeur';
+
+            $vendeur = new Vendeur();
+            $vendeur->user_id = $user->id;
+            $vendeur->numero = $request->input('numero');
+            $vendeur->facturation = $request->input('facturation');
+            $vendeur->industrie = json_encode($request->input('industrie'));
+            $vendeur->nom_de_l_entreprise = $request->input('nom_de_l_entreprise');
+            $vendeur->description = $request->input('description');
+            $vendeur->ville = $request->input('ville');
+            $vendeur->code_postal = $request->input('code_postal');
+            $vendeur->activite = json_encode($request->input('activite'));
+            $vendeur->adresse_livraison = $request->input('adresse_livraison');
+            $vendeur->ville_livraison = $request->input('ville_livraison');
+            $vendeur->code_postal_livraison = $request->input('code_postal_livraison');
+            $vendeur->documentation = $path;
+            $vendeur->save();
+            $user->switchRole($role);
+            return redirect()->route('dashboard');
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            exit;
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
     public function switchRole($role)
     {
-        // dd($role);
         $user = Auth::user();
         if ($role === 'acheteur') {
             if ($user->acheteur === null) {
@@ -193,7 +240,9 @@ class RegisteredUserController extends Controller
             return Inertia::location(route('Acheteur'));
         } elseif ($role === 'vendeur') {
             if ($user->vendeur === null) {
-                return redirect()->route('register_vendeur');
+                return Inertia::render('Auth/Register_vendeur_2', [
+                    'user' => $user,
+                ]);
             }
             $user->switchRole($role);
             return Inertia::location(route('dashboard'));

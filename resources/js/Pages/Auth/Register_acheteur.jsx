@@ -14,7 +14,7 @@ export default function register_acheteur() {
         password_confirmation: '',
         genre: '',
         accepte: false,
-        agreement: false, 
+        agreement: false,
         tva: '',
         nif: '',
         pays: '',
@@ -173,9 +173,19 @@ export default function register_acheteur() {
                 </Form.Item>
 
                 <Form.Item
-                    label="Confirm Password"
+                    label="Confirmer le mot de passe"
                     name="password_confirmation"
-                    rules={[{ required: true, message: 'Please confirm your password!' }]}
+                    rules={[
+                        { required: true, message: 'Veuillez confirmer votre mot de passe!' },
+                        ({ getFieldValue }) => ({
+                            validator(_, value) {
+                                if (!value || getFieldValue('password') === value) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('Les mots de passe ne correspondent pas!'));
+                            },
+                        }),
+                    ]}
                 >
                     <Input.Password
                         value={data.password_confirmation}

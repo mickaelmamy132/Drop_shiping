@@ -47,6 +47,8 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('register_acheteur_2', [RegisteredUserController::class, 'store_acheteur_2'])->name('register_acheteur_2');
+    Route::post('register_vendeur_2', [RegisteredUserController::class, 'store_vendeur_2'])->name('register_vendeur_2');
+
 
 
     Route::get('verify-email', EmailVerificationPromptController::class)
