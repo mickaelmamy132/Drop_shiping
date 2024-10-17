@@ -7,7 +7,6 @@ import Chart_vendeur from '../Components/Chart_vendeur';
 import Diagramme from '../Components/Diagramme';
 
 export default function Dashboard({ auth }) {
-    console.log(auth.user)
     const { data, setData, post, processing, errors, reset } = useForm();
     return (
         <AuthenticatedLayout

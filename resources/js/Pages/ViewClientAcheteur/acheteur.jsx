@@ -5,7 +5,6 @@ import Chartjx from '../../Components/Chart';
 import Donate from '../../Components/Donate';
 
 export default function Acheteur({ auth }) {
-    console.log(auth.user)
     const { post } = useForm();
 
     return (
