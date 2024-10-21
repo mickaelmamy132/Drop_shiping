@@ -10,7 +10,7 @@ class Produit_lot extends Model
     use HasFactory;
     protected $table = 'produit_lots';
     protected $fillable = [
-        'id',
+        // 'id',
         'nom',
         'description',
         'quantite',

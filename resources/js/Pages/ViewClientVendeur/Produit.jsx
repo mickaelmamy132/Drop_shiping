@@ -4,21 +4,27 @@ import { Link } from '@inertiajs/react';
 import { useForm } from '@inertiajs/react';
 import { EyeIcon } from '@heroicons/react/24/solid';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { CheckIcon } from '@heroicons/react/20/solid';
-import { ArrowTurnUpRightIcon } from '@heroicons/react/16/solid';
+import { motion, AnimatePresence } from 'framer-motion';
+
+import Modal from '../../Components/Modal';
 
 export default function ProductCard({ produit }) {
-  const [quantity, setQuantity] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduit, setselectedProduit] = useState(null);
 
-  const { data, get, setData, processing, errors } = useForm({});
+  const {
+    data: formData,
+    delete: destroy,
+    processing: deleteProcessing,
+} = useForm();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     get(route('Produit.edit', { id: produit.id }))
   };
 
-  const showModal = () => {
+  const showModal = (produitId) => {
+    setselectedProduit(produitId);
     setIsModalOpen(true);
   };
 
@@ -26,8 +32,33 @@ export default function ProductCard({ produit }) {
     setIsModalOpen(false);
   };
 
-  const handleDelete = () => {
-    closeModal();
+  const confirmDelete = () => {
+    if (selectedProduit !== null) {
+      destroy(route('Produit.destroy', selectedProduit), {
+        preserveState: true,
+        preserveScroll: true,
+        onSuccess: () => {
+          setIsModalOpen(false);
+          setSelectedPanieId(null);
+          notification.success({
+            message: 'Succès',
+            description: 'Produit retiré du panier avec succès',
+            placement: 'topRight',
+          });
+        },
+        onError: (error) => {
+          notification.error({
+            message: 'Erreur',
+            description: 'Erreur lors du retirement du panier, veuillez réessayer.',
+            placement: 'topRight',
+          });
+          console.error('Error deleting panie:', error);
+        },
+      });
+    } else {
+      setIsModalOpen(false);
+      setSelectedPanieId(null);
+    }
   };
 
   return (
@@ -73,7 +104,7 @@ export default function ProductCard({ produit }) {
           <EyeIcon className="h-5 w-5 mr-2 stroke-2 animate-pulse" />
         </Link>
         <Button
-          onClick={showModal}
+          onClick={() => showModal(produit.id)}
           className="flex items-center text-red-500 py-2 px-4 rounded-full font-medium shadow-lg hover:text-red-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl bg-white"
         >
           <TrashIcon className="h-5 w-5 mr-2 stroke-2 animate-bounce" />
@@ -86,20 +117,39 @@ export default function ProductCard({ produit }) {
         </form>
       </div>
 
-      <Dialog open={isModalOpen} handler={closeModal}>
-        <DialogHeader>Confirmer la suppression</DialogHeader>
-        <DialogBody>
-          Êtes-vous sûr de vouloir supprimer ce produit ?
-        </DialogBody>
-        <DialogFooter>
-          <Button variant="text" color="red" onClick={closeModal} className="mr-1">
-            <span>Annuler</span>
-          </Button>
-          <Button variant="filled" color="green" onClick={handleDelete}>
-            <span>Confirmer</span>
-          </Button>
-        </DialogFooter>
-      </Dialog>
+      <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          className="p-6"
+        >
+          <h3 className="text-lg font-medium text-gray-900">Confirmer la suppression</h3>
+          <p className="mt-2 text-sm text-gray-500">
+            Êtes-vous sûr de vouloir supprimer cet article?
+          </p>
+          <div className="mt-4 flex justify-end space-x-3">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              type="button"
+              className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+              onClick={confirmDelete}
+            >
+              Supprimer
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              type="button"
+              className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
+              onClick={() => setIsModalOpen(false)}
+            >
+              Annuler
+            </motion.button>
+          </div>
+        </motion.div>
+      </Modal>
     </div>
   );
 }

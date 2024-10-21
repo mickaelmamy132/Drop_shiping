@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Link, usePage, useForm } from '@inertiajs/react';
 import { Form, Button, notification } from 'antd';
-import Modal from '../../Components/Modal';
+import Modal from '../../Components/Modal'; 
 import { motion, AnimatePresence } from 'framer-motion';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';

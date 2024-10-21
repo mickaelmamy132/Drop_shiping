@@ -4,9 +4,9 @@ import { Link, useForm } from '@inertiajs/react';
 import { notification } from 'antd';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
+import Pagination from '../../Components/Pagination';
 
 export default function Produit_lot({ lots, auth }) {
-    console.log(lots);
     const [endDates, setEndDates] = useState({});
     const [timesLeft, setTimesLeft] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,6 +18,9 @@ export default function Produit_lot({ lots, auth }) {
     const [isQualiteOpen, setIsQualiteOpen] = useState(false);
     const [selectedQualites, setSelectedQualites] = useState([]);
     const toggleQualite = () => setIsQualiteOpen(!isQualiteOpen);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 2; // Nombre de lots par page
 
     const { data, setData, post, processing, errors } = useForm({
         montant: '',
@@ -203,6 +206,71 @@ export default function Produit_lot({ lots, auth }) {
         visible: { opacity: 1, y: 0 },
     };
 
+
+
+    const indexOfLastLot = currentPage * itemsPerPage;
+    const indexOfFirstLot = indexOfLastLot - itemsPerPage;
+    const currentLots = filteredLots.slice(indexOfFirstLot, indexOfLastLot);
+    const totalPages = Math.ceil(filteredLots.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const renderPagination = () => {
+        const pages = [];
+        for (let i = 1; i <= totalPages; i++) {
+            pages.push(
+                <motion.button
+                    key={i}
+                    onClick={() => handlePageChange(i)}
+                    className={`px-3 py-2 mx-1 rounded-full transition-colors duration-200 ${
+                        currentPage === i
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-blue-100'
+                    }`}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                >
+                    {i}
+                </motion.button>
+            );
+        }
+        return (
+            <motion.div 
+                className="flex justify-center items-center mt-6 space-x-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+                <motion.button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-3 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-blue-100 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    label="Previous Page"
+                >
+                    Page precedent
+                    «
+                </motion.button>
+                {pages}
+                <motion.button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-blue-100 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    label="Next Page"
+                >
+                    Page suivante
+                    »
+                </motion.button>
+            </motion.div>
+        );
+    };
+
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -367,94 +435,96 @@ export default function Produit_lot({ lots, auth }) {
                                 </select>
                             </div>
                         </div>
-                        <div className="flex">
-                            <div className="p-6 text-gray-900 grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
-                                {filteredLots === null || filteredLots.length === 0 ? (
-                                    <p>Il n'y a pas de lots disponibles</p>
-                                ) : (
-                                    <motion.div
-                                        initial="hidden"
-                                        animate="visible"
-                                        variants={{
-                                            visible: {
-                                                transition: {
-                                                    staggerChildren: 0.1
-                                                }
-                                            }
-                                        }}
-                                        className="p-1"
-                                    >
-                                        {filteredLots.map((lot) => (
-                                            <motion.div
-                                                key={lot.id}
-                                                initial={{ scale: 0.9, opacity: 0 }}
-                                                animate={{ scale: 1, opacity: 1 }}
-                                                transition={{ duration: 0.3 }}
-                                                variants={{
-                                                    hidden: { opacity: 0, y: 20 },
-                                                    visible: { opacity: 1, y: 0 }
-                                                }}
-                                                className="border border-gray-200 bg-white shadow-lg rounded-xl p-5 transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2 text-center"
-                                            >
 
-                                                <div className="mb-4 h-48 overflow-hidden">
-                                                    <img src={`/storage/${lot.image_lot}`} alt={lot.nom} className="w-full h-full object-cover" />
-                                                </div>
 
-                                                <div>
-                                                    <h1>{auth.user.vendeur.nom_de_l_entreprise}</h1>
-                                                </div>
+                        {currentLots.length === 0 ? (
+                            <p>Il n'y a pas de lots disponibles</p>
+                        ) : (
+                            <motion.div
+                                initial="hidden"
+                                animate="visible"
+                                variants={{
+                                    visible: {
+                                        transition: {
+                                            staggerChildren: 0.1
+                                        }
+                                    }
+                                }}
+                                className="p-1"
+                            >
+                                <div className="p-6 text-gray-900 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
+                                    {currentLots.map((lot) => (
+                                        <motion.div
+                                            key={lot.id}
+                                            initial={{ scale: 0.9, opacity: 0 }}
+                                            animate={{ scale: 1, opacity: 1 }}
+                                            transition={{ duration: 0.3 }}
+                                            variants={{
+                                                hidden: { opacity: 0, y: 20 },
+                                                visible: { opacity: 1, y: 0 }
+                                            }}
+                                            className="border border-gray-200 bg-white shadow-lg rounded-xl p-5 transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2 text-center"
+                                        >
 
-                                                <p className="font-semibold text-lg">{lot.nom} - {lot.description}</p>
-                                                <p className="text-sm text-gray-500">Enchère #{lot.id}</p>
+                                            <div className="mb-4 h-48 overflow-hidden">
+                                                <img src={`/storage/${lot.image_lot}`} alt={lot.nom} className="w-full h-full object-cover" />
+                                            </div>
 
-                                                <div className="mt-4">
-                                                    <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                                                        {lot.etat}
-                                                    </span>
-                                                    <div className="mt-4 flex justify-between">
-                                                        <div>
-                                                            <p className="text-gray-600">Dernière enchère</p>
-                                                            <p className="font-bold text-lg">{lot.montant} €</p>
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-gray-600">Nombre d'enchères</p>
-                                                            <p className="font-bold text-lg">{lot.enchere_count} 🔥</p>
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-gray-600">Fin de l'enchère</p>
-                                                            <p className="font-bold text-red-500 text-lg">
-                                                                {!lot.enchere || lot.enchere.length === 0 ? (
-                                                                    'Pas encore enchéri'
-                                                                ) : (
-                                                                    endDates[lot.id] && timesLeft[lot.id]?.isFinished ? (
-                                                                        'Enchère terminée'
-                                                                    ) : (
-                                                                        `${timesLeft[lot.id]?.hours || 0}h ${timesLeft[lot.id]?.minutes || 0}m ${timesLeft[lot.id]?.seconds || 0}s`
-                                                                    )
-                                                                )}
-                                                            </p>
-                                                        </div>
+                                            <div>
+                                                <h1>{auth.user.vendeur.nom_de_l_entreprise}</h1>
+                                            </div>
+
+                                            <p className="font-semibold text-lg">{lot.nom} - {lot.description}</p>
+                                            <p className="text-sm text-gray-500">Enchère #{lot.id}</p>
+
+                                            <div className="mt-4">
+                                                <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                                    {lot.etat}
+                                                </span>
+                                                <div className="mt-4 flex justify-center gap-8 items-center">
+                                                    <div>
+                                                        <p className="text-gray-600">Dernière enchère</p>
+                                                        <p className="font-bold text-lg">{lot.montant} €</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-gray-600">Nombre d'enchères</p>
+                                                        <p className="font-bold text-lg">{lot.enchere_count} 🔥</p>
                                                     </div>
                                                 </div>
+                                                <div className='border-t'>
+                                                    <p className="text-gray-600">Fin de l'enchère</p>
+                                                    <p className="font-bold text-red-500 text-lg">
+                                                        {!lot.enchere || lot.enchere.length === 0 ? (
+                                                            'Pas encore enchéri'
+                                                        ) : (
+                                                            endDates[lot.id] && timesLeft[lot.id]?.isFinished ? (
+                                                                'Enchère terminée'
+                                                            ) : (
+                                                                `${timesLeft[lot.id]?.hours || 0}h ${timesLeft[lot.id]?.minutes || 0}m ${timesLeft[lot.id]?.seconds || 0}s`
+                                                            )
+                                                        )}
+                                                    </p>
+                                                </div>
+                                            </div>
 
-                                                <div className="border-t border-gray-200 mt-4 pt-4">
-                                                    <div className="flex justify-between text-gray-700">
-                                                        <div>
-                                                            <p className="text-sm">Prix public totale</p>
-                                                            <p className="font-bold">{lot.prix_public} €</p>
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-sm">Unités</p>
-                                                            <p className="font-bold">{lot.quantite}</p>
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-sm">Coût / unité</p>
-                                                            <p className="font-bold">{lot.prix} €</p>
-                                                        </div>
+                                            <div className="border-t border-gray-200 mt-4 pt-4">
+                                                <div className="flex justify-between text-gray-700">
+                                                    <div>
+                                                        <p className="text-sm">Prix public totale</p>
+                                                        <p className="font-bold">{lot.prix_public} €</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm">Unités</p>
+                                                        <p className="font-bold">{lot.quantite}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm">Coût / unité</p>
+                                                        <p className="font-bold">{lot.prix} €</p>
                                                     </div>
                                                 </div>
-                                                <div className="mt-4 text-center items-center gap-2">
+                                            </div>
+                                            <div className="mt-4 text-center items-center gap-2">
+                                                {endDates[lot.id] !== 0 && (
                                                     <motion.button
                                                         whileHover={{ scale: 1.05 }}
                                                         whileTap={{ scale: 0.95 }}
@@ -463,20 +533,21 @@ export default function Produit_lot({ lots, auth }) {
                                                     >
                                                         Enchérir
                                                     </motion.button>
-                                                    <Link
-                                                        href={route('Produit_Lot.show', lot.id)}
-                                                        className="mt-2 inline-block bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
-                                                    >
-                                                        Consulter
-                                                    </Link>
-                                                </div>
+                                                )}
+                                                <Link
+                                                    href={route('Produit_Lot.show', lot.id)}
+                                                    className="mt-2 inline-block bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
+                                                >
+                                                    Consulter
+                                                </Link>
+                                            </div>
 
-                                            </motion.div>
-                                        ))}
-                                    </motion.div>
-                                )}
-                            </div>
-                        </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                                    {renderPagination()} {/* Afficher la pagination */}
+                            </motion.div>
+                        )}
                     </motion.div>
                 </div>
                 <motion.div

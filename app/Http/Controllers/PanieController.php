@@ -144,6 +144,10 @@ class PanieController extends Controller
     public function destroy(Panie $panie, $id)
     {
         $panie = Panie::findOrFail($id);
+
+        if ($panie->acheteur_id !== Auth::user()->id){
+            return back()->with(['error' => 'Vous n\'avez pas le droit de supprimer cet article']);
+        }
         $product = Produit::findOrFail($panie->produit_id);
         $product->quantite += $panie->quantite;
         $product->save();
@@ -156,15 +160,14 @@ class PanieController extends Controller
     public function destroy_lot($id)
     {
         $panie = Panie::findOrFail($id);
+        if ($panie->acheteur_id !== Auth::user()->id){
+            return back()->with(['error' => 'Vous n\'avez pas le droit de supprimer cet article']);
+        }
         $product_lot = Produit_lot::findOrFail($panie->produit_lot_id);
 
         Enchere::where('lot_id', $product_lot->id)->delete();
         $panie->delete();
 
         return back()->with('success', 'lot retiré du panier avec succès');
-        // return response()->json([
-        //     'success' => 'Enchère placée avec succès.',
-        //     'fin_enchere' => $enchere->fin_enchere ?? null, // Renvoyer la date de fin si elle existe
-        // ]);
     }
 }

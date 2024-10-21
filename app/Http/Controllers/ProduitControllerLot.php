@@ -63,6 +63,7 @@ class ProduitControllerLot extends Controller
     public function store(StoreProduit_lotRequest $request)
     {
         $validated = $request->validated();
+        $prix_public = $validated['quantite'] * $validated['prix'];
 
         if ($request->hasFile('image_lot')) {
             $image_lot = $request->file('image_lot');
@@ -70,8 +71,10 @@ class ProduitControllerLot extends Controller
             $validated['image_lot'] = $path;
         }
 
+        $validated['prix_public'] = $prix_public;
+
         Produit_lot::create($validated);
-        return redirect()->route('dashboard')->with('success', 'Lot créé');
+        return redirect()->route('Produit_Lot.index')->with('success', 'Lot créé avec succès');
     }
 
     /**

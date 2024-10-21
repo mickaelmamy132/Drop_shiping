@@ -4,8 +4,6 @@ import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 
 export default function Produit_lot({ lots, auth }) {
-    console.log(lots);
-    console.log(lots && lots.length > 0 ? lots[0].nom : 'No lots available');
 
     return (
         <AuthenticatedLayout

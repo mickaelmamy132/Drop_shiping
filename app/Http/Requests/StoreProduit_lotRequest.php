@@ -26,7 +26,6 @@ class StoreProduit_lotRequest extends FormRequest
             'description' => 'nullable|string',
             'quantite' => 'required|integer|min:1',
             'prix' => 'required|numeric|min:0',
-            'prix_public' => 'required|numeric|min:0',
             'etat' => 'required|string|max:255',
             'image_lot' => 'required|image|mimes:jpeg,png,jpg,gif|max:50048',
             'categorie_id' => 'required|exists:categories,id',

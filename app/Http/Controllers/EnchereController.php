@@ -33,12 +33,20 @@ class EnchereController extends Controller
 
     public function store(StoreenchereRequest $request)
     {
+        
+        $lot = Produit_lot::find($request->lot_id);
+        $prix_base = $lot->prix_public;
+        
         $derniere_enchere = Enchere::where('lot_id', $request->lot_id)
             ->orderBy('montant', 'desc')
             ->first();
 
+        if ($request->montant < $prix_base) {
+            return back()->withErrors(['montant' => 'Le montant de l\'enchère doit être supérieur au prix de base de ' . $prix_base . ' €.']);
+        }
+
         if ($derniere_enchere && $request->montant <= $derniere_enchere->montant) {
-            return back()->withErrors(['montant' => 'Le montant de l\'enchère doit être supérieur à l\'enchère précédente.']);
+            return back()->withErrors(['montant' => 'Le montant de l\'enchère doit être supérieur à l\'enchère précédente.' . $derniere_enchere->montant . ' €.']);
         }
 
         $enchere = Enchere::where('lot_id', $request->lot_id)->first();

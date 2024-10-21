@@ -122,8 +122,20 @@ class ProduirController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Produit $produit)
+    public function destroy($id)
     {
-        //
+        $produit = Produit::findOrFail($id);
+        
+        if (!$produit) {
+            return redirect()->route('Mes_rubrique/show')->with('error', 'Produit non trouvé');
+        }
+
+        if ($produit->vendeur_id !== Auth::user()->id) {
+            return back()->with('erro', 'Vous ne pouvez pas supprimer cet artile');
+        }
+
+        $produit->delete();
+        return redirect()->with('success', 'Produit supprimé');
+
     }
 }

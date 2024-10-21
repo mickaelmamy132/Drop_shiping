@@ -16,7 +16,6 @@ export default function Add_lot({ auth }) {
         description: '',
         quantite: 1,
         prix: 0,
-        prix_public: 0,
         etat: '',
         image_lot: null,
         categorie_id: '',
@@ -182,7 +181,7 @@ export default function Add_lot({ auth }) {
                                     <motion.div variants={itemVariants}>
                                         <Form.Item
                                             name="quantite"
-                                            label="Quantité"
+                                            label="Unités"
                                             rules={[{ required: true, message: 'Veuillez entrer la quantité' }]}
                                             validateStatus={errors.quantite && 'error'}
                                             help={errors.quantite}
@@ -192,24 +191,6 @@ export default function Add_lot({ auth }) {
                                                 className="w-full hover:border-blue-500 focus:border-blue-500 transition-colors duration-300"
                                                 value={data.quantite}
                                                 onChange={(value) => setData('quantite', value)}
-                                            />
-                                        </Form.Item>
-                                    </motion.div>
-
-                                    <motion.div variants={itemVariants}>
-                                        <Form.Item
-                                            name="prix_public"
-                                            label="Prix public"
-                                            rules={[{ required: true, message: 'Veuillez entrer le prix public' }]}
-                                            validateStatus={errors.prix_public && 'error'}
-                                            help={errors.prix_public}
-                                        >
-                                            <InputNumber
-                                                min={1}
-                                                className="w-full hover:border-blue-500 focus:border-blue-500 transition-colors duration-300"
-                                                value={data.prix_public}
-                                                onChange={(value) => setData('prix_public', value)}
-                                                addonBefore="€"
                                             />
                                         </Form.Item>
                                     </motion.div>
