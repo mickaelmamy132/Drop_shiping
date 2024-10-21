@@ -20,11 +20,11 @@ export default function Panier({ auth, panies }) {
     const { post, processing } = useForm({
         acheteur_id: auth.user.id,
         produits: data.map(item => ({
-            produit_id: item.produit ? item.produit.id : null,   // produit_id pour produit normal
-            produit_lot_id: item.produit_lot_id ? item.produit_lot_id : null, // produit_lot_id pour produit lot
+            produit_id: item.produit ? item.produit.id : null,   
+            produit_lot_id: item.produit_lot_id ? item.produit_lot_id : null,
             quantite: item.quantite,
             prix_totale: item.prix_totale,
-            vendeur_id: item.produit ? item.vendeur.user_id : (item.produit_lot_id ? item.vendeur.user_id : null)  // Vendeur selon le type de produit
+            vendeur_id: item.produit ? item.vendeur.user_id : (item.produit_lot_id ? item.vendeur.user_id : null)
         }))
     });
 

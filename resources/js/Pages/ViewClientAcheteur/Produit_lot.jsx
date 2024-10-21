@@ -6,10 +6,8 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Produit_lot({ lots, auth }) {
-    const [endDates, setEndDates] = useState(() => {
-        const savedEndDates = localStorage.getItem('endDates');
-        return savedEndDates ? JSON.parse(savedEndDates) : {};
-    });
+    console.log(lots);
+    const [endDates, setEndDates] = useState({});
     const [timesLeft, setTimesLeft] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedLot, setSelectedLot] = useState(null);
@@ -31,24 +29,42 @@ export default function Produit_lot({ lots, auth }) {
         const timers = {};
 
         lots.forEach(lot => {
-            if (endDates[lot.id]) {
-                timers[lot.id] = setInterval(() => {
+            if (lot.enchere && lot.enchere.length > 0) {
+                const latestEnchere = lot.enchere[0]; // Prendre la dernière enchère
+
+                // Utilisez la date de fin réelle existante de l'enchère
+                const endDate = new Date(latestEnchere.fin_enchere + 'Z'); // Ajoutez 'Z' pour spécifier UTC
+
+                // Stockez la date de fin dans l'état
+                setEndDates(prevEndDates => ({
+                    ...prevEndDates,
+                    [lot.id]: endDate.toISOString(),
+                }));
+
+                // Fonction pour calculer et mettre à jour le temps restant
+                const updateTimeLeft = () => {
+                    const timeLeft = calculateTimeLeft(endDate); // Calculer le temps restant
+
                     setTimesLeft(prevTimesLeft => ({
                         ...prevTimesLeft,
-                        [lot.id]: calculateTimeLeft(endDates[lot.id])
+                        [lot.id]: timeLeft
                     }));
-                }, 1000);
+
+                    // Si le temps n'est pas terminé, met à jour chaque seconde
+                    if (!timeLeft.isFinished) {
+                        timers[lot.id] = setTimeout(updateTimeLeft, 1000);
+                    }
+                };
+
+                updateTimeLeft(); // Lancer le calcul initial du temps restant
             }
         });
 
+        // Nettoyage des timers lors du démontage du composant
         return () => {
-            Object.values(timers).forEach(timer => clearInterval(timer));
+            Object.values(timers).forEach(timer => clearTimeout(timer));
         };
-    }, [lots, endDates]);
-
-    useEffect(() => {
-        localStorage.setItem('endDates', JSON.stringify(endDates));
-    }, [endDates]);
+    }, [lots]);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -67,25 +83,24 @@ export default function Produit_lot({ lots, auth }) {
 
         window.addEventListener('resize', handleResize);
 
-        // Nettoyage de l'écouteur d'événement
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    function calculateTimeLeft(endTime) {
-        const now = new Date();
-        const end = new Date(endTime);
-        const difference = end - now;
+    function calculateTimeLeft(endDate) {
+        const now = new Date().getTime(); // Heure actuelle de l'utilisateur
+        const difference = endDate.getTime() - now;
 
         let timeLeft = {};
 
         if (difference > 0) {
             timeLeft = {
                 hours: Math.floor(difference / (1000 * 60 * 60)),
-                minutes: Math.floor((difference / 1000 / 60) % 60),
-                seconds: Math.floor((difference / 1000) % 60),
+                minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+                seconds: Math.floor((difference % (1000 * 60)) / 1000),
+                isFinished: false
             };
         } else {
-            timeLeft = { hours: 0, minutes: 0, seconds: 0 };
+            timeLeft = { isFinished: true };
         }
 
         return timeLeft;
@@ -98,10 +113,10 @@ export default function Produit_lot({ lots, auth }) {
     };
 
     const closeModal = () => {
-        setIsModalOpen(false);
-        setSelectedLot(null);
         setData('montant', '');
         setData('lot_id', null);
+        setIsModalOpen(false);
+        setSelectedLot(null);
     };
 
     const handleSubmit = (e) => {
@@ -112,15 +127,27 @@ export default function Produit_lot({ lots, auth }) {
             onSuccess: (response) => {
                 closeModal();
 
-                // Vérifier si le compte à rebours est déjà défini pour ce lot
-                if (!response.data.fin_enchere) {
-                    // Démarrer un compte à rebours de 48 heures seulement si ce n'est pas déjà en cours
-                    const newEndDate = new Date();
-                    newEndDate.setHours(newEndDate.getHours() + 48);
+                // Vérifier si c'est la première enchère pour ce lot
+                if (!endDates[data.lot_id]) {
+                    const newEndDate = new Date(new Date().getTime() + 48 * 60 * 60 * 1000);
                     setEndDates(prevEndDates => ({
                         ...prevEndDates,
                         [data.lot_id]: newEndDate.toISOString(),
                     }));
+
+                    const updateTimeLeft = () => {
+                        const timeLeft = calculateTimeLeft(newEndDate);
+                        setTimesLeft(prevTimesLeft => ({
+                            ...prevTimesLeft,
+                            [data.lot_id]: timeLeft
+                        }));
+
+                        if (!timeLeft.isFinished) {
+                            setTimeout(updateTimeLeft, 1000);
+                        }
+                    };
+
+                    updateTimeLeft();
                 }
 
                 notification.success({
@@ -141,12 +168,9 @@ export default function Produit_lot({ lots, auth }) {
         });
     };
 
-
-
     const toggleCategories = () => {
-        setIsCategoriesOpen(!isCategoriesOpen); // Inverse l'état d'affichage
+        setIsCategoriesOpen(!isCategoriesOpen);
     };
-
 
     const handleCategoryChange = (categoryId) => {
         setSelectedCategories((prevSelected) => {
@@ -157,8 +181,6 @@ export default function Produit_lot({ lots, auth }) {
             }
         });
     };
-
-
 
     const handleQualiteChange = (qualite) => {
         setSelectedQualites((prevSelected) => {
@@ -175,7 +197,6 @@ export default function Produit_lot({ lots, auth }) {
         const matchesQualite = selectedQualites.length === 0 || selectedQualites.includes(lot.etat);
         return matchesCategory && matchesQualite;
     });
-
 
     const fadeInVariant = {
         hidden: { opacity: 0, y: 20 },
@@ -337,8 +358,9 @@ export default function Produit_lot({ lots, auth }) {
                                 <select
                                     id="sorting-options"
                                     className="block w-full sm:w-auto px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out text-gray-700 hover:bg-gray-50 cursor-pointer"
+                                    defaultValue=""
                                 >
-                                    <option value="" selected>...</option>
+                                    <option value="">...</option>
                                     <option value="date">Date d'ajout</option>
                                     <option value="units">Unités</option>
                                     <option value="auction-end">Fin de l'enchère</option>
@@ -402,7 +424,15 @@ export default function Produit_lot({ lots, auth }) {
                                                         <div>
                                                             <p className="text-gray-600">Fin de l'enchère</p>
                                                             <p className="font-bold text-red-500 text-lg">
-                                                                {endDates[lot.id] ? `${timesLeft[lot.id]?.hours || 0}h ${timesLeft[lot.id]?.minutes || 0}m ${timesLeft[lot.id]?.seconds || 0}s` : 'Pas encore enchéri'}
+                                                                {!lot.enchere || lot.enchere.length === 0 ? (
+                                                                    'Pas encore enchéri'
+                                                                ) : (
+                                                                    endDates[lot.id] && timesLeft[lot.id]?.isFinished ? (
+                                                                        'Enchère terminée'
+                                                                    ) : (
+                                                                        `${timesLeft[lot.id]?.hours || 0}h ${timesLeft[lot.id]?.minutes || 0}m ${timesLeft[lot.id]?.seconds || 0}s`
+                                                                    )
+                                                                )}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -526,13 +556,13 @@ export default function Produit_lot({ lots, auth }) {
                             transition={{ duration: 0.5, delay: 1 }}
                         >
                             <h2 className="text-2xl font-bold mb-4">Conditionnement lot revendeur</h2>
-                            <p>Les lots sont conditionnés sous forme de palette de déstockage (ou palette de solderie). Vous retrouverez dans la description des lots :
-                                <ul className="list-disc ml-6 mt-2">
-                                    <li>le nombre de palette et les dimensions,</li>
-                                    <li>la localisation des lots,</li>
-                                    <li>Vous aurez la possibilité de télécharger le listing reprenant toutes les informations utiles liées à ces lots.</li>
-                                </ul>
-                                La grande majorité des lots de solderie sont conditionnés sur des palettes perdues (il peut arriver qu’ils soient sur des palettes Europe - auquel cas, cela est mentionné très clairement dans la description).</p>
+                            <p>Les lots sont conditionnés sous forme de palette de déstockage (ou palette de solderie). Vous retrouverez dans la description des lots :</p>
+                            <ul className="list-disc ml-6 mt-2">
+                                <li>le nombre de palette et les dimensions,</li>
+                                <li>la localisation des lots,</li>
+                                <li>Vous aurez la possibilité de télécharger le listing reprenant toutes les informations utiles liées à ces lots.</li>
+                            </ul>
+                            <p>La grande majorité des lots de solderie sont conditionnés sur des palettes perdues (il peut arriver qu’ils soient sur des palettes Europe - auquel cas, cela est mentionné très clairement dans la description).</p>
                         </motion.div>
 
                         {/* Qui peut participer aux enchères ? */}

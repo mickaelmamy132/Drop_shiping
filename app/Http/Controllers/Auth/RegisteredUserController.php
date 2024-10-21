@@ -88,7 +88,7 @@ class RegisteredUserController extends Controller
                 'numero' => 'required|string|max:15',
                 'genre' => 'required|string|max:10',
                 'pays' => 'required|string|max:50',
-                'tva' => 'required|string|max:50',
+                'tva' => 'required|string|max:70',
                 'nif' => 'required|string|max:50',
             ]);
             $role = 'acheteur';

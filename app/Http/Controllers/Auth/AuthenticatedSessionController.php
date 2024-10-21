@@ -36,20 +36,28 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request)
     {
         $request->authenticate();
 
         $request->session()->regenerate();
 
         $user = Auth::user();
+
+        $user->load(['acheteur', 'vendeur']);
+
+        if ($user->vendeur === null) {
+            return Inertia::render('Auth/Register_vendeur_2', [
+                'user' => $user,
+            ]);
+        }
 
         $this->authenticated($request, $user);
 
         return redirect()->intended(route('dashboard', ['absolute' => false]));
     }
 
-    public function store_acheteur(LoginRequest $request): RedirectResponse
+    public function store_acheteur(LoginRequest $request)
     {
         $request->authenticate();
 
@@ -57,9 +65,17 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
-        $this->authenticated($request, $user);
+        $user->load(['acheteur', 'vendeur']);
 
-        return redirect()->intended(route('Acheteur', ['absolute' => false]));
+        if ($user->acheteur === null) {
+            return Inertia::render('Auth/Register_acheteur_2', [
+                'user' => $user,
+            ]);
+        } else {
+            $this->authenticated($request, $user);
+
+            return redirect()->intended(route('Acheteur', ['absolute' => false]));
+        }
     }
 
     /**

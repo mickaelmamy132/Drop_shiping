@@ -30,7 +30,7 @@ class ProduitControllerLot extends Controller
             $lot->montant = $lot->enchere->first()->montant ?? null;
             return $lot;
         });
-
+ 
         return Inertia::render("ViewClientVendeur/Produit_lot", ['lots' => $lots]);
     }
 

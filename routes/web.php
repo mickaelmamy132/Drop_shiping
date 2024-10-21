@@ -36,6 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('PanieLot/destroy/{produit_lot}', [PanieController::class, 'destroy_lot'])->name('panieLot.destroy');
     Route::get('Produit_lots', [ProduitControllerLot::class, 'index_acheteur'])->name('Produit_lots');
     Route::post('/checkout', [CheckoutControlleur::class, 'createCheckoutSession'])->name('checkout');
+    Route::post('/stripe/webhook', [CheckoutControlleur::class, 'createCheckoutSession'])->name('stripe.webhook');
 
     Route::resource('Panie', PanieController::class);
     Route::get('/success', [CheckoutControlleur::class, 'success'])->name('checkout.success');
