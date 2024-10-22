@@ -10,9 +10,12 @@ use Stripe\Webhook;
 use Stripe\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log as FacadesLog;
 use Inertia\Inertia;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
+use Log;
+use Stripe\Climate\Order;
 
 class CheckoutControlleur extends Controller
 {
@@ -76,7 +79,7 @@ class CheckoutControlleur extends Controller
             'payment_method_types' => ['card'],
             'line_items' => $lineItems,
             'mode' => 'payment',
-            'success_url' => route('checkout.success', [], true) . '?session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => route('Panie.index', [], true) . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('checkout.cancel', [], true),
             'metadata' => [
                 'acheteur_id' => $user->id, // Stocker uniquement l'ID de l'utilisateur
@@ -90,34 +93,37 @@ class CheckoutControlleur extends Controller
 
     public function handleWebhook(Request $request)
     {
-        $payload = $request->getContent();
-        $sigHeader = $request->header('Stripe-Signature');
-        $endpointSecret = config('services.stripe.webhook_secret'); // Récupérer le secret dans la config
+        // Vérifier l'URL et les en-têtes de la requête
+        return Inertia::render("ViewClientAcheteur/Produit_lot");
 
-        try {
-            $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
-        } catch (\UnexpectedValueException $e) {
-            // Payload invalide
-            return response()->json(['error' => 'Invalid payload'], 400);
-        } catch (\Stripe\Exception\SignatureVerificationException $e) {
-            // Signature non valide
-            return response()->json(['error' => 'Invalid signature'], 400);
-        }
+        // $payload = $request->getContent();
+        // $sigHeader = $request->header('Stripe-Signature');
+        // $endpointSecret = (config('Stripe.wh')); // Récupérer le secret dans la config
 
-        // Traiter les événements Stripe ici
-        if ($event->type === 'checkout.session.completed') {
-            $session = $event->data->object;
-            // Récupérer l'ID de la session Stripe et traiter le paiement
-            $this->handleSuccessfulPayment($session);
-        }
 
-        return response()->json(['status' => 'success'], 200);
+        // try {
+        //     $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
+        // } catch (\UnexpectedValueException $e) {
+        //     // Payload invalide
+        //     return response()->json(['error' => 'Invalid payload'], 400);
+        // } catch (\Stripe\Exception\SignatureVerificationException $e) {
+        //     // Signature non valide
+        //     return response()->json(['error' => 'Invalid signature'], 400);
+        // }
+
+        // // Traiter les événements Stripe ici
+        // if ($event->type === 'checkout.session.completed') {
+        //     $session = $event->data->object;
+        //     // Récupérer l'ID de la session Stripe et traiter le paiement
+        //     $this->handleSuccessfulPayment($session);
+        // }
+
+        // return response()->json(['status' => 'success'], 200);
     }
 
     protected function handleSuccessfulPayment($session)
     {
-        // Logique pour gérer un paiement réussi
-        // Vous pouvez marquer la commande comme payée, envoyer un e-mail, etc.
+        return response()->json(['status' => 'success', 'message' => 'Payment processed successfully.'], 200);
     }
 
     // public function success()
