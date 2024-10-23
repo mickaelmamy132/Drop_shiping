@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Link, usePage, useForm } from '@inertiajs/react';
 import { Form, Button, notification } from 'antd';
-import Modal from '../../Components/Modal'; 
+import Modal from '../../Components/Modal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
@@ -20,7 +20,7 @@ export default function Panier({ auth, panies }) {
     const { post, processing } = useForm({
         acheteur_id: auth.user.id,
         produits: data.map(item => ({
-            produit_id: item.produit ? item.produit.id : null,   
+            produit_id: item.produit ? item.produit.id : null,
             produit_lot_id: item.produit_lot_id ? item.produit_lot_id : null,
             quantite: item.quantite,
             prix_totale: item.prix_totale,
@@ -191,66 +191,66 @@ export default function Panier({ auth, panies }) {
                             variants={containerVariants}
                             initial="hidden"
                             animate="visible"
-                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                            className="grid grid-cols-1 md:grid-cols-2 gap-8"
                         >
                             {data.map((panie, index) => (
                                 <motion.div
                                     key={index}
                                     variants={itemVariants}
-                                    className="bg-white shadow-lg rounded-xl p-6 transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2"
+                                    className="bg-white shadow-lg rounded-xl p-8 transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2 w-full"
                                 >
                                     {panie.produit_lot_id ? (
                                         <img
                                             src={`/storage/${panie.produit_lot_id?.image_lot || 'default-image.jpg'}`}
                                             alt={panie.produit_lot?.nom || panie.nom || 'Image du produit'}
-                                            className="w-full h-48 object-cover rounded-lg mb-4"
+                                            className="w-full h-64 object-cover rounded-lg mb-6"
                                         />
                                     ) : (
                                         <img
                                             src={`/storage/${panie.produit?.image_rubrique || 'default-image.jpg'}`}
                                             alt={panie.produit?.nom || panie.nom || 'Image du produit'}
-                                            className="w-full h-48 object-cover rounded-lg mb-4"
+                                            className="w-full h-64 object-cover rounded-lg mb-6"
                                         />
                                     )}
-                                    <h2 className="text-xl font-semibold mb-2 text-gray-800">{panie.vendeur.nom_de_l_entreprise}</h2>
-                                    <div className='flex justify-between items-center mb-3'>
+                                    <h2 className="text-2xl font-semibold mb-4 text-gray-800">{panie.vendeur.nom_de_l_entreprise}</h2>
+                                    <div className='flex justify-between items-center mb-4'>
                                         <p className='text-gray-600'>Produit:</p>
                                         <p className="font-semibold text-indigo-600">{panie.produit?.nom || panie.nom}</p>
                                     </div>
                                     {panie.produit_lot_id ? (
                                         <>
-                                            <div className='flex justify-between items-center mb-3'>
+                                            <div className='flex justify-between items-center mb-4'>
                                                 <p className='text-gray-600'>Type:</p>
                                                 <p className="font-semibold text-green-600">Lot</p>
                                             </div>
-                                            <div className='flex justify-between items-center mb-3'>
+                                            <div className='flex justify-between items-center mb-4'>
                                                 <p className='text-gray-600'>Description du lot:</p>
                                                 <p className="font-semibold text-green-600">{panie.description}</p>
                                             </div>
-                                            <div className='flex justify-between items-center mb-3'>
+                                            <div className='flex justify-between items-center mb-4'>
                                                 <p className='text-gray-600'>Quantité du lot:</p>
                                                 <p className="font-semibold text-green-600">{panie.quantite}</p>
                                             </div>
-                                            <div className="flex justify-between items-center mb-3">
+                                            <div className="flex justify-between items-center mb-4">
                                                 <p className="text-gray-600">Prix unitaire du lot:</p>
                                                 <p className="font-semibold text-indigo-600">{panie.prix_totale} €</p>
                                             </div>
-                                            <div className="flex justify-between items-center mb-3">
+                                            <div className="flex justify-between items-center mb-4">
                                                 <p className="text-gray-600">Quantité commandée:</p>
                                                 <p className="font-semibold">{panie.quantite}</p>
                                             </div>
                                         </>
                                     ) : (
                                         <>
-                                            <div className="flex justify-between items-center mb-3">
+                                            <div className="flex justify-between items-center mb-4">
                                                 <p className="text-gray-600">Prix unitaire:</p>
                                                 <p className="font-semibold text-indigo-600">{panie.produit.prix} €</p>
                                             </div>
-                                            <div className="flex justify-between items-center mb-3">
+                                            <div className="flex justify-between items-center mb-4">
                                                 <p className="text-gray-600">Quantité commandée:</p>
                                                 <p className="font-semibold">{panie.quantite}</p>
                                             </div>
-                                            <div className="flex justify-between items-center mb-3">
+                                            <div className="flex justify-between items-center mb-4">
                                                 <p className="text-gray-600">Prix totale:</p>
                                                 <p className="font-semibold">{panie.produit.prix * panie.quantite}</p>
                                             </div>
@@ -261,8 +261,8 @@ export default function Panier({ auth, panies }) {
                                         <p className="font-semibold text-green-600">{panie.status}</p>
                                     </div>
 
-                                    <div className="border-t pt-4">
-                                        <p className="font-bold text-xl text-gray-800">Total: <span className="text-indigo-600">{panie.prix_totale} €</span></p>
+                                    <div className="border-t pt-4 mb-6">
+                                        <p className="font-bold text-2xl text-gray-800">Total: <span className="text-indigo-600">{panie.prix_totale} €</span></p>
                                     </div>
                                     <div className='flex justify-between space-x-4'>
                                         <form className="w-full flex space-x-4">
@@ -296,16 +296,19 @@ export default function Panier({ auth, panies }) {
                                                             href={route('Panie.edit', panie.id)}
                                                             className="bg-green-400 p-2 hover:bg-green-500 flex items-center text-white font-semibold text-lg px-3 py-1 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
                                                         >
-                                                            <ArrowPathIcon className="w-6 h-6 mr-2 text-white" />
-                                                            <span className="text-white font-medium">Mettre à jour</span>
+
+                                                            <span className="text-white font-medium flex items-center">
+                                                                <ArrowPathIcon className="w-6 h-6 mr-2 text-white" />
+                                                            </span>
                                                         </Link>
                                                         <Button
                                                             type="button"
                                                             className=" bg-red-500 hover:bg-red-600 text-white font-semibold text-lg py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
                                                             onClick={() => handleDelete(panie.id)}
-                                                            icon={<DeleteOutlined />}
                                                         >
-                                                            <span className="text-white font-medium">Enlever</span>
+                                                            <span className="text-white font-medium items-center justify-center" >
+                                                                <DeleteOutlined className="w-6 h-6 mr-2 text-white" />
+                                                            </span>
                                                         </Button>
                                                     </div>
                                                 </motion.div>

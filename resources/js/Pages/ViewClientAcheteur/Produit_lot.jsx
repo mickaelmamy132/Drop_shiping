@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Pagination from '../../Components/Pagination';
 
 export default function Produit_lot({ lots, auth }) {
+    console.log(lots);
     const [endDates, setEndDates] = useState({});
     const [timesLeft, setTimesLeft] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,11 +17,12 @@ export default function Produit_lot({ lots, auth }) {
     const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 1068);
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [isQualiteOpen, setIsQualiteOpen] = useState(false);
+    const [sortingOption, setSortingOption] = useState('');
     const [selectedQualites, setSelectedQualites] = useState([]);
     const toggleQualite = () => setIsQualiteOpen(!isQualiteOpen);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 2; // Nombre de lots par page
+    const itemsPerPage = 8; // Nombre de lots par page
 
     const { data, setData, post, processing, errors } = useForm({
         montant: '',
@@ -195,10 +197,25 @@ export default function Produit_lot({ lots, auth }) {
         });
     };
 
+    const handleSortChange = (e) => {
+        setSortingOption(e.target.value);
+    };
+
     const filteredLots = lots.filter(lot => {
         const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(lot.categorie.id);
         const matchesQualite = selectedQualites.length === 0 || selectedQualites.includes(lot.etat);
         return matchesCategory && matchesQualite;
+    });
+
+    const sortedLots = filteredLots.sort((a, b) => {
+        if (sortingOption === 'date') {
+            return new Date(b.created_at) - new Date(a.created_at); // Tri par date d'ajout
+        } else if (sortingOption === 'units') {
+            return b.quantite - a.quantite; // Tri par unités
+        } else if (sortingOption === 'auction-end' && a.updated_at && b.updated_at) {
+            return new Date(a.updated_at) - new Date(b.updated_at); // Tri par fin d'enchère (peut être remplacé par un autre champ)
+        }
+        return 0; // Aucun tri si l'option n'est pas sélectionnée
     });
 
     const fadeInVariant = {
@@ -210,8 +227,8 @@ export default function Produit_lot({ lots, auth }) {
 
     const indexOfLastLot = currentPage * itemsPerPage;
     const indexOfFirstLot = indexOfLastLot - itemsPerPage;
-    const currentLots = filteredLots.slice(indexOfFirstLot, indexOfLastLot);
-    const totalPages = Math.ceil(filteredLots.length / itemsPerPage);
+    const currentLots = sortedLots.slice(indexOfFirstLot, indexOfLastLot);
+    const totalPages = Math.ceil(sortedLots.length / itemsPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -224,11 +241,10 @@ export default function Produit_lot({ lots, auth }) {
                 <motion.button
                     key={i}
                     onClick={() => handlePageChange(i)}
-                    className={`px-3 py-2 mx-1 rounded-full transition-colors duration-200 ${
-                        currentPage === i
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-blue-100'
-                    }`}
+                    className={`px-3 py-2 mx-1 rounded-full transition-colors duration-200 ${currentPage === i
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-blue-100'
+                        }`}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                 >
@@ -237,7 +253,7 @@ export default function Produit_lot({ lots, auth }) {
             );
         }
         return (
-            <motion.div 
+            <motion.div
                 className="flex justify-center items-center mt-6 space-x-2"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -426,9 +442,10 @@ export default function Produit_lot({ lots, auth }) {
                                 <select
                                     id="sorting-options"
                                     className="block w-full sm:w-auto px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out text-gray-700 hover:bg-gray-50 cursor-pointer"
-                                    defaultValue=""
+                                    value={sortingOption}
+                                    onChange={handleSortChange} // Liaison avec la fonction de tri
                                 >
-                                    <option value="">...</option>
+                                    <option value="">Trier par...</option>
                                     <option value="date">Date d'ajout</option>
                                     <option value="units">Unités</option>
                                     <option value="auction-end">Fin de l'enchère</option>
@@ -545,7 +562,7 @@ export default function Produit_lot({ lots, auth }) {
                                         </motion.div>
                                     ))}
                                 </div>
-                                    {renderPagination()} {/* Afficher la pagination */}
+                                {renderPagination()} {/* Afficher la pagination */}
                             </motion.div>
                         )}
                     </motion.div>
