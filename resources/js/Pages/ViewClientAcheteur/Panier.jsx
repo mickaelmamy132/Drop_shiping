@@ -43,7 +43,14 @@ export default function Panier({ auth, panies }) {
     const totalPanier = data.reduce((total, panie) => total + parseFloat(panie.prix_totale), 0);
 
     const onFinish = (values) => {
-        // console.log(data);
+        if (!navigator.onLine) {
+            notification.error({
+                message: 'Erreur de connexion',
+                description: 'Veuillez vérifier votre connexion internet et réessayer.'
+            });
+            return;
+        }
+
         post('/checkout', { data }, {
             preserveState: true,
             preserveScroll: true,
