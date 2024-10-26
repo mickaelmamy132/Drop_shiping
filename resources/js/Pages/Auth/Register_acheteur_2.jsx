@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import GuestLayout_2 from '@/Layouts/GuestLayout_2';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Form, Input, Checkbox, Button, Select, Spin } from 'antd';
+import { Form, Input, Checkbox, Button, Select, Spin, Card, Steps } from 'antd';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
+import Title from 'antd/es/skeleton/Title';
 
 export default function Register_acheteur_2({ user }) {
 
@@ -52,10 +53,9 @@ export default function Register_acheteur_2({ user }) {
 
     return (
 
-        <GuestLayout_2>
+        <GuestLayout_2 showBuyerInfoMessage={true}>
             <Head title="Register" />
-
-
+           
             <Form
                 onFinish={onFinish}
                 layout="vertical"
@@ -64,6 +64,7 @@ export default function Register_acheteur_2({ user }) {
             >
 
                 <div className='flex gap-3'>
+                    
                     <Form.Item
                         label="TVA"
                         name="tva"

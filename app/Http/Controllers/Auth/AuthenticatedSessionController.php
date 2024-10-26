@@ -50,11 +50,13 @@ class AuthenticatedSessionController extends Controller
             return Inertia::render('Auth/Register_vendeur_2', [
                 'user' => $user,
             ]);
+        } 
+        else {
+
+            $this->authenticated($request, $user);
+
+            return redirect()->intended(route('dashboard', ['absolute' => false]));
         }
-
-        $this->authenticated($request, $user);
-
-        return redirect()->intended(route('dashboard', ['absolute' => false]));
     }
 
     public function store_acheteur(LoginRequest $request)
