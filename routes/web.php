@@ -2,18 +2,21 @@
 
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CheckoutControlleur;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\CommandeControlleur;
+use App\Http\Controllers\Controlleur_simple;
 use App\Http\Controllers\EnchereController;
 use App\Http\Controllers\PanieController;
 use App\Http\Controllers\ProduirController;
 use App\Http\Controllers\ProduitControllerLot;
 use App\Http\Controllers\ProfileController;
+use App\Models\Produit;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
+    $produit = Produit::all();
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canLogin_acheteurr' => Route::has('login_acheteur'),
@@ -21,6 +24,12 @@ Route::get('/', function () {
         'canRegisterVendeur' => Route::has('register_vendeur'),
     ]);
 });
+
+Route::get('/categorieses', [Controlleur_simple::class, 'Categories'])->name('categorieses');
+
+
+Route::get('/voir-rubriques',[Controlleur_simple::class,'voir_artcles'])->name('voir-rubriques');
+Route::get('/voir-lots',[Controlleur_simple::class,'lots'])->name('voir-lots');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [ProduirController::class, 'index_vendeur'])->name('dashboard');
@@ -36,13 +45,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('PanieLot/destroy/{produit_lot}', [PanieController::class, 'destroy_lot'])->name('panieLot.destroy');
     Route::get('Produit_lots', [ProduitControllerLot::class, 'index_acheteur'])->name('Produit_lots');
     Route::post('/checkout', [CheckoutControlleur::class, 'createCheckoutSession'])->name('checkout');
-    Route::post('/webhook/stripe', [CheckoutControlleur::class, 'handleWebhook'])->name('webhook.stripe');
+
 
     Route::resource('Panie', PanieController::class);
-    Route::get('/success', [CheckoutControlleur::class, 'success'])->name('checkout.success');
+    Route::get('/success', [CheckoutControlleur::class, 'success'])->name('success');
     Route::get('/cancel', [CheckoutControlleur::class, 'cancel'])->name('checkout.cancel');
-});
 
+    Route::get('/Commande', [CommandeControlleur::class, 'index'])->name('Commande');
+
+    Route::post('/webhook/stripe', [PanieController::class, 'handleWebhook'])->name('webhook.stripe');
+});
 
 
 Route::middleware('auth')->group(function () {

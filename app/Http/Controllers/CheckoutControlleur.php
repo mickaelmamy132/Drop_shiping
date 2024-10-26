@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Panie;
 use App\Models\Produit;
 use App\Models\Produit_lot;
 use App\Models\User;
@@ -10,12 +9,10 @@ use Stripe\Webhook;
 use Stripe\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log as FacadesLog;
 use Inertia\Inertia;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
-use Log;
-use Stripe\Climate\Order;
+
 
 class CheckoutControlleur extends Controller
 {
@@ -25,7 +22,7 @@ class CheckoutControlleur extends Controller
 
         $user = Auth::user();
         $produits = $request->input('produits');
-        // dd($produits);
+        dd($produits);
         $lineItems = [];
 
         if (is_array($produits)) {
@@ -50,7 +47,7 @@ class CheckoutControlleur extends Controller
 
                     // Si un produit lot est présent et que c'est un objet
                     if (isset($produit['produit_lot_id']) && is_array($produit['produit_lot_id'])) {
-                        // Directement récupérer les informations depuis l'objet produit_lot_id
+                        // Directement récupérer les informations depuis l'objet produit_lot_id(inclure de produit_lot dans la fonction pour trouver le produit lot)
                         $item = $produit['produit_lot_id'];
 
                         if (isset($item['nom']) && isset($item['prix'])) {
@@ -79,57 +76,26 @@ class CheckoutControlleur extends Controller
             'payment_method_types' => ['card'],
             'line_items' => $lineItems,
             'mode' => 'payment',
-            'success_url' => route('Panie.index', [], true) . '?session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => route('Commande', [], true) . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('checkout.cancel', [], true),
             'metadata' => [
-                'acheteur_id' => $user->id, // Stocker uniquement l'ID de l'utilisateur
-                'vendeurs' => json_encode($request->vendeurs), // Stocker les vendeurs dans les métadonnées
+                'acheteur_id' => $user->id,
+                'vendeur_id' => json_encode($request->vendeur_id),
+                'produit_ids' => json_encode(array_column($produits, 'produit_id')),
+                'produit_lot_ids' => json_encode(array_column($produits, 'produit_lot_id')),
+                'quantity' => json_encode(array_column($produits, 'quantite')),
             ],
-        ]);
-
-        // Rediriger vers Stripe
+        ]);        // Rediriger vers Stripe
         return Inertia::location($session->url);
     }
 
-    public function handleWebhook(Request $request)
-    {
-        // Vérifier l'URL et les en-têtes de la requête
-        return Inertia::render("ViewClientAcheteur/Produit_lot");
-
-        // $payload = $request->getContent();
-        // $sigHeader = $request->header('Stripe-Signature');
-        // $endpointSecret = (config('Stripe.wh')); // Récupérer le secret dans la config
-
-
-        // try {
-        //     $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
-        // } catch (\UnexpectedValueException $e) {
-        //     // Payload invalide
-        //     return response()->json(['error' => 'Invalid payload'], 400);
-        // } catch (\Stripe\Exception\SignatureVerificationException $e) {
-        //     // Signature non valide
-        //     return response()->json(['error' => 'Invalid signature'], 400);
-        // }
-
-        // // Traiter les événements Stripe ici
-        // if ($event->type === 'checkout.session.completed') {
-        //     $session = $event->data->object;
-        //     // Récupérer l'ID de la session Stripe et traiter le paiement
-        //     $this->handleSuccessfulPayment($session);
-        // }
-
-        // return response()->json(['status' => 'success'], 200);
-    }
 
     protected function handleSuccessfulPayment($session)
     {
         return response()->json(['status' => 'success', 'message' => 'Payment processed successfully.'], 200);
     }
 
-    // public function success()
-    // {
-    //     return view('success');
-    // }
+    public function success() {}
 
     // public function cancel()
     // {

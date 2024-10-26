@@ -155,6 +155,16 @@ export default function Welcome({ auth }) {
                         </li>
                     </ul>
                 </motion.div>
+                <motion.div 
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="flex flex-row justify-center gap-5 items-center rounded-lg px-4 md:px-8 py-8 md:py-12 lg:py-20 text-center block-cta bg-gradient-to-r "
+                >
+                    <Link href='/voir-rubriques' className='bg-blue-400 p-3 rounded-xl hover:animate-pulse hover:bg-green-500'>voir les article</Link>
+                    <Link href='/voir-lots' className='bg-blue-400 p-3 rounded-xl hover:animate-pulse hover:bg-green-500'>voir les lots</Link>
+                </motion.div>
+
 
                 <div className='mb-10'>
                     <CarouselCustomArrows />

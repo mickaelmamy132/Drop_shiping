@@ -4,7 +4,6 @@ import { Card, Typography, Button, Select, Option } from '@material-tailwind/rea
 import { Link } from '@inertiajs/react';
 
 export default function ProductCard({ produit }) {
-  console.log(produit);
   const [quantity, setQuantity] = useState('1');
 
   return (

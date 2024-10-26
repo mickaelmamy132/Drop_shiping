@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
+import GuestLayout_2 from '@/Layouts/GuestLayout_2';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Form, Input, Checkbox, Button, Select, Spin } from 'antd';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
 
-export default function Register_acheteur_2({user}) {
-    
+export default function Register_acheteur_2({ user }) {
+
     const { data, setData, post, processing, reset } = useForm({
         numero: '',
         genre: '',
         accepte: false,
-        agreement: false, 
+        agreement: false,
         tva: '',
         nif: '',
         pays: '',
@@ -45,17 +45,16 @@ export default function Register_acheteur_2({user}) {
     };
 
     const onFinish = () => {
-        // console.log(data);
         post(route('register_acheteur_2'), {
             onSuccess: () => reset('password', 'password_confirmation'),
         });
     };
 
-    const [form] = Form.useForm();
-
     return (
-        <GuestLayout>
+
+        <GuestLayout_2>
             <Head title="Register" />
+
 
             <Form
                 onFinish={onFinish}
@@ -208,6 +207,6 @@ export default function Register_acheteur_2({user}) {
                     </div>
                 </Form.Item>
             </Form>
-        </GuestLayout>
+        </GuestLayout_2>
     );
 }

@@ -13,12 +13,21 @@ return new class extends Migration
     {
         Schema::create('commandes', function (Blueprint $table) {
             $table->id();
+            $table->string('reference');
             $table->unsignedBigInteger('acheteur_id');
-            $table->decimal('total_prix', 10, 2);
-            $table->string('status');  // Status global de la commande
+            $table->integer('quantite');
+            $table->unsignedBigInteger('produit_id');
+            $table->unsignedBigInteger('produit_lot_id');
+            $table->decimal('total', 10, 2);
+            $table->string('status');
+            $table->text('adresse_livraison');
+            $table->string('telephone');
+            $table->string('email');
             $table->timestamps();
 
             $table->foreign('acheteur_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('produit_id')->references('id')->on('produits')->onDelete('cascade');
+            $table->foreign('produit_lot_id')->references('id')->on('produit_lots')->onDelete('cascade');
         });
     }
 

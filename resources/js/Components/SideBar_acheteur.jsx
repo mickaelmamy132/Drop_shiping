@@ -15,6 +15,7 @@ import {
   ListBulletIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  ShoppingBagIcon,
 } from "@heroicons/react/24/solid";
 import { Link, usePage } from "@inertiajs/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -124,7 +125,7 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                   >
                     <div className="flex items-center">
                       <ListItemPrefix>
-                        <ListBulletIcon classNapathme="h-5 w-5 mr-3" />
+                        <ListBulletIcon className="h-5 w-5 mr-3" />
                       </ListItemPrefix>
                       <Typography color={isActive('/Produit_lots') || isActive('/Produit') ? "blue" : darkMode ? "white" : "blue-gray"} className="font-normal">
                         Liste des lots
@@ -143,17 +144,32 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                       >
                         <Link
                           href={route('Produit_lots')}
-                          className={`block py-2 ${darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500`}>
+                          className={`block py-2 ${darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500`}
+                        >
                           Tous les lots
                         </Link>
                         <Link
                           href={route('Produit.index')}
-                          className={`block py-2 ${darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500`}>
+                          className={`block py-2 ${darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500`}
+                        >
                           Tous les articles
                         </Link>
                       </motion.div>
                     )}
                   </AnimatePresence>
+                </motion.div>
+                <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.4 }}>
+                  <Link href={route('Commande')}>
+                    <ListItem className={`hover:bg-blue-50 transition-colors duration-300 ${darkMode ? 'text-gray-300 hover:bg-gray-700' : ''}`}>
+                      <ListItemPrefix>
+                        <ShoppingBagIcon className="h-5 w-5" />
+                      </ListItemPrefix>
+                      Commande
+                      <ListItemSuffix>
+                        <Chip value="14" size="sm" variant="ghost" color="blue" className="rounded-full" />
+                      </ListItemSuffix>
+                    </ListItem>
+                  </Link>
                 </motion.div>
                 <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.4 }}>
                   <ListItem className={`hover:bg-blue-50 transition-colors duration-300 ${darkMode ? 'text-gray-300 hover:bg-gray-700' : ''}`}>
@@ -170,7 +186,6 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
             </Card>
           </motion.div>
         )}
-      </AnimatePresence>
-    </>
+      </AnimatePresence>    </>
   );
 }

@@ -10,8 +10,12 @@ use App\Models\Panie;
 use App\Models\Produit;
 use App\Models\Produit_lot;
 use Illuminate\Auth\Events\Validated;
+use Stripe\Webhook;
+
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Stripe\Stripe;
 
 class PanieController extends Controller
 {

@@ -10,8 +10,15 @@ class Commande extends Model
     use HasFactory;
     protected $fillable = [
         'acheteur_id',
-        'total_prix',
+        'reference',
+        'quantite',
+        'produit_id',
+        'produit_lot_id',
+        'total',
         'status',
+        'adresse_livraison',
+        'telephone',
+        'email'
     ];
 
     public function paniers()
