@@ -61,18 +61,17 @@ export default function Commande({ auth, message, commandes }) {
                                                     <td className="px-6 py-4 whitespace-nowrap">{commande.created_at}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">{commande.produit_id}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">{commande.quantite}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{commande.adresse_livraison}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                                            commande.statut === 'En cours' ? 'bg-green-100 text-green-800' :
-                                                            commande.statut === 'En attente' ? 'bg-yellow-100 text-yellow-800' :
+                                                            commande.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                                            commande.status === 'En attente' ? 'bg-yellow-100 text-yellow-800' :
                                                             'bg-gray-100 text-gray-800'
                                                         }`}>
-                                                            {commande.statut}
+                                                            {commande.status}
                                                         </span>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">{commande.total} €</td>
-                                                    {/* <td className="px-6 py-4 whitespace-nowrap">{commande.mode_paiement}</td> */}
+                                                    <td className="px-6 py-4 whitespace-nowrap">{commande.adresse_livraison}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                         <button className="text-indigo-600 hover:text-indigo-900 mr-2">Voir</button>
                                                         <button className="text-red-600 hover:text-red-900">Annuler</button>

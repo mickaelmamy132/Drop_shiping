@@ -18,7 +18,8 @@ class Commande extends Model
         'status',
         'adresse_livraison',
         'telephone',
-        'email'
+        'email',
+        'vendeur_id',
     ];
 
     public function paniers()

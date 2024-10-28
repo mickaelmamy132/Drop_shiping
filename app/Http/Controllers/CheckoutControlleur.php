@@ -15,15 +15,17 @@ use Stripe\Checkout\Session;
 
 
 class CheckoutControlleur extends Controller
-{
+{ 
     public function createCheckoutSession(Request $request)
     {
         Stripe::setApiKey(config('Stripe.sk'));
 
         $user = Auth::user();
         $produits = $request->input('produits');
-        dd($produits);
+        // dd($produits);
         $lineItems = [];
+        $vendeursProduits = [];
+        $vendeursLots = [];
 
         if (is_array($produits)) {
             foreach ($produits as $produit) {
@@ -31,6 +33,7 @@ class CheckoutControlleur extends Controller
                     // Si un produit normal est présent
                     if (isset($produit['produit_id'])) {
                         $item = Produit::find($produit['produit_id']);
+                        // dd($item);
                         if ($item) {
                             $lineItems[] = [
                                 'price_data' => [
@@ -42,25 +45,26 @@ class CheckoutControlleur extends Controller
                                 ],
                                 'quantity' => $produit['quantite'] ?? 1,
                             ];
+                            $vendeursProduits[$item->id] = $item->vendeur_id;
                         }
                     }
 
                     // Si un produit lot est présent et que c'est un objet
                     if (isset($produit['produit_lot_id']) && is_array($produit['produit_lot_id'])) {
-                        // Directement récupérer les informations depuis l'objet produit_lot_id(inclure de produit_lot dans la fonction pour trouver le produit lot)
-                        $item = $produit['produit_lot_id'];
-
-                        if (isset($item['nom']) && isset($item['prix'])) {
+                        // Directement récupérer les informations depuis l'objet produit_lot_id
+                        $item = Produit_lot::find($produit['produit_lot_id']['id']);
+                        if ($item) {
                             $lineItems[] = [
                                 'price_data' => [
                                     'currency' => 'eur',
                                     'product_data' => [
-                                        'name' => $item['nom'],
+                                        'name' => $item->nom,
                                     ],
                                     'unit_amount' => $produit['prix_totale'] * 100, // Prix en centimes
                                 ],
                                 'quantity' => $produit['quantite'] ?? 1,
                             ];
+                            $vendeursLots[$item->id] = $item->vendeur_id;
                         }
                     }
                 } else {
@@ -76,18 +80,18 @@ class CheckoutControlleur extends Controller
             'payment_method_types' => ['card'],
             'line_items' => $lineItems,
             'mode' => 'payment',
-            'success_url' => route('Commande', [], true) . '?session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => route('Commande', [], true) . '?session_id={CHECKOUT_SESSION_ID}&success=true',
             'cancel_url' => route('checkout.cancel', [], true),
             'metadata' => [
                 'acheteur_id' => $user->id,
-                'vendeur_id' => json_encode($request->vendeur_id),
+                'vendeurs_produits' => json_encode($vendeursProduits),
+                'vendeurs_lots' => json_encode($vendeursLots),
                 'produit_ids' => json_encode(array_column($produits, 'produit_id')),
                 'produit_lot_ids' => json_encode(array_column($produits, 'produit_lot_id')),
                 'quantity' => json_encode(array_column($produits, 'quantite')),
             ],
         ]);        // Rediriger vers Stripe
-        return Inertia::location($session->url);
-    }
+        return Inertia::location($session->url);    }
 
 
     protected function handleSuccessfulPayment($session)
