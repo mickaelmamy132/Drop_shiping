@@ -22,50 +22,65 @@ class CommandeControlleur extends Controller
                 $session = \Stripe\Checkout\Session::retrieve($sessionId);
 
                 if ($session->payment_status === 'paid') {
-
                     $produit_ids = json_decode($session->metadata->produit_ids ?? '[]');
                     $produit_lot_ids = json_decode($session->metadata->produit_lot_ids ?? '[]');
                     $quantities = json_decode($session->metadata->quantity ?? '[]');
-                    $vendeurs_lots = json_decode($session->metadata->vendeurs_lots ?? '{}');
-                    $vendeurs_produits = json_decode($session->metadata->vendeurs_produits ?? '{}');
+                    $vendeurs_lots = json_decode($session->metadata->vendeurs_lots ?? '{}', true);
+                    $vendeurs_produits = json_decode($session->metadata->vendeurs_produits ?? '{}', true);
+                    $prix_unitaires_produits = json_decode($session->metadata->prix_unitaires_produits ?? '{}', true);
+                    $prix_unitaires_lots = json_decode($session->metadata->prix_unitaires_lots ?? '{}', true);
 
                     foreach ($produit_ids as $index => $produit_id) {
-                        $commandeData = [
-                            'acheteur_id' => $session->metadata->acheteur_id,
-                            'reference' => $session->id,
-                            'quantite' => $quantities ?? 1,
-                            'total' => $session->amount_total / 100,
-                            'status' => 'completed',
-                            'adresse_livraison' => null,
-                            'telephone' => $session->customer_details->phone ?? 'Téléphone non fourni',
-                            'email' => $session->customer_details->email ?? 'Email non fourni'
-                        ];
+                        if ($produit_id) {  // Vérifie si le produit_id est valide
+                            $commandeData = [
+                                'acheteur_id' => $session->metadata->acheteur_id,
+                                'reference' => $session->id,
+                                'quantite' => $quantities[$index] ?? 1,
+                                'total' => ($prix_unitaires_produits[$produit_id] ?? 0) * ($quantities[$index] ?? 1),
+                                'prix_unitaire' => $prix_unitaires_produits[$produit_id] ?? 0,
+                                'status' => 'en cours',
+                                'adresse_livraison' => null,
+                                'telephone' => $session->customer_details->phone ?? 'Téléphone non fourni',
+                                'email' => $session->customer_details->email ?? 'Email non fourni',
+                                'produit_id' => $produit_id,
+                                'produit_lot_id' => null,
+                                'vendeur_id' => $vendeurs_produits[$produit_id] ?? null
+                            ];
 
-                        if ($produit_id) {
-                            $commandeData['produit_id'] = $produit_id;
-                            $commandeData['produit_lot_id'] = null;
-                            $commandeData['vendeur_id'] = $vendeurs_produits->{$produit_id} ?? null;
-                        } else {
-                            $lot_data = $produit_lot_ids[$index] ?? null;
-                            if ($lot_data) {
-                                $commandeData['produit_lot_id'] = $lot_data->id ?? null;
-                                $commandeData['produit_id'] = null;
-                                $commandeData['vendeur_id'] = $vendeurs_lots->{$lot_data->id} ?? null;
-                            }
-                        }
-
-                        $commande = Commande::create($commandeData);
-                        
-                        if (!$commande) {
-                            return redirect()->route('Panie.index')->with('error', 'Une erreur est survenue lors de la création de la commande.');
+                            Commande::create($commandeData);
                         }
                     }
+
+                    // Enregistrer les commandes pour chaque produit en lot
+                    foreach ($produit_lot_ids as $index => $produit_lot) {
+                        $produit_lot_id = is_object($produit_lot) ? $produit_lot->id : $produit_lot;
+
+                        if ($produit_lot_id) {  // Vérifie si le produit_lot_id est valide
+                            $commandeData = [
+                                'acheteur_id' => $session->metadata->acheteur_id,
+                                'reference' => $session->id,
+                                'quantite' => $quantities[$index] ?? 1,
+                                'total' => ($prix_unitaires_lots[$produit_lot_id] ?? 0) * ($quantities[$index] ?? 1),
+                                'prix_unitaire' => $prix_unitaires_lots[$produit_lot_id] ?? 0,
+                                'status' => 'en cours',
+                                'adresse_livraison' => null,
+                                'telephone' => $session->customer_details->phone ?? 'Téléphone non fourni',
+                                'email' => $session->customer_details->email ?? 'Email non fourni',
+                                'produit_id' => null,
+                                'produit_lot_id' => $produit_lot_id,
+                                'vendeur_id' => $vendeurs_lots[$produit_lot_id] ?? null
+                            ];
+
+                            Commande::create($commandeData);
+                        }
+                    }
+
                     return redirect()->route("Commande")->with('success', 'Votre transaction a été effectuée avec succès!');
                 } else {
-                    return redirect()->route('Panie.index')->with('error', 'Le paiement a échoué.');
+                    return redirect()->route('Panier.index')->with('error', 'Le paiement a échoué.');
                 }
             } catch (\Exception $e) {
-                return redirect()->route('Panie.index')->with('error', 'Une erreur est survenue : ' . $e->getMessage());
+                return redirect()->route('Panier.index')->with('error', 'Une erreur est survenue : ' . $e->getMessage());
             }
         } else {
             $commandes = Commande::where('acheteur_id', Auth::user()->id)->get();

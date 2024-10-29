@@ -15,6 +15,7 @@ class Commande extends Model
         'produit_id',
         'produit_lot_id',
         'total',
+        'prix_unitaire',
         'status',
         'adresse_livraison',
         'telephone',

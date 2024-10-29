@@ -20,12 +20,13 @@ return new class extends Migration
             $table->unsignedBigInteger('produit_lot_id')->nullable();
             $table->unsignedBigInteger('vendeur_id')->nullable();
             $table->decimal('total', 10, 2);
+            $table->decimal('prix_unitaire', 10, 2);
             $table->string('status');
             $table->text('adresse_livraison');
             $table->string('telephone');
             $table->string('email');
             $table->timestamps();
-        
+
             // Foreign keys
             $table->foreign('acheteur_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('produit_id')->references('id')->on('produits')->onDelete('cascade');

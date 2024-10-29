@@ -35,18 +35,17 @@ class CheckoutControlleur extends Controller
         Stripe::setApiKey(config('Stripe.sk'));
         $user = Auth::user();
         $produits = $request->input('produits');
-        // dd($produits);
         $lineItems = [];
         $vendeursProduits = [];
         $vendeursLots = [];
+        $prixUnitaires_produits = [];
+        $prixUnitaires_lots = [];
 
         if (is_array($produits)) {
             foreach ($produits as $produit) {
                 if (is_array($produit)) {
-                    // Si un produit normal est présent
                     if (isset($produit['produit_id'])) {
-                        $item = Produit::find($produit['produit_id']);
-                        // dd($item);
+                       $item = Produit::find($produit['produit_id']);
                         if ($item) {
                             $lineItems[] = [
                                 'price_data' => [
@@ -54,17 +53,16 @@ class CheckoutControlleur extends Controller
                                     'product_data' => [
                                         'name' => $item->nom,
                                     ],
-                                    'unit_amount' => $item->prix * 100, // Prix en centimes
+                                    'unit_amount' => $item->prix * 100,
                                 ],
                                 'quantity' => $produit['quantite'] ?? 1,
                             ];
                             $vendeursProduits[$item->id] = $item->vendeur_id;
+                            $prixUnitaires_produits[$item->id] = $item->prix;
                         }
                     }
 
-                    // Si un produit lot est présent et que c'est un objet
                     if (isset($produit['produit_lot_id']) && is_array($produit['produit_lot_id'])) {
-                        // Directement récupérer les informations depuis l'objet produit_lot_id
                         $item = Produit_lot::find($produit['produit_lot_id']['id']);
                         if ($item) {
                             $lineItems[] = [
@@ -78,6 +76,7 @@ class CheckoutControlleur extends Controller
                                 'quantity' => $produit['quantite'] ?? 1,
                             ];
                             $vendeursLots[$item->id] = $item->vendeur_id;
+                            $prixUnitaires_lots[$item->id] = $produit['prix_totale'];
                         }
                     }
                 } else {
@@ -102,6 +101,8 @@ class CheckoutControlleur extends Controller
                 'produit_ids' => json_encode(array_column($produits, 'produit_id')),
                 'produit_lot_ids' => json_encode(array_column($produits, 'produit_lot_id')),
                 'quantity' => json_encode(array_column($produits, 'quantite')),
+                'prix_unitaires_produits' => json_encode($prixUnitaires_produits),
+                'prix_unitaires_lots' => json_encode($prixUnitaires_lots),
             ],
         ]);        // Rediriger vers Stripe
         return Inertia::location($session->url);
