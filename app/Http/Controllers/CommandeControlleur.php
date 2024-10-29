@@ -18,11 +18,11 @@ class CommandeControlleur extends Controller
 
         if ($sessionId && $success) {
             try {
-                \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+                Stripe::setApiKey(config('Stripe.sk'));
                 $session = \Stripe\Checkout\Session::retrieve($sessionId);
 
                 if ($session->payment_status === 'paid') {
-                    // Décoder les données de commande depuis les métadonnées
+
                     $produit_ids = json_decode($session->metadata->produit_ids ?? '[]');
                     $produit_lot_ids = json_decode($session->metadata->produit_lot_ids ?? '[]');
                     $quantities = json_decode($session->metadata->quantity ?? '[]');
@@ -30,43 +30,42 @@ class CommandeControlleur extends Controller
                     $vendeurs_produits = json_decode($session->metadata->vendeurs_produits ?? '{}');
 
                     foreach ($produit_ids as $index => $produit_id) {
-                        $commande = new Commande();
-                        $commande->acheteur_id = $session->metadata->acheteur_id;
-                        $commande->reference = $session->id;
-                        $commande->quantite = $quantities[$index] ?? 1;
+                        $commandeData = [
+                            'acheteur_id' => $session->metadata->acheteur_id,
+                            'reference' => $session->id,
+                            'quantite' => $quantities ?? 1,
+                            'total' => $session->amount_total / 100,
+                            'status' => 'completed',
+                            'adresse_livraison' => null,
+                            'telephone' => $session->customer_details->phone ?? 'Téléphone non fourni',
+                            'email' => $session->customer_details->email ?? 'Email non fourni'
+                        ];
 
                         if ($produit_id) {
-                            $commande->produit_id = $produit_id;
-                            $commande->produit_lot_id = null;
-                            $commande->vendeur_id = $vendeurs_produits->{$produit_id} ?? null;
+                            $commandeData['produit_id'] = $produit_id;
+                            $commandeData['produit_lot_id'] = null;
+                            $commandeData['vendeur_id'] = $vendeurs_produits->{$produit_id} ?? null;
                         } else {
                             $lot_data = $produit_lot_ids[$index] ?? null;
                             if ($lot_data) {
-                                $commande->produit_lot_id = $lot_data->id ?? null;
-                                $commande->produit_id = null;
-                                $commande->vendeur_id = $vendeurs_lots->{$lot_data->id} ?? null;
+                                $commandeData['produit_lot_id'] = $lot_data->id ?? null;
+                                $commandeData['produit_id'] = null;
+                                $commandeData['vendeur_id'] = $vendeurs_lots->{$lot_data->id} ?? null;
                             }
                         }
 
-                        $commande->total = $session->amount_total / 100;
-                        $commande->status = 'completed';
-                        $commande->adresse_livraison = null;
-                        $commande->telephone = $session->customer_details->phone ?? 'Téléphone non fourni';
-                        $commande->email = $session->customer_details->email ?? 'Email non fourni';
-
-                        $commande->save();
-
-                        if (!$commande->save()) {
-                            throw new \Exception('Erreur lors de l\'enregistrement de la commande');
+                        $commande = Commande::create($commandeData);
+                        
+                        if (!$commande) {
+                            return redirect()->route('Panie.index')->with('error', 'Une erreur est survenue lors de la création de la commande.');
                         }
                     }
-
-                    return redirect()->route("Commande")->with('message', 'Votre transaction a été effectuée avec succès!');
+                    return redirect()->route("Commande")->with('success', 'Votre transaction a été effectuée avec succès!');
                 } else {
-                    return redirect()->route("Commande")->with('error', 'Le paiement a échoué.');
+                    return redirect()->route('Panie.index')->with('error', 'Le paiement a échoué.');
                 }
             } catch (\Exception $e) {
-                return redirect()->route("Commande")->with('error', 'Une erreur est survenue : ' . $e->getMessage());
+                return redirect()->route('Panie.index')->with('error', 'Une erreur est survenue : ' . $e->getMessage());
             }
         } else {
             $commandes = Commande::where('acheteur_id', Auth::user()->id)->get();

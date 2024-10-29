@@ -28,9 +28,14 @@ export default function Commande({ auth, message, commandes }) {
                                 Gestion des Commandes
                             </motion.h1>
                             {message && (
-                                <div className="mb-4 p-4 bg-green-100 rounded-lg">
-                                    <p className="text-green-700">{message}</p>
-                                </div>
+                                <motion.div 
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="mb-4 p-4 bg-green-100 text-green-700 rounded-lg shadow-sm"
+                                >
+                                    {message}
+                                </motion.div>
                             )}
                             <motion.div
                                 initial={{ opacity: 0 }}

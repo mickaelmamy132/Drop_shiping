@@ -26,4 +26,16 @@ class Commande extends Model
     {
         return $this->hasMany(Panie::class, 'commande_id');
     }
+    public function produit()
+    {
+        return $this->belongsTo(Produit::class, 'produit_id');
+    }
+    public function produit_lot()
+    {
+        return $this->belongsTo(Produit_lot::class, 'produit_lot_id');
+    }
+    public function vendeur()
+    {
+        return $this->belongsTo(Vendeur::class, 'vendeur_id');
+    }
 }

@@ -15,11 +15,24 @@ use Stripe\Checkout\Session;
 
 
 class CheckoutControlleur extends Controller
-{ 
+{
+    private function checkInternetConnection()
+    {
+        $connected = @fsockopen("www.stripe.com", 443);
+        if ($connected) {
+            fclose($connected);
+            return true;
+        }
+        return false;
+    }
+
     public function createCheckoutSession(Request $request)
     {
-        Stripe::setApiKey(config('Stripe.sk'));
+        if (!$this->checkInternetConnection()) {
+            return response()->json(['error' => 'Pas de connexion Internet. Veuillez vérifier votre connexion.'], 503);
+        }
 
+        Stripe::setApiKey(config('Stripe.sk'));
         $user = Auth::user();
         $produits = $request->input('produits');
         // dd($produits);
@@ -91,8 +104,8 @@ class CheckoutControlleur extends Controller
                 'quantity' => json_encode(array_column($produits, 'quantite')),
             ],
         ]);        // Rediriger vers Stripe
-        return Inertia::location($session->url);    }
-
+        return Inertia::location($session->url);
+    }
 
     protected function handleSuccessfulPayment($session)
     {

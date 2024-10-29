@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('quantite');
             $table->unsignedBigInteger('produit_id')->nullable();
             $table->unsignedBigInteger('produit_lot_id')->nullable();
+            $table->unsignedBigInteger('vendeur_id')->nullable();
             $table->decimal('total', 10, 2);
             $table->string('status');
             $table->text('adresse_livraison');
@@ -29,6 +30,7 @@ return new class extends Migration
             $table->foreign('acheteur_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('produit_id')->references('id')->on('produits')->onDelete('cascade');
             $table->foreign('produit_lot_id')->references('id')->on('produit_lots')->onDelete('cascade');
+            $table->foreign('vendeur_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
