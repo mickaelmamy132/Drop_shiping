@@ -3,7 +3,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 
-export default function Commande({ auth, message, commandes }) {
+export default function Commande({ auth, message, success, commandes }) {
+    console.log(commandes)
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -27,14 +28,14 @@ export default function Commande({ auth, message, commandes }) {
                             >
                                 Gestion des Commandes
                             </motion.h1>
-                            {message && (
+                            {(message || success) && (
                                 <motion.div 
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.3 }}
                                     className="mb-4 p-4 bg-green-100 text-green-700 rounded-lg shadow-sm"
                                 >
-                                    {message}
+                                    {message || success}
                                 </motion.div>
                             )}
                             <motion.div
@@ -47,29 +48,36 @@ export default function Commande({ auth, message, commandes }) {
                                     <table className="min-w-full divide-y divide-gray-200">
                                         <thead className="bg-gray-50">
                                             <tr>
-                                                {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">N° Commande</th> */}
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produit</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">État</th>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantité</th>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix unitaire</th>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Addresse de livraison</th>
-                                                {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mode de paiement</th> */}
-                                                
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vendeur</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact Vendeur</th>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             {commandes.map((commande, index) => (
                                                 <tr key={index}>
-                                                    {/* <td className="px-6 py-4 whitespace-nowrap">{commande.reference}</td> */}
                                                     <td className="px-6 py-4 whitespace-nowrap">{new Date(commande.created_at).toLocaleDateString()}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{commande.produit_id}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {commande.produit ? commande.produit.nom : commande.produit_lot.nom}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {commande.produit ? commande.produit.description : '-'}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {commande.produit ? commande.produit.etat : commande.produit_lot.etat}
+                                                    </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">{commande.quantite}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">{commande.prix_unitaire} €</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">{commande.total} €</td>
-                                                     <td className="px-6 py-4 whitespace-nowrap">
+                                                    <td className="px-6 py-4 whitespace-nowrap">
                                                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                                                             commande.status === 'livres' ? 'bg-green-100 text-green-800' :
                                                             commande.status === 'en cours' ? 'bg-yellow-100 text-yellow-800' :
@@ -78,7 +86,8 @@ export default function Commande({ auth, message, commandes }) {
                                                             {commande.status}
                                                         </span>
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{commande.adresse_livraison}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{commande.vendeur.nom_de_l_entreprise}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{commande.vendeur.numero}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                         <button className="text-indigo-600 hover:text-indigo-900 mr-2">Voir</button>
                                                         <button className="text-red-600 hover:text-red-900">Annuler</button>

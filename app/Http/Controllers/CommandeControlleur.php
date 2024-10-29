@@ -83,7 +83,7 @@ class CommandeControlleur extends Controller
                 return redirect()->route('Panier.index')->with('error', 'Une erreur est survenue : ' . $e->getMessage());
             }
         } else {
-            $commandes = Commande::where('acheteur_id', Auth::user()->id)->get();
+            $commandes = Commande::with(['produit', 'produit_lot', 'vendeur'])->where('acheteur_id', Auth::user()->id)->get();
             return Inertia::render("ViewClientAcheteur/Commande", [
                 'commandes' => $commandes
             ]);
