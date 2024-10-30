@@ -113,7 +113,6 @@ class CheckoutControlleur extends Controller
         return response()->json(['status' => 'success', 'message' => 'Payment processed successfully.'], 200);
     }
 
-    public function success() {}
 
     // public function cancel()
     // {

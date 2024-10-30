@@ -6,14 +6,21 @@ import { useState } from 'react';
 
 export default function Welcome({ auth }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [isAcheteurOpen, setIsAcheteurOpen] = useState(false);
-    const [isVendeurOpen, setIsVendeurOpen] = useState(false);
+    const [activeMenu, setActiveMenu] = useState(null);
 
     const handleImageError = () => {
         document.getElementById('screenshot-container')?.classList.add('!hidden');
         document.getElementById('docs-card')?.classList.add('!row-span-1');
         document.getElementById('docs-card-content')?.classList.add('!flex-row');
         document.getElementById('background')?.classList.add('!hidden');
+    };
+
+    const toggleMenu = (menu) => {
+        if (activeMenu === menu) {
+            setActiveMenu(null);
+        } else {
+            setActiveMenu(menu);
+        }
     };
 
     return (
@@ -50,7 +57,7 @@ export default function Welcome({ auth }) {
                                     <>
                                         <li className="relative">
                                             <button
-                                                onClick={() => setIsAcheteurOpen(!isAcheteurOpen)}
+                                                onClick={() => toggleMenu('acheteur')}
                                                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                             >
                                                 Acheteur
@@ -58,7 +65,7 @@ export default function Welcome({ auth }) {
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                                                 </svg>
                                             </button>
-                                            {isAcheteurOpen && (
+                                            {activeMenu === 'acheteur' && (
                                                 <ul className="absolute left-full top-0 w-48 rounded-md bg-white shadow-lg md:static md:flex md:w-auto md:shadow-none">
                                                     <li>
                                                         <NavLink
@@ -81,7 +88,7 @@ export default function Welcome({ auth }) {
                                         </li>
                                         <li className="relative">
                                             <button
-                                                onClick={() => setIsVendeurOpen(!isVendeurOpen)}
+                                                onClick={() => toggleMenu('vendeur')}
                                                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                             >
                                                 Vendeur
@@ -89,7 +96,7 @@ export default function Welcome({ auth }) {
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                                                 </svg>
                                             </button>
-                                            {isVendeurOpen && (
+                                            {activeMenu === 'vendeur' && (
                                                 <ul className="absolute left-full top-0 w-48 rounded-md bg-white shadow-lg md:static md:flex md:w-auto md:shadow-none">
                                                     <li>
                                                         <NavLink
@@ -114,8 +121,7 @@ export default function Welcome({ auth }) {
                                 )}
                             </ul>
                         </div>
-                    </div>
-                    <div className="flex items-center gap-6">
+                    </div>                    <div className="flex items-center gap-6">
                         <button className="text-white px-5 py-2 bg-[#a6c1ee] rounded-full hover:bg-[#87a8e7] transition-colors duration-300">Connecter!</button>
                         <i className="fas fa-bars text-3xl cursor-pointer md:hidden" onClick={() => setIsOpen(!isOpen)} data-menu="fas fa-bars"></i>
                     </div>
