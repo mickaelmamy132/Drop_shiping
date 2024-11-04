@@ -106,7 +106,7 @@ const FlexContainer = styled.div`
   }
 `;
 
-export default function Produit_lot_infos({ auth, produit_lot, sellerId, buyerId }) {
+export default function Produit_lot_infos({ auth, produit_lot }) {
     const [isVisible, setIsVisible] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
 

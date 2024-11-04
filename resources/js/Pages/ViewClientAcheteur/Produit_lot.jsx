@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Pagination from '../../Components/Pagination';
 
 export default function Produit_lot({ lots, auth }) {
-    console.log(lots);
     const [endDates, setEndDates] = useState({});
     const [timesLeft, setTimesLeft] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);

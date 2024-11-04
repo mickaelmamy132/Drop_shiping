@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ref, push, onValue } from "firebase/database";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
-import { database, storage } from "../../../firebaseConfig";
+import { v4 as uuidv4 } from "uuid";
+import { database, storage } from "../../../firebaseConfig"; 
 import EmojiPicker from 'emoji-picker-react';
-import { v4 as uuidv4 } from 'uuid';
+// import base64 from 'base-64';
 
 function ChatModal({ productId, buyerId, sellerId, isOpen, onClose }) {
   const [messages, setMessages] = useState([]);
@@ -14,6 +15,24 @@ function ChatModal({ productId, buyerId, sellerId, isOpen, onClose }) {
   const [audioURL, setAudioURL] = useState('');
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+
+  const performSignIn = (username, password) => {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    // headers.append('Authorization', 'Basic ' + base64.encode(username + ":" + password));
+    headers.append('Origin','http://localhost:8000');
+
+    fetch('sign_in', {
+      mode: 'cors',
+      credentials: 'include',
+      method: 'POST',
+      headers: headers
+    })
+    .then(response => response.json())
+    .then(json => console.log(json))
+    .catch(error => console.log('Authorization failed: ' + error.message));
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -35,10 +54,10 @@ function ChatModal({ productId, buyerId, sellerId, isOpen, onClose }) {
     }
   }, [isOpen, productId]);
 
-  const onEmojiClick = (event, emojiObject) => {
-    console.log(emojiObject);
-    setNewMessage(prevInput => prevInput + emojiObject.native);
-    setShowEmojiPicker(false);
+  const onEmojiClick = (emojiObject) => {
+    if (emojiObject && emojiObject.emoji) {
+      setNewMessage(prevInput => prevInput + emojiObject.emoji);
+    }
   };
 
   const startRecording = async () => {
@@ -65,18 +84,11 @@ function ChatModal({ productId, buyerId, sellerId, isOpen, onClose }) {
     }
   };
 
-
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-    }
-  };
-
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      const imageRef = ref(storage, `chat-images/${productId}/${uuidv4()}`);
+      performSignIn('your_username', 'your_password');
+      const imageRef = storageRef(storage, `chat-images/${productId}/${uuidv4()}`);
       try {
         const snapshot = await uploadBytes(imageRef, file);
         const imageUrl = await getDownloadURL(snapshot.ref);
@@ -86,8 +98,16 @@ function ChatModal({ productId, buyerId, sellerId, isOpen, onClose }) {
       }
     }
   };
+  
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
 
   const handleSendAudio = async (audioBlob) => {
+    performSignIn('your_username', 'your_password');
     const audioRef = ref(storage, `chat-audio/${productId}/${uuidv4()}`);
     try {
       const snapshot = await uploadBytes(audioRef, audioBlob);
@@ -175,8 +195,18 @@ function ChatModal({ productId, buyerId, sellerId, isOpen, onClose }) {
                     className="hidden"
                     onChange={handleImageUpload}
                   />
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  <svg
+                    className="w-5 h-5 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
                   </svg>
                 </label>
                 <button
