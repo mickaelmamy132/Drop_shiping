@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import { Link } from '@inertiajs/react';
 import { ChatBubbleBottomCenterTextIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
+import { Button } from 'antd';
 
 const StyledCard = styled(motion.div)`
   background: white;
@@ -106,6 +107,15 @@ const FlexContainer = styled.div`
 
 export default function Produit_lot_infos({ auth, produit_lot }) {
     const [isVisible, setIsVisible] = useState(false);
+    const [isChatOpen, setIsChatOpen] = useState(false);
+
+    const handleOpenChat = () => {
+      setIsChatOpen(true);
+    };
+  
+    const handleCloseChat = () => {
+      setIsChatOpen(false);
+    };
 
     useEffect(() => {
         setIsVisible(true);
@@ -157,7 +167,7 @@ export default function Produit_lot_infos({ auth, produit_lot }) {
                                             <motion.div variants={fadeIn}><StyledInfo><StyledStrong>État:</StyledStrong> {produit_lot[0].etat || 'Non disponible'}</StyledInfo></motion.div>
                                             <motion.div variants={fadeIn}>
                                                 <button>
-                                                    <ChatBubbleOvalLeftEllipsisIcon className='w-7 h-6 mr-2 text-white'/>
+                                                    <ChatBubbleOvalLeftEllipsisIcon className='w-7 h-6 mr-2 text-white' />
                                                 </button>
                                             </motion.div>
                                         </motion.div>
@@ -218,23 +228,29 @@ export default function Produit_lot_infos({ auth, produit_lot }) {
                             >
                                 <StyledTitle>Informations de paiement et de confiance</StyledTitle>
                                 <motion.div variants={staggerAnimation}>
-                                    <motion.div variants={fadeIn}>
-                                        <StyledInfo><StyledStrong>Méthodes de paiement sécurisées:</StyledStrong> Nous acceptons les cartes de crédit, PayPal et les virements bancaires. Toutes les transactions sont cryptées et sécurisées.</StyledInfo>
-                                    </motion.div>
-                                    <motion.div variants={fadeIn}>
-                                        <StyledInfo><StyledStrong>Garantie de satisfaction:</StyledStrong> Nous offrons une garantie de remboursement de 30 jours pour tous les achats effectués sur notre site.</StyledInfo>
-                                    </motion.div>
-                                    <motion.div variants={fadeIn}>
-                                        <StyledInfo><StyledStrong>Vérification des vendeurs:</StyledStrong> Tous nos vendeurs sont soigneusement vérifiés pour assurer la qualité et la fiabilité des produits proposés.</StyledInfo>
-                                    </motion.div>
-                                    <motion.div variants={fadeIn}>
-                                        <StyledInfo><StyledStrong>Service client:</StyledStrong> Notre équipe de support est disponible 24/7 pour répondre à vos questions et résoudre tout problème éventuel.</StyledInfo>
-                                    </motion.div>
-                                    <motion.div variants={fadeIn}>
-                                        <StyledInfo><StyledStrong>Protection des données:</StyledStrong> Vos informations personnelles sont protégées conformément aux réglementations en vigueur sur la protection des données.</StyledInfo>
-                                    </motion.div>
+                                    {/* ... existing info content ... */}
                                 </motion.div>
                             </StyledCard>
+                            <StyledButton
+                                as={motion.button}
+                                variants={fadeIn}
+                                whileHover={{
+                                    scale: 1.05,
+                                    backgroundColor: '#2980b9'
+                                }}
+                                whileTap={{ scale: 0.95 }}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: '100%',
+                                    marginTop: '20px',
+                                    backgroundColor: '#3498db'
+                                }}
+                            >
+                                <ChatBubbleBottomCenterTextIcon onClick={handleOpenChat} className="w-6 h-6 mr-2" />
+                                Discuter avec le vendeur
+                            </StyledButton>
                         </div>
                     </FlexContainer>
                 </motion.div>

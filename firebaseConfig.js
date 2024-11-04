@@ -1,22 +1,21 @@
-// firebaseConfig.js
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore"; // Pour Firestore
-import { getDatabase } from "firebase/database"; // Pour Realtime Database
-import { getAuth } from "firebase/auth";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "VOTRE_API_KEY",
-    authDomain: "VOTRE_AUTH_DOMAIN",
-    projectId: "VOTRE_PROJECT_ID",
-    storageBucket: "VOTRE_STORAGE_BUCKET",
-    messagingSenderId: "VOTRE_MESSAGING_SENDER_ID",
-    appId: "VOTRE_APP_ID",
+    apiKey: "AIzaSyAHMrgvHK4XUI0-dIu197P7AYHM93dw5Ag",
+    authDomain: "dropshiping-49698.firebaseapp.com",
+    projectId: "dropshiping-49698",
+    storageBucket: "dropshiping-49698.firebasestorage.app",
+    messagingSenderId: "248091961714",
+    appId: "1:248091961714:web:54a82e417c8f9a8d9755eb",
+    measurementId: "G-VXJ34SSXC0"
 };
 
-// Initialisation Firebase
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app); // Pour Firestore
-// const db = getDatabase(app); // Pour Realtime Database si vous préférez
-const auth = getAuth(app);
-
-export { db, auth };
+const analytics = getAnalytics(app);
