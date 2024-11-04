@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Link } from '@inertiajs/react';
 import { ChatBubbleBottomCenterTextIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
 import { Button } from 'antd';
+import Chat_acheteur from '../../Components/Chat_acheteur';
 
 const StyledCard = styled(motion.div)`
   background: white;
@@ -105,16 +106,16 @@ const FlexContainer = styled.div`
   }
 `;
 
-export default function Produit_lot_infos({ auth, produit_lot }) {
+export default function Produit_lot_infos({ auth, produit_lot, sellerId, buyerId }) {
     const [isVisible, setIsVisible] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
 
     const handleOpenChat = () => {
-      setIsChatOpen(true);
+        setIsChatOpen(true);
     };
-  
+
     const handleCloseChat = () => {
-      setIsChatOpen(false);
+        setIsChatOpen(false);
     };
 
     useEffect(() => {
@@ -145,10 +146,7 @@ export default function Produit_lot_infos({ auth, produit_lot }) {
                         <div className="product-info" style={{ flex: 2 }}>
                             {produit_lot && produit_lot.length > 0 ? (
                                 <>
-                                    <StyledCard
-                                        variants={fadeIn}
-                                        whileHover={hoverAnimation}
-                                    >
+                                    <StyledCard variants={fadeIn} whileHover={hoverAnimation}>
                                         <StyledTitle>Informations générales</StyledTitle>
                                         {produit_lot[0].image_lot && (
                                             <motion.div
@@ -160,23 +158,30 @@ export default function Produit_lot_infos({ auth, produit_lot }) {
                                             </motion.div>
                                         )}
                                         <motion.div variants={staggerAnimation}>
-                                            <motion.div variants={fadeIn}><StyledInfo><StyledStrong>Nom:</StyledStrong> {produit_lot[0].nom || 'Non disponible'}</StyledInfo></motion.div>
-                                            <motion.div variants={fadeIn}><StyledInfo><StyledStrong>Description:</StyledStrong> {produit_lot[0].description || 'Non disponible'}</StyledInfo></motion.div>
-                                            <motion.div variants={fadeIn}><StyledInfo><StyledStrong>Prix:</StyledStrong> {produit_lot[0].prix ? `${produit_lot[0].prix} €` : 'Non disponible'}</StyledInfo></motion.div>
-                                            <motion.div variants={fadeIn}><StyledInfo><StyledStrong>Quantité:</StyledStrong> {produit_lot[0].quantite || 'Non disponible'}</StyledInfo></motion.div>
-                                            <motion.div variants={fadeIn}><StyledInfo><StyledStrong>État:</StyledStrong> {produit_lot[0].etat || 'Non disponible'}</StyledInfo></motion.div>
                                             <motion.div variants={fadeIn}>
-                                                <button>
+                                                <StyledInfo><StyledStrong>Nom:</StyledStrong> {produit_lot[0].nom || 'Non disponible'}</StyledInfo>
+                                            </motion.div>
+                                            <motion.div variants={fadeIn}>
+                                                <StyledInfo><StyledStrong>Description:</StyledStrong> {produit_lot[0].description || 'Non disponible'}</StyledInfo>
+                                            </motion.div>
+                                            <motion.div variants={fadeIn}>
+                                                <StyledInfo><StyledStrong>Prix:</StyledStrong> {produit_lot[0].prix ? `${produit_lot[0].prix} €` : 'Non disponible'}</StyledInfo>
+                                            </motion.div>
+                                            <motion.div variants={fadeIn}>
+                                                <StyledInfo><StyledStrong>Quantité:</StyledStrong> {produit_lot[0].quantite || 'Non disponible'}</StyledInfo>
+                                            </motion.div>
+                                            <motion.div variants={fadeIn}>
+                                                <StyledInfo><StyledStrong>État:</StyledStrong> {produit_lot[0].etat || 'Non disponible'}</StyledInfo>
+                                            </motion.div>
+                                            <motion.div variants={fadeIn}>
+                                                <button onClick={handleOpenChat}>
                                                     <ChatBubbleOvalLeftEllipsisIcon className='w-7 h-6 mr-2 text-white' />
                                                 </button>
                                             </motion.div>
                                         </motion.div>
                                     </StyledCard>
 
-                                    <StyledCard
-                                        variants={fadeIn}
-                                        whileHover={hoverAnimation}
-                                    >
+                                    <StyledCard variants={fadeIn} whileHover={hoverAnimation}>
                                         <StyledTitle>Catégorie</StyledTitle>
                                         <motion.div variants={fadeIn}>
                                             <StyledInfo><StyledStrong>Nom de la catégorie:</StyledStrong> {produit_lot[0].categorie.nom || 'Non disponible'}</StyledInfo>
@@ -184,51 +189,66 @@ export default function Produit_lot_infos({ auth, produit_lot }) {
                                     </StyledCard>
 
                                     {produit_lot[0].enchere && produit_lot[0].enchere.length > 0 && (
-                                        <StyledCard
-                                            variants={fadeIn}
-                                            whileHover={hoverAnimation}
-                                        >
+                                        <StyledCard variants={fadeIn} whileHover={hoverAnimation}>
                                             <StyledTitle>Enchère</StyledTitle>
                                             <motion.div variants={staggerAnimation}>
-                                                <motion.div variants={fadeIn}><StyledInfo><StyledStrong>Montant du dernier enchère:</StyledStrong> {produit_lot[0].enchere[0].montant || 'Non disponible'} €</StyledInfo></motion.div>
-                                                <motion.div variants={fadeIn}><StyledInfo><StyledStrong>Nombre d'enchères:</StyledStrong> {produit_lot[0].enchere.length}</StyledInfo></motion.div>
-                                                <motion.div variants={fadeIn}><StyledInfo><StyledStrong>Fin de l'enchère:</StyledStrong> {produit_lot[0].enchere[0].fin_enchere ? new Date(produit_lot[0].enchere[0].fin_enchere).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Non disponible'}</StyledInfo></motion.div>
+                                                <motion.div variants={fadeIn}>
+                                                    <StyledInfo><StyledStrong>Montant du dernier enchère:</StyledStrong> {produit_lot[0].enchere[0].montant || 'Non disponible'} €</StyledInfo>
+                                                </motion.div>
+                                                <motion.div variants={fadeIn}>
+                                                    <StyledInfo><StyledStrong>Nombre d'enchères:</StyledStrong> {produit_lot[0].enchere.length}</StyledInfo>
+                                                </motion.div>
+                                                <motion.div variants={fadeIn}>
+                                                    <StyledInfo><StyledStrong>Fin de l'enchère:</StyledStrong> {produit_lot[0].enchere[0].fin_enchere ? new Date(produit_lot[0].enchere[0].fin_enchere).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Non disponible'}</StyledInfo>
+                                                </motion.div>
                                             </motion.div>
                                         </StyledCard>
                                     )}
 
                                     {produit_lot[0].vendeur && (
-                                        <StyledCard
-                                            variants={fadeIn}
-                                            whileHover={hoverAnimation}
-                                        >
+                                        <StyledCard variants={fadeIn} whileHover={hoverAnimation}>
                                             <StyledTitle>Informations du vendeur</StyledTitle>
                                             <motion.div variants={staggerAnimation}>
-                                                <motion.div variants={fadeIn}><StyledInfo><StyledStrong>Nom de l'entreprise:</StyledStrong> {produit_lot[0].vendeur.nom_de_l_entreprise || 'Non disponible'}</StyledInfo></motion.div>
-                                                <motion.div variants={fadeIn}><StyledInfo><StyledStrong>Activité:</StyledStrong> {Array.isArray(produit_lot[0].vendeur.activite) && produit_lot[0].vendeur.activite.length > 0 ? produit_lot[0].vendeur.activite.flat().join(', ') : produit_lot[0].vendeur.activite || 'Non disponible'}</StyledInfo></motion.div>
-                                                <motion.div variants={fadeIn}><StyledInfo><StyledStrong>Ville:</StyledStrong> {produit_lot[0].vendeur.ville || 'Non disponible'}</StyledInfo></motion.div>
+                                                <motion.div variants={fadeIn}>
+                                                    <StyledInfo><StyledStrong>Nom de l'entreprise:</StyledStrong> {produit_lot[0].vendeur.nom_de_l_entreprise || 'Non disponible'}</StyledInfo>
+                                                </motion.div>
+
+                                                <motion.div variants={fadeIn}>
+                                                    <StyledInfo><StyledStrong>Activité:</StyledStrong> {Array.isArray(produit_lot[0].vendeur.activite) && produit_lot[0].vendeur.activite.length > 0 ? produit_lot[0].vendeur.activite.flat().join(', ') : produit_lot[0].vendeur.activite || 'Non disponible'}</StyledInfo>
+                                                </motion.div>
+                                                <motion.div variants={fadeIn}>
+                                                    <StyledInfo><StyledStrong>Ville:</StyledStrong> {produit_lot[0].vendeur.ville || 'Non disponible'}</StyledInfo>
+                                                </motion.div>
                                             </motion.div>
                                         </StyledCard>
                                     )}
                                 </>
                             ) : (
-                                <StyledCard
-                                    variants={fadeIn}
-                                    whileHover={hoverAnimation}
-                                >
+                                <StyledCard variants={fadeIn} whileHover={hoverAnimation}>
                                     <StyledInfo>Aucune information disponible pour ce produit/lot.</StyledInfo>
                                 </StyledCard>
                             )}
                         </div>
 
                         <div className="payment-info" style={{ flex: 1 }}>
-                            <StyledCard
-                                variants={fadeIn}
-                                whileHover={hoverAnimation}
-                            >
+                            <StyledCard variants={fadeIn} whileHover={hoverAnimation}>
                                 <StyledTitle>Informations de paiement et de confiance</StyledTitle>
                                 <motion.div variants={staggerAnimation}>
-                                    {/* ... existing info content ... */}
+                                    <motion.div variants={fadeIn}>
+                                        <StyledInfo><StyledStrong>Méthodes de paiement sécurisées:</StyledStrong> Nous acceptons les cartes de crédit, PayPal et les virements bancaires. Toutes les transactions sont cryptées et sécurisées.</StyledInfo>
+                                    </motion.div>
+                                    <motion.div variants={fadeIn}>
+                                        <StyledInfo><StyledStrong>Garantie de satisfaction:</StyledStrong> Nous offrons une garantie de remboursement de 30 jours pour tous les achats effectués sur notre site.</StyledInfo>
+                                    </motion.div>
+                                    <motion.div variants={fadeIn}>
+                                        <StyledInfo><StyledStrong>Vérification des vendeurs:</StyledStrong> Tous nos vendeurs sont soigneusement vérifiés pour assurer la qualité et la fiabilité des produits proposés.</StyledInfo>
+                                    </motion.div>
+                                    <motion.div variants={fadeIn}>
+                                        <StyledInfo><StyledStrong>Service client:</StyledStrong> Notre équipe de support est disponible 24/7 pour répondre à vos questions et résoudre tout problème éventuel.</StyledInfo>
+                                    </motion.div>
+                                    <motion.div variants={fadeIn}>
+                                        <StyledInfo><StyledStrong>Protection des données:</StyledStrong> Vos informations personnelles sont protégées conformément aux réglementations en vigueur sur la protection des données.</StyledInfo>
+                                    </motion.div>
                                 </motion.div>
                             </StyledCard>
                             <StyledButton
@@ -247,10 +267,18 @@ export default function Produit_lot_infos({ auth, produit_lot }) {
                                     marginTop: '20px',
                                     backgroundColor: '#3498db'
                                 }}
+                                onClick={handleOpenChat}
                             >
-                                <ChatBubbleBottomCenterTextIcon onClick={handleOpenChat} className="w-6 h-6 mr-2" />
+                                <ChatBubbleBottomCenterTextIcon className="w-6 h-6 mr-2" />
                                 Discuter avec le vendeur
                             </StyledButton>
+                            <Chat_acheteur
+                                productId={produit_lot[0].id}
+                                buyerId={auth.user.id}
+                                sellerId= {produit_lot[0].vendeur.user.id}
+                                isOpen={isChatOpen}
+                                onClose={handleCloseChat}
+                            />
                         </div>
                     </FlexContainer>
                 </motion.div>
