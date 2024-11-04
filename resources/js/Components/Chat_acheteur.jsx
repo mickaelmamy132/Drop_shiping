@@ -36,7 +36,8 @@ function ChatModal({ productId, buyerId, sellerId, isOpen, onClose }) {
   }, [isOpen, productId]);
 
   const onEmojiClick = (event, emojiObject) => {
-    setNewMessage(prevInput => prevInput + emojiObject.emoji);
+    console.log(emojiObject);
+    setNewMessage(prevInput => prevInput + emojiObject.native);
     setShowEmojiPicker(false);
   };
 
