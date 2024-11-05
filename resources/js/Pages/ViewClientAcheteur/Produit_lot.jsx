@@ -486,9 +486,9 @@ export default function Produit_lot({ lots, auth }) {
                                                 <img src={`/storage/${lot.image_lot}`} alt={lot.nom} className="w-full h-full object-cover" />
                                             </div>
 
-                                            <div>
+                                            {/* <div>
                                                 <h1>{auth.user.vendeur.nom_de_l_entreprise}</h1>
-                                            </div>
+                                            </div> */}
 
                                             <p className="font-semibold text-lg">{lot.nom} - {lot.description}</p>
                                             <p className="text-sm text-gray-500">Enchère #{lot.id}</p>

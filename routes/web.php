@@ -54,6 +54,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/Commande', [CommandeControlleur::class, 'index'])->name('Commande');
 
     Route::post('/webhook/stripe', [PanieController::class, 'handleWebhook'])->name('webhook.stripe');
+
+    Route::get('inbox', [Controlleur_simple::class, 'inbox'])->name('inbox');
 });
 
 

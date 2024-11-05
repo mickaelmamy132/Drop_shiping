@@ -172,15 +172,17 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                   </Link>
                 </motion.div>
                 <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.4 }}>
-                  <ListItem className={`hover:bg-blue-50 transition-colors duration-300 ${darkMode ? 'text-gray-300 hover:bg-gray-700' : ''}`}>
-                    <ListItemPrefix>
-                      <InboxIcon className="h-5 w-5" />
-                    </ListItemPrefix>
-                    Inbox
-                    <ListItemSuffix>
-                      <Chip value="14" size="sm" variant="ghost" color="blue" className="rounded-full" />
-                    </ListItemSuffix>
-                  </ListItem>
+                  <Link href={route('inbox')}>
+                    <ListItem className={`hover:bg-blue-50 transition-colors duration-300 ${darkMode ? 'text-gray-300 hover:bg-gray-700' : ''}`}>
+                      <ListItemPrefix>
+                        <InboxIcon className="h-5 w-5" />
+                      </ListItemPrefix>
+                      Inbox
+                      <ListItemSuffix>
+                        <Chip value="14" size="sm" variant="ghost" color="blue" className="rounded-full" />
+                      </ListItemSuffix>
+                    </ListItem>
+                  </Link>
                 </motion.div>
               </List>
             </Card>

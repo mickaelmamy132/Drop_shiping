@@ -276,6 +276,7 @@ export default function Produit_lot_infos({ auth, produit_lot }) {
                                 productId={produit_lot[0].id}
                                 buyerId={auth.user.id}
                                 sellerId= {produit_lot[0].vendeur.user.id}
+                                Produit_image={produit_lot[0].image_lot}
                                 isOpen={isChatOpen}
                                 onClose={handleCloseChat}
                             />

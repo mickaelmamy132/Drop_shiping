@@ -33,15 +33,16 @@ class ProduitControllerLot extends Controller
  
         return Inertia::render("ViewClientVendeur/Produit_lot", ['lots' => $lots]);
     }
-
     public function  index_acheteur()
     {
+        $user = Auth::user();
         $lots = Produit_lot::with(['enchere' => function ($query) {
             $query->latest();
         }, 'vendeur.user', 'categorie'])
             ->withCount('enchere')
+            ->where('vendeur_id', '!=', $user->id)
             ->get();
-
+        // dd($lots);
         $lots = $lots->map(function ($lot) {
             $lot->montant = $lot->enchere->first()->montant ?? null;
             return $lot;
