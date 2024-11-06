@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
 use App\Models\Commande;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
 
 class CommandeControlleur extends Controller
@@ -88,5 +89,13 @@ class CommandeControlleur extends Controller
                 'commandes' => $commandes
             ]);
         }
+    }
+
+    public function index_vendeur() 
+    {
+        $commandes = Commande::with(['produit', 'produit_lot', 'vendeur'])->where('vendeur_id', Auth::user()->id)->get();
+        return Inertia::render("ViewClientVendeur/Commande_vendeur", [
+            'commandes' => $commandes
+        ]);
     }
 }

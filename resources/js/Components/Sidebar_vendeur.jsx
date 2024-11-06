@@ -14,6 +14,7 @@ import {
   InboxIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  ShoppingBagIcon,
 } from "@heroicons/react/24/solid";
 import { Link, usePage } from "@inertiajs/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -87,9 +88,9 @@ export function MultiLevelSidebar_vendeur({ darkMode }) {
               </div>
               <List>
                 <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.1 }}>
-                  <Link 
-                  href={route('dashboard')}
-                   className={`flex items-center ${isActive('/dashboard') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}>
+                  <Link
+                    href={route('dashboard')}
+                    className={`flex items-center ${isActive('/dashboard') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}>
                     <ListItemPrefix>
                       <PresentationChartBarIcon className="h-5 w-5 mr-3" />
                     </ListItemPrefix>
@@ -136,16 +137,36 @@ export function MultiLevelSidebar_vendeur({ darkMode }) {
                     )}
                   </AnimatePresence>
                 </motion.div>
+                <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.4 }}>
+                  <Link
+                    href={route('Commande_vendeur')}
+                    className={`flex items-center ${isActive('/Commande_vendeur') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}
+                  >
+                    <ListItem className={`hover:bg-blue-50 transition-colors duration-300 ${darkMode ? 'text-gray-300 hover:bg-gray-700' : ''}`}>
+                      <ListItemPrefix>
+                        <ShoppingBagIcon className="h-5 w-5" />
+                      </ListItemPrefix>
+                      <Typography color={isActive('/Commande_vendeur') ? "blue" : darkMode ? "white" : "blue-gray"} className="font-normal">
+                        Commande
+                      </Typography>
+                      <ListItemSuffix>
+                        <Chip value="14" size="sm" variant="ghost" color="blue" className="rounded-full" />
+                      </ListItemSuffix>
+                    </ListItem>
+                  </Link>
+                </motion.div>
                 <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
-                  <ListItem className={`hover:bg-blue-50 transition-colors duration-300 ${darkMode ? 'text-gray-300 hover:bg-gray-700' : ''}`}>
+                  <Link
+                    href={route('inbox_vendeur')}
+                    className={`flex items-center ${isActive('/inbox_vendeur') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}
+                  >
                     <ListItemPrefix>
                       <InboxIcon className="h-5 w-5" />
                     </ListItemPrefix>
-                    Inbox
-                    <ListItemSuffix>
-                      <Chip value="14" size="sm" variant="ghost" color="blue" className="rounded-full" />
-                    </ListItemSuffix>
-                  </ListItem>
+                    <Typography color={isActive('/inbox_vendeur') ? "blue" : darkMode ? "white" : "blue-gray"} className="font-normal">
+                      Inbox
+                    </Typography>
+                  </Link>
                 </motion.div>
               </List>
             </Card>

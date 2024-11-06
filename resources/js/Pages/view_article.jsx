@@ -190,7 +190,7 @@ export default function view_article({ auth, produits }) {
                 transition={{ duration: 0.5 }}
                 className='mb-5'
             >
-                <Link href={route('Acheteur')} className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5 items-center justify-center">
+                <Link href="/" className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5 items-center justify-center">
                     retour
                 </Link>
             </motion.div>

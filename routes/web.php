@@ -29,7 +29,7 @@ Route::get('/categorieses', [Controlleur_simple::class, 'Categories'])->name('ca
 
 
 Route::get('/voir-rubriques',[Controlleur_simple::class,'voir_artcles'])->name('voir-rubriques');
-Route::get('/voir-lots',[Controlleur_simple::class,'lots'])->name('voir-lots');
+Route::get('/voir-lots',[Controlleur_simple::class,'voir_lots'])->name('voir-lots');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [ProduirController::class, 'index_vendeur'])->name('dashboard');
@@ -52,10 +52,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/cancel', [CheckoutControlleur::class, 'cancel'])->name('checkout.cancel');
 
     Route::get('/Commande', [CommandeControlleur::class, 'index'])->name('Commande');
+    Route::get('/Commande_vendeur', [CommandeControlleur::class, 'index_vendeur'])->name('Commande_vendeur');
 
     Route::post('/webhook/stripe', [PanieController::class, 'handleWebhook'])->name('webhook.stripe');
 
     Route::get('inbox', [Controlleur_simple::class, 'inbox'])->name('inbox');
+    Route::get('inbox_vendeur',[Controlleur_simple::class, 'inbox_vendeur'])->name('inbox_vendeur');
 });
 
 

@@ -42,7 +42,6 @@ class ProduitControllerLot extends Controller
             ->withCount('enchere')
             ->where('vendeur_id', '!=', $user->id)
             ->get();
-        // dd($lots);
         $lots = $lots->map(function ($lot) {
             $lot->montant = $lot->enchere->first()->montant ?? null;
             return $lot;
