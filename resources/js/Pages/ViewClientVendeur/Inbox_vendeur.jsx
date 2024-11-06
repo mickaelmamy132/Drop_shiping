@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import {ref, push, onValue} from "firebase/database";
+import { ref, push, onValue,update } from "firebase/database";
 import { database } from '../../../../firebaseConfig';
 import EmojiPicker from 'emoji-picker-react';
 
@@ -15,6 +15,7 @@ export default function Inbox_vendeur({ auth, produit }) {
 
     useEffect(() => {
         const fetchConversations = async () => {
+            setIsLoading(true);
             const conversationsMap = new Map();
 
             for (const product of produit) {
@@ -46,26 +47,52 @@ export default function Inbox_vendeur({ auth, produit }) {
                                     productId: product.id,
                                     productName: product.name,
                                     productImageUrl: product.imageUrl,
-                                    messages: []
+                                    messages: [],
+                                    unreadCount: 0
                                 });
                             }
                             const productConversation = conversationsMap.get(product.id);
                             productConversation.messages.push(...messagesList);
+                            productConversation.unreadCount = messagesList.filter(msg => 
+                                !msg.isRead && msg.receiver_id === auth.user.id
+                            ).length;
                             conversationsMap.set(product.id, productConversation);
 
                             setConversations(Array.from(conversationsMap.values()));
+                            setIsLoading(false);
                         }
+                    } else {
+                        setIsLoading(false);
                     }
                 });
             }
-            setIsLoading(false);
         };
 
         fetchConversations();
     }, [produit]);
 
-    const handleSelectConversation = (conversation) => {
+    const handleSelectConversation = async (conversation) => {
         setSelectedConversation(conversation);
+    
+        // Marquer les messages comme lus
+        const updatedConversations = conversations.map((conv) => {
+            if (conv.productId === conversation.productId) {
+                const updatedMessages = conv.messages.map((message) => {
+                    if (!message.isRead && message.receiver_id === auth.user.id) {
+                        // Mise à jour de l'indicateur isRead
+                        const messageRef = ref(database, `chats/${conv.productId}/messages/${message.id}`);
+                        update(messageRef, { isRead: true });
+                        return { ...message, isRead: true };
+                    }
+                    return message;
+                });
+                return { ...conv, messages: updatedMessages, unreadCount: 0 };
+            }
+            return conv;
+        });
+    
+        // Mettre à jour l'état des conversations pour supprimer l'indicateur
+        setConversations(updatedConversations);
     };
 
     const handleImageSelect = (e) => {
@@ -118,34 +145,59 @@ export default function Inbox_vendeur({ auth, produit }) {
             <div className="w-full flex flex-col md:flex-row h-[calc(100vh-4rem)] fixed overflow-x-hidden">
                 <div className="w-full md:w-1/4 border-r border-gray-200 p-4">
                     <h2 className="text-xl font-semibold mb-4">Discussions</h2>
+                    {isLoading ? (
+                        <div className="flex justify-center items-center h-full">
+                            <svg className="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
+                    ) : (
                     <div className="space-y-4">
-                        {conversations.map((conversation) => (
-                            <div
-                                key={conversation.productId}
-                                onClick={() => handleSelectConversation(conversation)}
-                                className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer flex items-center space-x-4"
-                            >
-                                <img
-                                    src={conversation.productImageUrl}
-                                    alt={conversation.productName}
-                                    className="w-10 h-10 rounded-full object-cover"
-                                />
-                                <div className="flex-1 min-w-0">
-                                    <p className="font-medium truncate">Produit: {conversation.productName}</p>
-                                    <p className="text-sm text-gray-500 truncate">
-                                        {conversation.messages[conversation.messages.length - 1]?.content}
-                                    </p>
-                                    <p className="text-xs text-gray-400">
-                                        {conversation.messages[conversation.messages.length - 1]?.timestamp
-                                            ? new Date(conversation.messages[conversation.messages.length - 1].timestamp).toLocaleTimeString()
-                                            : 'Inconnu'}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                        {conversations
+                            .sort((a, b) => {
+                                const latestMessageA = a.messages[a.messages.length - 1];
+                                const latestMessageB = b.messages[b.messages.length - 1];
+                                return latestMessageB.timestamp - latestMessageA.timestamp;
+                            })
+                            .map((conversation) => {
+                                const latestMessage = conversation.messages[conversation.messages.length - 1];
+                                const isSelected = selectedConversation && selectedConversation.productId === conversation.productId;
+                                const showUnreadCount = !isSelected && conversation.unreadCount > 0;
 
+                                return (
+                                    <div
+                                        key={conversation.productId}
+                                        onClick={() => handleSelectConversation(conversation)}
+                                        className={`p-4 border rounded-lg hover:bg-gray-50 cursor-pointer flex items-center space-x-4 ${showUnreadCount ? 'bg-blue-50' : ''}`}
+                                    >
+                                        <img
+                                            src={conversation.productImageUrl}
+                                            alt={conversation.productName}
+                                            className="w-10 h-10 rounded-full object-cover"
+                                        />
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-medium truncate">Produit: {conversation.productName}</p>
+                                            <p className="text-sm text-gray-500 truncate">
+                                                {latestMessage.content}
+                                            </p>
+                                            <p className="text-xs text-gray-400">
+                                                {latestMessage.timestamp
+                                                    ? new Date(latestMessage.timestamp).toLocaleTimeString()
+                                                    : 'Inconnu'}
+                                            </p>
+                                        </div>
+                                        {showUnreadCount && (
+                                            <span className="bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                                                {conversation.unreadCount}
+                                            </span>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                    </div>
+                    )}
+                </div>
                 <div className="w-full md:w-2/4 lg:w-3/6 sm:w-1/5 overflow-y-auto">
                     <div className="p-4 flex flex-col h-[calc(85vh-4rem)]">
                         {selectedConversation ? (
