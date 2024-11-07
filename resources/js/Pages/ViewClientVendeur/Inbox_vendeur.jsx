@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { ref, push, onValue,update } from "firebase/database";
+import { ref, push, onValue, update } from "firebase/database";
 import { database } from '../../../../firebaseConfig';
 import EmojiPicker from 'emoji-picker-react';
 
@@ -17,11 +17,12 @@ export default function Inbox_vendeur({ auth, produit }) {
         const fetchConversations = async () => {
             setIsLoading(true);
             const conversationsMap = new Map();
+            const unsubscribers = [];
 
             for (const product of produit) {
                 const chatRef = ref(database, `chats/${product.id}/messages`);
 
-                onValue(chatRef, (snapshot) => {
+                const unsubscribe = onValue(chatRef, (snapshot) => {
                     const data = snapshot.val();
                     if (data) {
                         const messagesList = Object.entries(data).map(([key, value]) => ({
@@ -29,57 +30,67 @@ export default function Inbox_vendeur({ auth, produit }) {
                             productId: product.id,
                             productName: product.name,
                             productImageUrl: product.imageUrl,
-                            content: value.content,
-                            isDelivered: value.isDelivered,
-                            isRead: value.isRead,
+                            content: value.content || '',
+                            isDelivered: value.isDelivered || false,
+                            isRead: value.isRead || false,
                             receiver_id: value.receiver_id,
                             sender_id: value.sender_id,
                             timestamp: value.timestamp,
-                            type: value.type
+                            type: value.type || 'text',
+                            url: value.url || ''
                         })).filter(message =>
                             message.sender_id === auth.user.id ||
                             message.receiver_id === auth.user.id
                         );
 
                         if (messagesList.length > 0) {
-                            if (!conversationsMap.has(product.id)) {
-                                conversationsMap.set(product.id, {
-                                    productId: product.id,
-                                    productName: product.name,
-                                    productImageUrl: product.imageUrl,
-                                    messages: [],
-                                    unreadCount: 0
-                                });
-                            }
-                            const productConversation = conversationsMap.get(product.id);
-                            productConversation.messages.push(...messagesList);
-                            productConversation.unreadCount = messagesList.filter(msg => 
-                                !msg.isRead && msg.receiver_id === auth.user.id
-                            ).length;
-                            conversationsMap.set(product.id, productConversation);
+                            const conversation = {
+                                productId: product.id,
+                                productName: product.name,
+                                productImageUrl: product.imageUrl,
+                                messages: messagesList,
+                                unreadCount: messagesList.filter(msg =>
+                                    !msg.isRead && msg.receiver_id === auth.user.id
+                                ).length
+                            };
+                            conversationsMap.set(product.id, conversation);
 
-                            setConversations(Array.from(conversationsMap.values()));
-                            setIsLoading(false);
+                            const newConversations = Array.from(conversationsMap.values());
+                            setConversations(newConversations);
+
+                            if (selectedConversation && product.id === selectedConversation.productId) {
+                                setSelectedConversation(prev => ({
+                                    ...prev,
+                                    messages: messagesList
+                                }));
+                            }
                         }
-                    } else {
-                        setIsLoading(false);
                     }
+                    setIsLoading(false);
                 });
+
+                unsubscribers.push(unsubscribe);
             }
+
+            return () => {
+                unsubscribers.forEach(unsubscribe => unsubscribe());
+            };
         };
 
         fetchConversations();
-    }, [produit]);
+    }, [produit, auth.user.id, selectedConversation]);
 
     const handleSelectConversation = async (conversation) => {
+        if (selectedConversation?.productId === conversation.productId) {
+            return;
+        }
+
         setSelectedConversation(conversation);
-    
-        // Marquer les messages comme lus
+
         const updatedConversations = conversations.map((conv) => {
             if (conv.productId === conversation.productId) {
                 const updatedMessages = conv.messages.map((message) => {
                     if (!message.isRead && message.receiver_id === auth.user.id) {
-                        // Mise à jour de l'indicateur isRead
                         const messageRef = ref(database, `chats/${conv.productId}/messages/${message.id}`);
                         update(messageRef, { isRead: true });
                         return { ...message, isRead: true };
@@ -90,11 +101,9 @@ export default function Inbox_vendeur({ auth, produit }) {
             }
             return conv;
         });
-    
-        // Mettre à jour l'état des conversations pour supprimer l'indicateur
+
         setConversations(updatedConversations);
     };
-
     const handleImageSelect = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -103,19 +112,23 @@ export default function Inbox_vendeur({ auth, produit }) {
         }
     };
 
-    const onEmojiClick = (event, emojiObject) => {
+    const onEmojiClick = (emojiObject) => {
         setNewMessage(prevMessage => prevMessage + emojiObject.emoji);
         setShowEmojiPicker(false);
     };
 
     const handleSendMessage = async (content = newMessage, type = 'text', url = null) => {
+        if (!selectedConversation) return;
+
         if ((type === 'text' && content.trim() !== '') || type === 'image' || type === 'audio') {
             const chatRef = ref(database, `chats/${selectedConversation.productId}/messages`);
+            const otherParty = selectedConversation.messages.find(msg =>
+                msg.sender_id !== auth.user.id
+            );
+
             const messageData = {
                 sender_id: auth.user.id,
-                receiver_id: selectedConversation.messages[0]?.sender_id === auth.user.id ?
-                    selectedConversation.messages[0]?.receiver_id :
-                    selectedConversation.messages[0]?.sender_id,
+                receiver_id: otherParty ? otherParty.sender_id : null,
                 content: content,
                 type: type,
                 url: url,
@@ -126,6 +139,13 @@ export default function Inbox_vendeur({ auth, produit }) {
 
             await push(chatRef, messageData);
             setNewMessage('');
+            setShowEmojiPicker(false);
+
+            // Update selectedConversation with the new message
+            setSelectedConversation(prev => ({
+                ...prev,
+                messages: [...prev.messages, { ...messageData, id: Date.now().toString() }]
+            }));
         }
     };
 
@@ -153,49 +173,49 @@ export default function Inbox_vendeur({ auth, produit }) {
                             </svg>
                         </div>
                     ) : (
-                    <div className="space-y-4">
-                        {conversations
-                            .sort((a, b) => {
-                                const latestMessageA = a.messages[a.messages.length - 1];
-                                const latestMessageB = b.messages[b.messages.length - 1];
-                                return latestMessageB.timestamp - latestMessageA.timestamp;
-                            })
-                            .map((conversation) => {
-                                const latestMessage = conversation.messages[conversation.messages.length - 1];
-                                const isSelected = selectedConversation && selectedConversation.productId === conversation.productId;
-                                const showUnreadCount = !isSelected && conversation.unreadCount > 0;
+                        <div className="space-y-4">
+                            {conversations
+                                .sort((a, b) => {
+                                    const latestMessageA = a.messages[a.messages.length - 1];
+                                    const latestMessageB = b.messages[b.messages.length - 1];
+                                    return latestMessageB.timestamp - latestMessageA.timestamp;
+                                })
+                                .map((conversation) => {
+                                    const latestMessage = conversation.messages[conversation.messages.length - 1];
+                                    const isSelected = selectedConversation && selectedConversation.productId === conversation.productId;
+                                    const showUnreadCount = !isSelected && conversation.unreadCount > 0;
 
-                                return (
-                                    <div
-                                        key={conversation.productId}
-                                        onClick={() => handleSelectConversation(conversation)}
-                                        className={`p-4 border rounded-lg hover:bg-gray-50 cursor-pointer flex items-center space-x-4 ${showUnreadCount ? 'bg-blue-50' : ''}`}
-                                    >
-                                        <img
-                                            src={conversation.productImageUrl}
-                                            alt={conversation.productName}
-                                            className="w-10 h-10 rounded-full object-cover"
-                                        />
-                                        <div className="flex-1 min-w-0">
-                                            <p className="font-medium truncate">Produit: {conversation.productName}</p>
-                                            <p className="text-sm text-gray-500 truncate">
-                                                {latestMessage.content}
-                                            </p>
-                                            <p className="text-xs text-gray-400">
-                                                {latestMessage.timestamp
-                                                    ? new Date(latestMessage.timestamp).toLocaleTimeString()
-                                                    : 'Inconnu'}
-                                            </p>
+                                    return (
+                                        <div
+                                            key={conversation.productId}
+                                            onClick={() => handleSelectConversation(conversation)}
+                                            className={`p-4 border rounded-lg hover:bg-gray-50 cursor-pointer flex items-center space-x-4 ${showUnreadCount ? 'bg-blue-50' : ''}`}
+                                        >
+                                            <img
+                                                src={conversation.productImageUrl}
+                                                alt={conversation.productName}
+                                                className="w-10 h-10 rounded-full object-cover"
+                                            />
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-medium truncate">Produit: {conversation.productName}</p>
+                                                <p className="text-sm text-gray-500 truncate">
+                                                    {latestMessage.content}
+                                                </p>
+                                                <p className="text-xs text-gray-400">
+                                                    {latestMessage.timestamp
+                                                        ? new Date(latestMessage.timestamp).toLocaleTimeString()
+                                                        : 'Inconnu'}
+                                                </p>
+                                            </div>
+                                            {showUnreadCount && (
+                                                <span className="bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                                                    {conversation.unreadCount}
+                                                </span>
+                                            )}
                                         </div>
-                                        {showUnreadCount && (
-                                            <span className="bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
-                                                {conversation.unreadCount}
-                                            </span>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                    </div>
+                                    );
+                                })}
+                        </div>
                     )}
                 </div>
                 <div className="w-full md:w-2/4 lg:w-3/6 sm:w-1/5 overflow-y-auto">

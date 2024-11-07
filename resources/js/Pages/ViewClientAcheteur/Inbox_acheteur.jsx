@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import {ref, push, onValue} from "firebase/database";
+import {ref, push, onValue, update} from "firebase/database";
 import { database } from '../../../../firebaseConfig';
 import EmojiPicker from 'emoji-picker-react';
 
@@ -15,12 +15,14 @@ export default function Inbox_acheteur({ auth, produit }) {
 
     useEffect(() => {
         const fetchConversations = async () => {
+            setIsLoading(true);
             const conversationsMap = new Map();
+            const unsubscribers = [];
 
             for (const product of produit) {
                 const chatRef = ref(database, `chats/${product.id}/messages`);
 
-                onValue(chatRef, (snapshot) => {
+                const unsubscribe = onValue(chatRef, (snapshot) => {
                     const data = snapshot.val();
                     if (data) {
                         const messagesList = Object.entries(data).map(([key, value]) => ({
@@ -28,46 +30,80 @@ export default function Inbox_acheteur({ auth, produit }) {
                             productId: product.id,
                             productName: product.name,
                             productImageUrl: product.imageUrl,
-                            content: value.content,
-                            isDelivered: value.isDelivered,
-                            isRead: value.isRead,
+                            content: value.content || '',
+                            isDelivered: value.isDelivered || false,
+                            isRead: value.isRead || false,
                             receiver_id: value.receiver_id,
                             sender_id: value.sender_id,
                             timestamp: value.timestamp,
-                            type: value.type
+                            type: value.type || 'text',
+                            url: value.url || ''
                         })).filter(message =>
                             message.sender_id === auth.user.id ||
                             message.receiver_id === auth.user.id
                         );
 
                         if (messagesList.length > 0) {
-                            if (!conversationsMap.has(product.id)) {
-                                conversationsMap.set(product.id, {
-                                    productId: product.id,
-                                    productName: product.name,
-                                    productImageUrl: product.imageUrl,
-                                    messages: []
-                                });
-                            }
-                            const productConversation = conversationsMap.get(product.id);
-                            productConversation.messages.push(...messagesList);
-                            conversationsMap.set(product.id, productConversation);
+                            const conversation = {
+                                productId: product.id,
+                                productName: product.name,
+                                productImageUrl: product.imageUrl,
+                                messages: messagesList,
+                                unreadCount: messagesList.filter(msg => 
+                                    !msg.isRead && msg.receiver_id === auth.user.id
+                                ).length
+                            };
+                            conversationsMap.set(product.id, conversation);
 
-                            setConversations(Array.from(conversationsMap.values()));
+                            const newConversations = Array.from(conversationsMap.values());
+                            setConversations(newConversations);
+                            
+                            if (selectedConversation && product.id === selectedConversation.productId) {
+                                setSelectedConversation(prev => ({
+                                    ...prev,
+                                    messages: messagesList
+                                }));
+                            }
                         }
                     }
+                    setIsLoading(false);
                 });
+
+                unsubscribers.push(unsubscribe);
             }
-            setIsLoading(false);
+
+            return () => {
+                unsubscribers.forEach(unsubscribe => unsubscribe());
+            };
         };
 
         fetchConversations();
-    }, [produit]);
+    }, [produit, auth.user.id, selectedConversation]);
 
-    const handleSelectConversation = (conversation) => {
+    const handleSelectConversation = async (conversation) => {
+        if (selectedConversation?.productId === conversation.productId) {
+            return;
+        }
+        
         setSelectedConversation(conversation);
+    
+        const updatedConversations = conversations.map((conv) => {
+            if (conv.productId === conversation.productId) {
+                const updatedMessages = conv.messages.map((message) => {
+                    if (!message.isRead && message.receiver_id === auth.user.id) {
+                        const messageRef = ref(database, `chats/${conv.productId}/messages/${message.id}`);
+                        update(messageRef, { isRead: true });
+                        return { ...message, isRead: true };
+                    }
+                    return message;
+                });
+                return { ...conv, messages: updatedMessages, unreadCount: 0 };
+            }
+            return conv;
+        });
+    
+        setConversations(updatedConversations);
     };
-
     const handleImageSelect = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -76,19 +112,23 @@ export default function Inbox_acheteur({ auth, produit }) {
         }
     };
 
-    const onEmojiClick = (event, emojiObject) => {
+    const onEmojiClick = (emojiObject) => {
         setNewMessage(prevMessage => prevMessage + emojiObject.emoji);
         setShowEmojiPicker(false);
     };
 
     const handleSendMessage = async (content = newMessage, type = 'text', url = null) => {
+        if (!selectedConversation) return;
+        
         if ((type === 'text' && content.trim() !== '') || type === 'image' || type === 'audio') {
             const chatRef = ref(database, `chats/${selectedConversation.productId}/messages`);
+            const otherParty = selectedConversation.messages.find(msg => 
+                msg.sender_id !== auth.user.id
+            );
+            
             const messageData = {
                 sender_id: auth.user.id,
-                receiver_id: selectedConversation.messages[0]?.sender_id === auth.user.id ?
-                    selectedConversation.messages[0]?.receiver_id :
-                    selectedConversation.messages[0]?.sender_id,
+                receiver_id: otherParty ? otherParty.sender_id : null,
                 content: content,
                 type: type,
                 url: url,
@@ -99,6 +139,13 @@ export default function Inbox_acheteur({ auth, produit }) {
 
             await push(chatRef, messageData);
             setNewMessage('');
+            setShowEmojiPicker(false);
+            
+            // Update selectedConversation with the new message
+            setSelectedConversation(prev => ({
+                ...prev,
+                messages: [...prev.messages, { ...messageData, id: Date.now().toString() }]
+            }));
         }
     };
 
@@ -115,42 +162,67 @@ export default function Inbox_acheteur({ auth, produit }) {
 
     return (
         <AuthenticatedLayout user={auth.user} role={auth.role}>
-            <div className="w-full flex flex-row h-[calc(100vh-4rem)] fixed">
-                <div className="w-1/4 border-r border-gray-200 p-4">
+            <div className="w-full flex flex-col md:flex-row h-[calc(100vh-4rem)] fixed overflow-x-hidden">
+                <div className="w-full md:w-1/4 border-r border-gray-200 p-4">
                     <h2 className="text-xl font-semibold mb-4">Discussions</h2>
+                    {isLoading ? (
+                        <div className="flex justify-center items-center h-full">
+                            <svg className="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
+                    ) : (
                     <div className="space-y-4">
-                        {conversations.map((conversation) => (
-                            <div
-                                key={conversation.productId}
-                                onClick={() => handleSelectConversation(conversation)}
-                                className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer flex items-center space-x-4"
-                            >
-                                <img
-                                    src={conversation.productImageUrl}
-                                    alt={conversation.productName}
-                                    className="w-10 h-10 rounded-full object-cover"
-                                />
-                                <div>
-                                    <p className="font-medium">Produit: {conversation.productName}</p>
-                                    <p className="text-sm text-gray-500">
-                                        {conversation.messages[conversation.messages.length - 1]?.content}
-                                    </p>
-                                    <p className="text-xs text-gray-400">
-                                        {conversation.messages[conversation.messages.length - 1]?.timestamp
-                                            ? new Date(conversation.messages[conversation.messages.length - 1].timestamp).toLocaleTimeString()
-                                            : 'Inconnu'}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                        {conversations
+                            .sort((a, b) => {
+                                const latestMessageA = a.messages[a.messages.length - 1];
+                                const latestMessageB = b.messages[b.messages.length - 1];
+                                return latestMessageB.timestamp - latestMessageA.timestamp;
+                            })
+                            .map((conversation) => {
+                                const latestMessage = conversation.messages[conversation.messages.length - 1];
+                                const isSelected = selectedConversation && selectedConversation.productId === conversation.productId;
+                                const showUnreadCount = !isSelected && conversation.unreadCount > 0;
 
-                <div className="w-3/5">
+                                return (
+                                    <div
+                                        key={conversation.productId}
+                                        onClick={() => handleSelectConversation(conversation)}
+                                        className={`p-4 border rounded-lg hover:bg-gray-50 cursor-pointer flex items-center space-x-4 ${showUnreadCount ? 'bg-blue-50' : ''}`}
+                                    >
+                                        <img
+                                            src={conversation.productImageUrl}
+                                            alt={conversation.productName}
+                                            className="w-10 h-10 rounded-full object-cover"
+                                        />
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-medium truncate">Produit: {conversation.productName}</p>
+                                            <p className="text-sm text-gray-500 truncate">
+                                                {latestMessage.content}
+                                            </p>
+                                            <p className="text-xs text-gray-400">
+                                                {latestMessage.timestamp
+                                                    ? new Date(latestMessage.timestamp).toLocaleTimeString()
+                                                    : 'Inconnu'}
+                                            </p>
+                                        </div>
+                                        {showUnreadCount && (
+                                            <span className="bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                                                {conversation.unreadCount}
+                                            </span>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                    </div>
+                    )}
+                </div>
+                <div className="w-full md:w-2/4 lg:w-3/6 sm:w-1/5 overflow-y-auto">
                     <div className="p-4 flex flex-col h-[calc(85vh-4rem)]">
                         {selectedConversation ? (
                             <div className="flex flex-col h-full relative">
-                                <h3 className="text-lg font-semibold mb-2">
+                                <h3 className="text-lg font-semibold mb-2 truncate">
                                     Conversation pour {selectedConversation.productName}
                                 </h3>
                                 <div className="flex-1 p-4 bg-gray-50 transition-all duration-300 flex flex-col-reverse overflow-y-auto">
@@ -164,8 +236,8 @@ export default function Inbox_acheteur({ auth, produit }) {
                                     ) : (
                                         selectedConversation.messages.slice().reverse().map((message) => (
                                             <div key={message.id} className={`flex flex-col mb-4 transition-all duration-300 hover:scale-105 group ${message.sender_id === auth.user.id ? 'items-end' : 'items-start'}`}>
-                                                <div className={`flex rounded-lg px-4 py-2 max-w-[70%] ${message.sender_id === auth.user.id ? 'bg-blue-600 text-white rounded-xl' : 'bg-gray-200 rounded-xl text-gray-800'}`}>
-                                                    {message.type === 'text' && <p className="text-base">{message.content}</p>}
+                                                <div className={`flex rounded-lg px-4 py-2 max-w-[70%] break-words ${message.sender_id === auth.user.id ? 'bg-blue-600 text-white rounded-xl' : 'bg-gray-200 rounded-xl text-gray-800'}`}>
+                                                    {message.type === 'text' && <p className="text-base break-words">{message.content}</p>}
                                                     {message.type === 'image' && <img src={message.url} alt="Shared" className="max-w-full rounded" />}
                                                     {message.type === 'audio' && <audio controls src={message.url} className="max-w-full" />}
                                                 </div>
@@ -196,8 +268,8 @@ export default function Inbox_acheteur({ auth, produit }) {
                                             <EmojiPicker onEmojiClick={onEmojiClick} />
                                         </div>
                                     )}
-                                    <div className="flex space-x-2">
-                                        <div className="flex items-center space-x-2">
+                                    <div className="flex flex-wrap gap-2">
+                                        <div className="flex items-center">
                                             <label className="p-2 hover:bg-gray-100 rounded-full transition-all duration-300 cursor-pointer">
                                                 <input
                                                     type="file"
@@ -264,7 +336,7 @@ export default function Inbox_acheteur({ auth, produit }) {
                         )}
                     </div>
                 </div>
-            </div>
+                </div>
         </AuthenticatedLayout>
     );
 }
