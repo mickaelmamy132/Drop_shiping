@@ -84,7 +84,7 @@ class CommandeControlleur extends Controller
                 return redirect()->route('Panier.index')->with('error', 'Une erreur est survenue : ' . $e->getMessage());
             }
         } else {
-            $commandes = Commande::with(['produit', 'produit_lot', 'vendeur'])->where('acheteur_id', Auth::user()->id)->get();
+            $commandes = Commande::with(['produit', 'produit_lot', 'vendeur','acheteur'])->where('acheteur_id', Auth::user()->id)->get();
             return Inertia::render("ViewClientAcheteur/Commande", [
                 'commandes' => $commandes
             ]);
@@ -93,7 +93,8 @@ class CommandeControlleur extends Controller
 
     public function index_vendeur() 
     {
-        $commandes = Commande::with(['produit', 'produit_lot', 'vendeur'])->where('vendeur_id', Auth::user()->id)->get();
+        $commandes = Commande::with(['produit', 'produit_lot', 'vendeur','user.acheteur'])->where('vendeur_id', Auth::user()->id)->get();
+        // dd($commandes);
         return Inertia::render("ViewClientVendeur/Commande_vendeur", [
             'commandes' => $commandes
         ]);

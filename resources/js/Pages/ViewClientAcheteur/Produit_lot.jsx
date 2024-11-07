@@ -539,7 +539,7 @@ export default function Produit_lot({ lots, auth }) {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="mt-4 text-center items-center gap-2">
+                                            <div className="mt-4 text-center items-center gap-2"> 
                                                 {endDates[lot.id] !== 0 && (
                                                     <motion.button
                                                         whileHover={{ scale: 1.05 }}

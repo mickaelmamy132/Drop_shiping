@@ -39,4 +39,10 @@ class Commande extends Model
     {
         return $this->belongsTo(Vendeur::class, 'vendeur_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'acheteur_id');
+    }
+
 }

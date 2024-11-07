@@ -36,7 +36,7 @@ function ChatModal({ productId, buyerId, sellerId,Produit_image, isOpen, onClose
       .then(json => console.log(json))
       .catch(error => console.log('Authorization failed: ' + error.message));
   };
-
+ 
   useEffect(() => {
     if (isOpen) {
       setIsLoading(true);
