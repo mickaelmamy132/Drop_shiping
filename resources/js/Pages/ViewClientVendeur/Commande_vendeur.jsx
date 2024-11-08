@@ -103,119 +103,125 @@ export default function Commande_vendeur({ auth, message, success, commandes }) 
 
             Gestion des Commandes
 
-              <div className="overflow-x-auto divide-y divide-gray-200">
-                  <table className="w-full divide-gray-200 table-auto">
-                      <thead className="bg-gray-50">
-                          <tr>
-                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Acheteur</th>
-                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produit</th>
-                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Description</th>
-                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">État</th>
-                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantité</th>
-                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Prix unitaire</th>
-                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
-                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Vendeur</th>
-                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Contact acheteur</th>
-                              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                          </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                          {Object.values(commandes.reduce((acc, commande) => {
-                              const key = `${commande.acheteur_id}_${commande.created_at}`
-                              if (!acc[key]) {
-                                  acc[key] = {
-                                      ...commande,
-                                      produits: [commande],
-                                      total: commande.total
-                                  }
-                              } else {
-                                  acc[key].produits.push(commande)
-                                  acc[key].total += commande.total
-                              }
-                              return acc
-                          }, {})).map((groupedCommande, index) => (
+            {commandes.length === 0 ? (
+                <div className="text-center py-8 text-gray-600">
+                    Il n'y a pas de commandes disponibles
+                </div>
+            ) : (
+                <div className="overflow-x-auto divide-y divide-gray-200">
+                    <table className="w-full divide-gray-200 table-auto">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Acheteur</th>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produit</th>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Description</th>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell">État</th>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantité</th>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Prix unitaire</th>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Vendeur</th>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Contact acheteur</th>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {Object.values(commandes.reduce((acc, commande) => {
+                                const key = `${commande.acheteur_id}_${commande.created_at}`
+                                if (!acc[key]) {
+                                    acc[key] = {
+                                        ...commande,
+                                        produits: [commande],
+                                        total: commande.total
+                                    }
+                                } else {
+                                    acc[key].produits.push(commande)
+                                    acc[key].total += commande.total
+                                }
+                                return acc
+                            }, {})).map((groupedCommande, index) => (
 
-                              <tr key={index} className="hover:bg-gray-50">
-                                  <td className="px-4 py-2 whitespace-nowrap text-sm">{new Date(groupedCommande.created_at).toLocaleDateString()}</td>
-                                  <td className="px-4 py-2 whitespace-nowrap text-sm hidden md:table-cell">
-                                      {groupedCommande.user.email}
-                                  </td>
-                                  <td className="px-4 py-2 whitespace-nowrap text-sm">
-                                      {groupedCommande.produits.map(p => p.produit ? p.produit.nom : p.produit_lot.nom).join(', ')}
-                                  </td>
-                                  <td className="px-4 py-2 whitespace-nowrap text-sm hidden lg:table-cell">
-                                      {groupedCommande.produits.map(p => p.produit ? p.produit.description : '-').join(', ')}
-                                  </td>
-                                  <td className="px-4 py-2 whitespace-nowrap text-sm hidden xl:table-cell">
-                                      {groupedCommande.produits.map(p => p.produit ? p.produit.etat : p.produit_lot.etat).join(', ')}
-                                  </td>
-                                  <td className="px-4 py-2 whitespace-nowrap text-sm">
-                                      {groupedCommande.produits.reduce((sum, p) => sum + p.quantite, 0)}
-                                  </td>
-                                  <td className="px-4 py-2 whitespace-nowrap text-sm hidden sm:table-cell">
-                                      {groupedCommande.produits.map(p => `${p.prix_unitaire} €`).join(', ')}
-                                  </td>
-                                  <td className="px-4 py-2 whitespace-nowrap text-sm">{groupedCommande.total} €</td>
-                                  <td className="px-4 py-2 whitespace-nowrap text-sm">
-                                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${groupedCommande.status === 'livres' ? 'bg-green-100 text-green-800' :
-                                          groupedCommande.status === 'en cours' ? 'bg-yellow-100 text-yellow-800' :
-                                              'bg-gray-100 text-gray-800'
-                                          }`}>
-                                          {groupedCommande.status}
-                                      </span>
-                                  </td>
-                                  <td className="px-4 py-2 whitespace-nowrap text-sm hidden lg:table-cell">{groupedCommande.vendeur.nom_de_l_entreprise}</td>
-                                  <td className="px-4 py-2 whitespace-nowrap text-sm hidden md:table-cell">{groupedCommande.user.acheteur.numero}</td>
-                                  <td className="px-4 py-2 whitespace-nowrap text-sm font-medium">
-                                      <div className="relative">
-                                          <button
-                                              onClick={(e) => {
-                                                  const dropdowns = document.querySelectorAll('.action-dropdown')
-                                                  dropdowns.forEach(dropdown => {
-                                                      if (dropdown !== e.currentTarget.nextElementSibling) {
-                                                          dropdown.classList.add('hidden')
-                                                      }
-                                                  })
-                                                  e.currentTarget.nextElementSibling.classList.toggle('hidden')
-                                              }}
-                                              className="text-gray-600 hover:text-gray-900"
-                                          >
-                                              <EllipsisVerticalIcon className="w-5 h-5" />
-                                          </button>
-                                          <div className="action-dropdown hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
-                                              <div className="py-1">
-                                                  <button
-                                                      onClick={() => setShowPrintModal(groupedCommande)}
-                                                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
-                                                  >
-                                                      <EyeIcon className="mr-3 w-5 h-5" />
-                                                      Voir détails
-                                                  </button>
-                                                  <button
-                                                      onClick={() => generatePDF(groupedCommande)}
-                                                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
-                                                  >
-                                                      <PrinterIcon className="mr-3 w-5 h-5" />
-                                                      Imprimer
-                                                  </button>
-                                                  <button
-                                                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
-                                                  >
-                                                      <TrashIcon className="mr-3 w-5 h-5" />
-                                                      Supprimer
-                                                  </button>
-                                              </div>
-                                          </div>
-                                      </div>
-                                  </td>
-                              </tr>
-                          ))}
-                      </tbody>
-                  </table>
-              </div>
-              <Modal
+                                <tr key={index} className="hover:bg-gray-50">
+                                    <td className="px-4 py-2 whitespace-nowrap text-sm">{new Date(groupedCommande.created_at).toLocaleDateString()}</td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-sm hidden md:table-cell">
+                                        {groupedCommande.user.email}
+                                    </td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-sm">
+                                        {groupedCommande.produits.map(p => p.produit ? p.produit.nom : p.produit_lot.nom).join(', ')}
+                                    </td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-sm hidden lg:table-cell">
+                                        {groupedCommande.produits.map(p => p.produit ? p.produit.description : '-').join(', ')}
+                                    </td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-sm hidden xl:table-cell">
+                                        {groupedCommande.produits.map(p => p.produit ? p.produit.etat : p.produit_lot.etat).join(', ')}
+                                    </td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-sm">
+                                        {groupedCommande.produits.reduce((sum, p) => sum + p.quantite, 0)}
+                                    </td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-sm hidden sm:table-cell">
+                                        {groupedCommande.produits.map(p => `${p.prix_unitaire} €`).join(', ')}
+                                    </td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-sm">{groupedCommande.total} €</td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-sm">
+                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${groupedCommande.status === 'livres' ? 'bg-green-100 text-green-800' :
+                                            groupedCommande.status === 'en cours' ? 'bg-yellow-100 text-yellow-800' :
+                                                'bg-gray-100 text-gray-800'
+                                            }`}>
+                                            {groupedCommande.status}
+                                        </span>
+                                    </td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-sm hidden lg:table-cell">{groupedCommande.vendeur.nom_de_l_entreprise}</td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-sm hidden md:table-cell">{groupedCommande.user.acheteur.numero}</td>
+                                    <td className="px-4 py-2 whitespace-nowrap text-sm font-medium">
+                                        <div className="relative">
+                                            <button
+                                                onClick={(e) => {
+                                                    const dropdowns = document.querySelectorAll('.action-dropdown')
+                                                    dropdowns.forEach(dropdown => {
+                                                        if (dropdown !== e.currentTarget.nextElementSibling) {
+                                                            dropdown.classList.add('hidden')
+                                                        }
+                                                    })
+                                                    e.currentTarget.nextElementSibling.classList.toggle('hidden')
+                                                }}
+                                                className="text-gray-600 hover:text-gray-900"
+                                            >
+                                                <EllipsisVerticalIcon className="w-5 h-5" />
+                                            </button>
+                                            <div className="action-dropdown hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                                                <div className="py-1">
+                                                    <button
+                                                        onClick={() => setShowPrintModal(groupedCommande)}
+                                                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
+                                                    >
+                                                        <EyeIcon className="mr-3 w-5 h-5" />
+                                                        Voir détails
+                                                    </button>
+                                                    <button
+                                                        onClick={() => generatePDF(groupedCommande)}
+                                                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
+                                                    >
+                                                        <PrinterIcon className="mr-3 w-5 h-5" />
+                                                        Imprimer
+                                                    </button>
+                                                    <button
+                                                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
+                                                    >
+                                                        <TrashIcon className="mr-3 w-5 h-5" />
+                                                        Supprimer
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+            <Modal
                 show={showPrintModal !== null}
                 onClose={() => setShowPrintModal(null)}
             >
@@ -270,7 +276,8 @@ export default function Commande_vendeur({ auth, message, success, commandes }) 
                             </div>
                         </div>
                     </div>
-                )}            </Modal>
+                )}
+            </Modal>
         </AuthenticatedLayout>
     )
 }
