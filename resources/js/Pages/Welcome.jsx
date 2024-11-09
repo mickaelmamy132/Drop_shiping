@@ -28,7 +28,7 @@ export default function Welcome({ auth }) {
             <header className="bg-white">
                 <nav className="flex justify-between items-center w-[92%] mx-auto bg-white">
                     <div>
-                        <img className="w-20 h-25" src="/icons/Fuji-Dark.png" alt="Logo" />
+                        {/* <img className="w-20 h-25" src="/icons/Fuji-Dark.png" alt="Logo" /> */}
                     </div>
                     <div className="nav-links duration-500 md:static absolute bg-white md:min-h-fit min-h-[60vh] left-0 top-0 md:w-auto w-full flex items-left px-5">
                         <div className="relative">

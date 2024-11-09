@@ -9,7 +9,10 @@ import { MultiLevelSidebar_vendeur } from '../Components/Sidebar_vendeur';
 
 export default function Authenticated({ user, header, children, role }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState(() => {
+        const savedDarkMode = localStorage.getItem('darkMode');
+        return savedDarkMode ? JSON.parse(savedDarkMode) : false;
+    });
 
     useEffect(() => {
         if (darkMode) {
@@ -17,6 +20,7 @@ export default function Authenticated({ user, header, children, role }) {
         } else {
             document.documentElement.classList.remove('dark');
         }
+        localStorage.setItem('darkMode', JSON.stringify(darkMode));
     }, [darkMode]);
 
     const toggleDarkMode = () => {
@@ -24,13 +28,9 @@ export default function Authenticated({ user, header, children, role }) {
     };
 
     return (
-        <div className="h-screen bg-gray-100 dark:bg-gray-900 w-screen flex overflow-hidden">
-            {role === 'acheteur' ? (
-                <MultiLevelSidebar_acheteur darkMode={darkMode} />
-            ) : (
-                <MultiLevelSidebar_vendeur darkMode={darkMode} />
-            )}
-
+        <div className="h-screen bg-gray-100 dark:bg-gray-900 w-screen flex">
+            {role === 'acheteur' && <MultiLevelSidebar_acheteur darkMode={darkMode} />}
+            {role === 'vendeur' && <MultiLevelSidebar_vendeur darkMode={darkMode} />}
             <div className="flex flex-col flex-1 overflow-hidden">
                 {header && (
                     <header className="bg-white dark:bg-gray-800 shadow">
