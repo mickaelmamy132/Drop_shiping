@@ -9,6 +9,7 @@ use App\Models\Panie;
 use App\Models\Produit;
 use App\Models\Produit_lot;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 
 class ProduitControllerLot extends Controller
@@ -95,17 +96,18 @@ class ProduitControllerLot extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Produit_lot $produit_lot)
+    public function edit($produit_lot)
     {
-        //
+        $produit_lots = Produit_lot::findOrFail($produit_lot);
+        return Inertia::render("ViewClientVendeur/produit_lot_edit", ['produit_lots' => $produit_lots]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProduit_lotRequest $request, Produit_lot $produit_lot)
+    public function update(UpdateProduit_lotRequest $request,  $produit_lot)
     {
-        //
+        dd($request);
     }
 
     /**

@@ -135,7 +135,7 @@ class ProduirController extends Controller
         }
 
         $produit->delete();
-        return redirect()->with('success', 'Produit supprimé');
+        return with('success', 'Produit supprimé');
 
     }
 }

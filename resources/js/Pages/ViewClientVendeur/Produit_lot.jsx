@@ -2,12 +2,15 @@ import React from 'react'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
+import { TrashIcon } from '@heroicons/react/24/solid';
+import { PencilIcon } from '@heroicons/react/24/solid';
 
 export default function Produit_lot({ lots, auth }) {
 
     return (
         <AuthenticatedLayout
             user={auth.user}
+            role={auth.user.role}
         >
             <div className="py-12">
                 <div className="mx-auto sm:px-6 lg:px-8">
@@ -46,7 +49,7 @@ export default function Produit_lot({ lots, auth }) {
                             >
                                 Ajout Lot
                             </Link>
-                        </motion.div> 
+                        </motion.div>
                     </motion.div>
 
                     <motion.div
@@ -153,8 +156,17 @@ export default function Produit_lot({ lots, auth }) {
                                                     </div>
                                                 </div>
                                             </motion.div>
-                                        </motion.div>
-                                    ))}
+                                            <motion.div className="flex justify-between space-x-1 mt-4">
+                                                <Link href={route('Produit_Lot.edit', lot.id)} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out flex items-center">
+                                                    <PencilIcon className="h-5 w-5 mr-2 stroke-2" />
+                                                    Modifier
+                                                </Link>
+                                                <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out flex items-center">
+                                                    <TrashIcon className='w-5 h-5' />
+                                                    Supprimer
+                                                </button>
+                                            </motion.div>
+                                        </motion.div>))}
                                 </motion.div>
                             ) : (
                                 <motion.p

@@ -4,53 +4,57 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Form, Input, InputNumber, Button, Select, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 
 const { Option } = Select;
 
-export default function Add_lot({ auth }) {
+export default function produit_lot_edit({ auth, produit_lots }) {
     const [form] = Form.useForm();
     const [categories, setCategories] = useState([]);
     const { data, setData, post, processing, errors } = useForm({
-        nom: '',
+        nom:  '',
         description: '',
-        quantite: 1,
-        prix: 0,
+        quantite:'',
+        prix:'',
         etat: '',
         image_lot: null,
-        categorie_id: '',
-        vendeur_id: auth.user.id,
+        categorie_id:  '',
+        vendeur_id: auth.user.id ,
     });
 
+    // useEffect(() => {
+    //     form.setFieldsValue({
+    //       ...produit_lots,
+    //     });
+    // }, [produit_lots, form]);
 
-
-    const onFinish = () => {
+    const onFinish = (values) => {
         const formData = new FormData();
-        Object.keys(data).forEach(key => {
-            if (key === 'image_lot' && data[key]) {
-                // Append the image file
-                formData.append(key, data[key].originFileObj);
-            } else {
-                // Append other fields
-                formData.append(key, data[key]);
-            }
+        formData.append('nom', values.nom);
+        formData.append('description', values.description);
+        formData.append('quantite', values.quantite);
+        formData.append('prix', values.prix);
+        formData.append('etat', values.etat);
+        formData.append('categorie_id', values.categorie_id);
+        formData.append('vendeur_id', auth.user.id);
+        
+        if (data.image_lot && data.image_lot.originFileObj) {
+            formData.append('image_lot', data.image_lot.originFileObj);
+        }
 
-        });
-
-        // Make a POST request
-        post(route('Produit_Lot.store'), {
+        post(route('Produit_Lot.update', produit_lots.id), formData, {
             preserveScroll: true,
             preserveState: true,
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
-            onSuccess: () => {
-                message.success('Le lot a été ajouté avec succès');
-                form.resetFields();
-            },
-            onError: (errors) => {
-                console.error(errors);
-                message.error('Une erreur est survenue lors de l\'ajout du lot');
-            },
+            // onSuccess: () => {
+            //     message.success('Le lot a été modifié avec succès');
+            // },
+            // onError: (errors) => {
+            //     console.error(errors);
+            //     message.error('Une erreur est survenue lors de la modification du lot');
+            // },
         });
     };
 
@@ -84,10 +88,10 @@ export default function Add_lot({ auth }) {
 
     return (
         <AuthenticatedLayout
-         user={auth.user}
-         role={auth.user.role}
-         >
-            <Head title="Ajouter un lot" />
+            user={auth.user}
+            role={auth.user.role}
+        >
+            <Head title="Modifier un lot" />
             <motion.div
                 className="py-12"
                 initial={{ opacity: 0 }}
@@ -108,7 +112,7 @@ export default function Add_lot({ auth }) {
                                 animate={{ x: 0 }}
                                 transition={{ duration: 0.5 }}
                             >
-                                Ajouter un lot
+                                Modifier un lot
                             </motion.h1>
                             <Form
                                 form={form}

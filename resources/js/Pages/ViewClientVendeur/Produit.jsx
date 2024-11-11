@@ -79,6 +79,7 @@ export default function ProductCard({ produit }) {
       </Typography>
 
       <Typography variant="h4" color="blue-gray" className="font-medium text-lg text-gray-700 mb-3">
+        Description du produit
       </Typography>
 
       <div className="flex justify-between items-center mb-3">
