@@ -11,24 +11,24 @@ const { Option } = Select;
 export default function produit_lot_edit({ auth, produit_lots }) {
     const [form] = Form.useForm();
     const [categories, setCategories] = useState([]);
-    const { data, setData, post, processing, errors } = useForm({
-        nom:  '',
-        description: '',
-        quantite:'',
-        prix:'',
-        etat: '',
+    const { data, setData, put, processing, errors } = useForm({
+        nom: produit_lots.nom || '',
+        description: produit_lots.description || '',
+        quantite: produit_lots.quantite || '',
+        prix: produit_lots.prix || '',
+        etat: produit_lots.etat || '',
         image_lot: null,
-        categorie_id:  '',
-        vendeur_id: auth.user.id ,
+        categorie_id: produit_lots.categorie_id || '',
+        vendeur_id: auth.user.id,
     });
 
-    // useEffect(() => {
-    //     form.setFieldsValue({
-    //       ...produit_lots,
-    //     });
-    // }, [produit_lots, form]);
+    useEffect(() => {
+        form.setFieldsValue({
+            ...produit_lots,
+        });
+    }, [produit_lots, form]);
 
-    const onFinish = (values) => {
+    const onFinish = async (values) => {
         const formData = new FormData();
         formData.append('nom', values.nom);
         formData.append('description', values.description);
@@ -38,24 +38,17 @@ export default function produit_lot_edit({ auth, produit_lots }) {
         formData.append('categorie_id', values.categorie_id);
         formData.append('vendeur_id', auth.user.id);
         
-        if (data.image_lot && data.image_lot.originFileObj) {
-            formData.append('image_lot', data.image_lot.originFileObj);
+        if (values.image_lot && values.image_lot[0]) {
+            formData.append('image_lot', values.image_lot[0].originFileObj);
         }
 
-        post(route('Produit_Lot.update', produit_lots.id), formData, {
-            preserveScroll: true,
-            preserveState: true,
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-            // onSuccess: () => {
-            //     message.success('Le lot a été modifié avec succès');
-            // },
-            // onError: (errors) => {
-            //     console.error(errors);
-            //     message.error('Une erreur est survenue lors de la modification du lot');
-            // },
-        });
+        try {
+            await put(route('Produit_Lot.update', produit_lots.id), formData);
+            message.success('Le lot a été modifié avec succès');
+        } catch (error) {
+            console.error(error);
+            message.error('Une erreur est survenue lors de la modification du lot');
+        }
     };
 
     useEffect(() => {
@@ -85,6 +78,13 @@ export default function produit_lot_edit({ auth, produit_lots }) {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0 },
     };
+
+    const initialFileList = produit_lots.image_lot ? [{
+        uid: '-1',
+        name: 'Image actuelle',
+        status: 'done',
+        url: produit_lots.image_lot
+    }] : [];
 
     return (
         <AuthenticatedLayout
@@ -131,8 +131,7 @@ export default function produit_lot_edit({ auth, produit_lots }) {
                                     initial="hidden"
                                     animate="visible"
                                 >
-                                    <motion.div variants
-                                        ={itemVariants}>
+                                    <motion.div variants={itemVariants}>
                                         <Form.Item
                                             name="nom"
                                             label="Nom du lot"
@@ -251,7 +250,6 @@ export default function produit_lot_edit({ auth, produit_lots }) {
                                         <Form.Item
                                             name="image_lot"
                                             label="Image du lot"
-                                            rules={[{ required: true, message: 'Veuillez télécharger une image' }]}
                                             validateStatus={errors.image_lot && 'error'}
                                             help={errors.image_lot}
                                         >
@@ -260,21 +258,24 @@ export default function produit_lot_edit({ auth, produit_lots }) {
                                                 listType="picture"
                                                 maxCount={1}
                                                 beforeUpload={() => false}
-                                                onChange={(info) => setData('image_lot', info.file)}
-                                                fileList={data.image_lot ? [data.image_lot] : []}
+                                                onChange={(info) => {
+                                                    if (info.file) {
+                                                        setData('image_lot', info.file.originFileObj || info.file)
+                                                    }
+                                                }}
+                                                defaultFileList={initialFileList}
                                             >
                                                 <Button icon={<UploadOutlined />} className="hover:bg-blue-500 hover:text-white transition-colors duration-300">Télécharger une image</Button>
                                             </Upload>
                                         </Form.Item>
                                     </motion.div>
-
                                     <motion.div variants={itemVariants}>
                                         <Form.Item>
-                                            <Link href={route('dashboard')} className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5">
+                                            <Link href={route('Produit_Lot.index')} className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5">
                                                 Annuler
                                             </Link>
                                             <Button type="primary" htmlType="submit" className="bg-blue-500 hover:bg-blue-600 transition-colors duration-300" disabled={processing}>
-                                                Ajouter le lot
+                                                Modifier le lot
                                             </Button>
                                         </Form.Item>
                                     </motion.div>

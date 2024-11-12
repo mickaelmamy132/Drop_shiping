@@ -10,6 +10,7 @@ use App\Models\Produit;
 use App\Models\Produit_lot;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ProduitControllerLot extends Controller
@@ -31,7 +32,7 @@ class ProduitControllerLot extends Controller
             $lot->montant = $lot->enchere->first()->montant ?? null;
             return $lot;
         });
- 
+
         return Inertia::render("ViewClientVendeur/Produit_lot", ['lots' => $lots]);
     }
     public function  index_acheteur()
@@ -105,16 +106,32 @@ class ProduitControllerLot extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProduit_lotRequest $request,  $produit_lot)
+    public function update(UpdateProduit_lotRequest $request, $produit_lot)
     {
-        dd($request);
-    }
+        $validated = $request->validated();
+        $produit = Produit_lot::findOrFail($produit_lot);
 
+        if ($request->hasFile('image_lot')) {
+            // Supprimer l'ancienne image
+            if ($produit->image_lot && Storage::disk('public')->exists($produit->image_lot)) {
+                Storage::disk('public')->delete($produit->image_lot);
+            }
+            $image_lot = $request->file('image_lot');
+            $path = $image_lot->store('Produits_lot', 'public');
+            $validated['image_lot'] = $path;
+        }
+
+        $prix_public = $validated['quantite'] * $validated['prix'];
+        $validated['prix_public'] = $prix_public;
+
+        $produit->update($validated);
+        return redirect()->route('Produit_Lot.index')->with('success', 'Lot modifié avec succès');
+    }
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Produit_lot $produit_lot, $id)
     {
-       //
+        //
     }
 }

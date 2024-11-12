@@ -33,6 +33,22 @@ class AuthenticatedSessionController extends Controller
         ]);
     }
 
+    public function create_acheteur2(): Response
+    {
+        $user = Auth::user();
+        return Inertia::render('Auth/Register_acheteur_2', [
+            'user' => $user,
+        ]);
+    }
+
+    public function create_vendeur2(): Response
+    {
+        $user = Auth::user();
+        return Inertia::render('Auth/Register_vendeur_2', [
+            'user' => $user,
+        ]);
+    }
+
     /**
      * Handle an incoming authentication request.
      */
@@ -47,15 +63,17 @@ class AuthenticatedSessionController extends Controller
         $user->load(['acheteur', 'vendeur']);
 
         if ($user->vendeur === null) {
-            return Inertia::render('Auth/Register_vendeur_2', [
-                'user' => $user,
-            ]);
+            return redirect()->route('register_vendeur2')->with('user', $user);
         }
+
+        $user->role='vendeur';
+        $user->save();
 
         $this->authenticated($request, $user);
 
         return redirect()->intended(route('dashboard', ['absolute' => false]));
     }
+
     public function store_acheteur(LoginRequest $request)
     {
         $request->authenticate();
@@ -67,14 +85,16 @@ class AuthenticatedSessionController extends Controller
         $user->load(['acheteur', 'vendeur']);
 
         if ($user->acheteur === null) {
-            return Inertia::render('Auth/Register_acheteur_2', [
-                'user' => $user,
-            ]);
+            return redirect()->route('register_acheteur2')->with('user', $user);
         }
-        $this->authenticated($request, $user);
 
-        return redirect()->intended(route('Acheteur', ['absolute' => false]));
+        $user->role='acheteur';
+        $user->save();
+
+        return redirect()->route('Acheteur');
     }
+
+    
 
     /**
      * Destroy an authenticated session.
@@ -82,12 +102,22 @@ class AuthenticatedSessionController extends Controller
 
     public function destroy(Request $request): RedirectResponse
     {
+        $user = Auth::user();
+        if ($user) {
+            $user->role = '';
+            $user->save();
+        }
+
+        // Déconnexion de l'utilisateur
         Auth::guard('web')->logout();
 
+        // Invalidation de la session
         $request->session()->invalidate();
 
+        // Régénération du token de session
         $request->session()->regenerateToken();
 
+        // Redirection vers la page d'accueil
         return redirect('/');
     }
 

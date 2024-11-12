@@ -23,7 +23,7 @@ class CreateVendeursTable extends Migration
             $table->string('ville_livraison', 100)->nullable();
             $table->string('code_postal_livraison', 20)->nullable();
             $table->string('documentation');
-            $table->timestamps();
+            $table->timestamps(); 
         });
     }
 

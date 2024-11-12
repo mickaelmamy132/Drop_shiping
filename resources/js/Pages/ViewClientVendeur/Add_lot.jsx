@@ -35,7 +35,6 @@ export default function Add_lot({ auth }) {
             }
 
         });
-
         // Make a POST request
         post(route('Produit_Lot.store'), {
             preserveScroll: true,
@@ -278,7 +277,7 @@ export default function Add_lot({ auth }) {
                             </Form>
                         </div>
                     </motion.div>
-                </div>
+                </div> 
             </motion.div>
         </AuthenticatedLayout>
     );

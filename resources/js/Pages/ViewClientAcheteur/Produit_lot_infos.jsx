@@ -20,7 +20,7 @@ const StyledCard = styled(motion.div)`
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
   }
 `;
-
+ 
 const StyledTitle = styled.h2`
   color: #2c3e50;
   font-size: 28px;

@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { useForm } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import Chartjx from '../../Components/Chart';
 import Donate from '../../Components/Donate';
@@ -60,7 +60,9 @@ export default function Acheteur({ auth }) {
 
                     </motion.div>
                 </div>
+                
             </motion.main>
+            
         </AuthenticatedLayout>
     );
 }

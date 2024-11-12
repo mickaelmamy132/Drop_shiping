@@ -3,9 +3,6 @@ import {
   Card,
   Typography,
   List,
-  ListItem,
-  ListItemPrefix,
-  ListItemSuffix,
   Chip,
 } from "@material-tailwind/react";
 import {
@@ -97,7 +94,8 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                 </div>
                 <List>
                   <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.1 }}>
-                    <Link href={route('Acheteur')} className={`flex items-center justify-center gap-3 w-full ${isActive('/Acheteur') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}>
+                    <Link href={route('Acheteur')}
+                      className={`flex items-center justify-center gap-3 w-full ${isActive('/Acheteur') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}>
                       <PresentationChartBarIcon className="h-5 w-5" />
                       <Typography color={isActive('/Acheteur') ? "blue" : darkMode ? "white" : "blue-gray"} className="font-normal">
                         Tableau de bord
@@ -112,6 +110,7 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                       </Typography>
                     </Link>
                   </motion.div>
+
                   <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
                     <div
                       onClick={() => setShowLotsSubMenu(!showLotsSubMenu)}
@@ -152,8 +151,11 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                       )}
                     </AnimatePresence>
                   </motion.div>
+                  
                   <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.4 }} className="flex justify-center">
-                    <Link href={route('Commande')} className="w-full text-center">
+                    <Link
+                      href={route('Commande')}
+                      className={`w-full text-center ${isActive('/Commande')? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}>
                       <div className={`flex items-center justify-center gap-3 p-3 hover:bg-blue-50 transition-colors duration-300 ${darkMode ? 'text-gray-300 hover:bg-gray-700' : ''}`}>
                         <ShoppingBagIcon className="h-5 w-5" />
                         <span>Commande</span>
@@ -161,8 +163,11 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                       </div>
                     </Link>
                   </motion.div>
+
                   <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.4 }} className="flex justify-center">
-                    <Link href={route('inbox')} className="w-full text-center">
+                    <Link
+                      href={route('inbox')}
+                      className={`w-full text-center ${isActive('/inbox') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}>
                       <div className={`flex items-center justify-center gap-3 p-3 hover:bg-blue-50 transition-colors duration-300 ${darkMode ? 'text-gray-300 hover:bg-gray-700' : ''}`}>
                         <InboxIcon className="h-5 w-5" />
                         <span>Inbox</span>
@@ -170,11 +175,13 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                       </div>
                     </Link>
                   </motion.div>
+
                 </List>
               </Card>
             </motion.div>
           )}
-        </AnimatePresence>      </div>
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('prix', 10, 2);
             $table->decimal('prix_public', 10, 2);
             $table->string('etat');
-            $table->string('image_lot');
+            $table->string('image_lot')->nullable();
             $table->unsignedBigInteger('vendeur_id');
             $table->foreign('vendeur_id')->references('id')->on('vendeurs')->onDelete('cascade');
 

@@ -45,11 +45,26 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+
+
 });
 
 Route::middleware('auth')->group(function () {
+    
+
+    Route::get('register_acheteur2', [AuthenticatedSessionController::class, 'create_acheteur2'])
+    ->name('register_acheteur2');
+    
+    Route::get('register_vendeur2', [AuthenticatedSessionController::class, 'create_vendeur2'])
+    ->name('register_vendeur2');
+
+
+
     Route::post('register_acheteur_2', [RegisteredUserController::class, 'store_acheteur_2'])->name('register_acheteur_2');
     Route::post('register_vendeur_2', [RegisteredUserController::class, 'store_vendeur_2'])->name('register_vendeur_2');
+
+
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 

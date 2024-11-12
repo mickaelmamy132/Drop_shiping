@@ -27,16 +27,15 @@ class CheckExpiredPanier extends Command
     public function handle()
     {
         //recupere les panier expirées
-        $expiredPaniers = Panie::where('created_at', '<', now())->get();
-        dd($expiredPaniers);
-        //pour chaque panier expiré
-        // foreach ($expiredPaniers as $panier) {
-        //    //en supprime du panier et on les reintiliser
-        //    $panier->delete();
-        // }
-        // //affiche un message de confirmation
-        // $this->info('Les enchères terminées ont été gérées avec succès.');
-        // return Command::SUCCESS;
+        $expiredPaniers = Panie::where('created_at', '<',  now()->subDays(2))->get();
+        // dd($expiredPaniers);
+        foreach ($expiredPaniers as $panier) {
+           //en supprime du panier et on les reintiliser
+           $panier->delete();
+        }
+        //affiche un message de confirmation
+        $this->info('Les enchères terminées ont été gérées avec succès.');
+        return Command::SUCCESS;
 
     }
 }
