@@ -21,8 +21,6 @@ export default function Add_lot({ auth }) {
         vendeur_id: auth.user.id,
     });
 
-
-
     const onFinish = () => {
         const formData = new FormData();
         Object.keys(data).forEach(key => {

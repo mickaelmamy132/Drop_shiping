@@ -1,11 +1,50 @@
-import React from 'react'
+import React, { useState } from 'react'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Link } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
+import { message } from 'antd';
 import { motion } from 'framer-motion';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { PencilIcon } from '@heroicons/react/24/solid';
+import Modal from '../../Components/Modal';
 
 export default function Produit_lot({ lots, auth }) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedLot, setselectedLot] = useState(null);
+
+    const {
+        delete: destroy,
+        processing: deleteProcessing,
+    } = useForm();
+
+    const showModale = (lotID) => {
+        setselectedLot(lotID);
+        setIsModalOpen(true);
+    };
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const confirmDelete = () => {
+        if (selectedLot !== null) {
+            destroy(route('Produit_Lot.destroy', selectedLot), {
+                preserveState: true,
+                preserveScroll: true,
+                onSuccess: () => {
+                    setIsModalOpen(false);
+                    setselectedLot(null);
+                    message.success('Le lot a été bien supprimer');
+                },
+                onError: (errors) => {
+                    console.error(errors);
+                    message.error('Une erreur est survenue lors du suppression du lot');
+                },
+            });
+        } else {
+            setIsModalOpen(false);
+            setselectedLot(null);
+        }
+    };
 
     return (
         <AuthenticatedLayout
@@ -13,7 +52,7 @@ export default function Produit_lot({ lots, auth }) {
             role={auth.user.role}
         >
             <div className="py-12">
-                <div className="mx-auto sm:px-6 lg:px-8">
+                <div className=" mx-auto sm:px-6 lg:px-2">
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -56,7 +95,7 @@ export default function Produit_lot({ lots, auth }) {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
-                        className="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-5"
+                        className="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-5 w-full"
                     >
                         <div className="p-6 text-gray-900">
                             <motion.h2
@@ -81,7 +120,7 @@ export default function Produit_lot({ lots, auth }) {
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition={{ duration: 0.5, delay: 0.6 }}
-                                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5 text-center"
+                                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5 text-center min-w-[300px]"
                                 >
                                     {lots.map((lot, index) => (
                                         <motion.div
@@ -90,7 +129,7 @@ export default function Produit_lot({ lots, auth }) {
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.5, delay: 0.2 * index }}
                                             whileHover={{ scale: 1.05 }}
-                                            className="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow duration-300"
+                                            className="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow duration-300 min-w-[280px]"
                                         >
                                             <div>
                                                 <h1 className='font-bold text-xl'>{lot.vendeur.user.name}</h1>
@@ -141,30 +180,30 @@ export default function Produit_lot({ lots, auth }) {
                                                 transition={{ duration: 0.5, delay: 0.2 * index + 0.4 }}
                                                 className="border-t border-gray-200 mt-4 pt-4"
                                             >
-                                                <div className="flex justify-between text-gray-700">
-                                                    <div>
+                                                <div className="flex flex-col sm:flex-row justify-between text-gray-700 space-y-4 sm:space-y-0">
+                                                    <div className="text-center sm:text-left">
                                                         <p className="text-sm">Prix public</p>
                                                         <p className="font-bold">{lot.prix_public} €</p>
                                                     </div>
-                                                    <div>
+                                                    <div className="text-center sm:text-left">
                                                         <p className="text-sm">Unités</p>
                                                         <p className="font-bold">{lot.quantite}</p>
                                                     </div>
-                                                    <div>
+                                                    <div className="text-center sm:text-left">
                                                         <p className="text-sm">Coût / unité</p>
                                                         <p className="font-bold">{lot.prix} €</p>
                                                     </div>
                                                 </div>
-                                            </motion.div>
-                                            <motion.div className="flex justify-between space-x-1 mt-4">
-                                                <Link href={route('Produit_Lot.edit', lot.id)} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out flex items-center">
-                                                    <PencilIcon className="h-5 w-5 mr-2 stroke-2" />
-                                                    Modifier
-                                                </Link>
-                                                <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out flex items-center">
-                                                    <TrashIcon className='w-5 h-5' />
-                                                    Supprimer
-                                                </button>
+                                                <div className="flex flex-col sm:flex-row justify-between mt-4 w-full space-y-2 sm:space-y-0 sm:space-x-2">
+                                                    <Link href={route('Produit_Lot.edit', lot.id)} className="w-full sm:flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out flex items-center justify-center text-sm">
+                                                        <PencilIcon className="h-5 w-5 mr-2 stroke-2" />
+                                                        Modifier
+                                                    </Link>
+                                                    <button onClick={() => showModale(lot.id)} className="w-full sm:flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition duration-300 ease-in-out flex items-center justify-center text-sm">
+                                                        <TrashIcon className='w-5 h-5 mr-2' />
+                                                        Supprimer
+                                                    </button>
+                                                </div>
                                             </motion.div>
                                         </motion.div>))}
                                 </motion.div>
@@ -180,6 +219,39 @@ export default function Produit_lot({ lots, auth }) {
                         </div>
                     </motion.div>
                 </div>
+                <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        className="p-6"
+                    >
+                        <h3 className="text-lg font-medium text-gray-900">Confirmer la suppression</h3>
+                        <p className="mt-2 text-sm text-gray-500">
+                            Êtes-vous sûr de vouloir supprimer cet lot?
+                        </p>
+                        <div className="mt-4 flex justify-end space-x-3">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                type="button"
+                                className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+                                onClick={confirmDelete}
+                            >
+                                Supprimer
+                            </motion.button>
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                type="button"
+                                className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
+                                onClick={() => closeModal()}
+                            >
+                                Annuler
+                            </motion.button>
+                        </div>
+                    </motion.div>
+                </Modal>
             </div>
         </AuthenticatedLayout>
     )

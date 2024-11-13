@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Typography, Button, Dialog, DialogHeader, DialogBody, DialogFooter } from '@material-tailwind/react';
+import { Typography, Button } from '@material-tailwind/react';
 import { Link } from '@inertiajs/react';
 import { useForm } from '@inertiajs/react';
 import { EyeIcon } from '@heroicons/react/24/solid';
@@ -16,7 +16,7 @@ export default function ProductCard({ produit }) {
     data: formData,
     delete: destroy,
     processing: deleteProcessing,
-} = useForm();
+  } = useForm();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -39,7 +39,7 @@ export default function ProductCard({ produit }) {
         preserveScroll: true,
         onSuccess: () => {
           setIsModalOpen(false);
-          setSelectedPanieId(null);
+          setselectedProduit(null);
           notification.success({
             message: 'Succès',
             description: 'Produit retiré du panier avec succès',
@@ -57,7 +57,7 @@ export default function ProductCard({ produit }) {
       });
     } else {
       setIsModalOpen(false);
-      setSelectedPanieId(null);
+      setselectedProduit(null);
     }
   };
 
@@ -144,7 +144,7 @@ export default function ProductCard({ produit }) {
               whileTap={{ scale: 0.95 }}
               type="button"
               className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
-              onClick={() => setIsModalOpen(false)}
+              onClick={() => closeModal()}
             >
               Annuler
             </motion.button>

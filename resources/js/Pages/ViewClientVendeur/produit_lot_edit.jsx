@@ -11,13 +11,19 @@ const { Option } = Select;
 export default function produit_lot_edit({ auth, produit_lots }) {
     const [form] = Form.useForm();
     const [categories, setCategories] = useState([]);
+    const [fileList, setFileList] = useState(produit_lots.image_lot ? [{
+        uid: '-1',
+        name: 'Image actuelle',
+        status: 'done',
+        url: `/storage/${produit_lots.image_lot}`
+    }] : []);
     const { data, setData, put, processing, errors } = useForm({
         nom: produit_lots.nom || '',
         description: produit_lots.description || '',
         quantite: produit_lots.quantite || '',
         prix: produit_lots.prix || '',
         etat: produit_lots.etat || '',
-        image_lot: null,
+        image_lot: undefined,
         categorie_id: produit_lots.categorie_id || '',
         vendeur_id: auth.user.id,
     });
@@ -30,25 +36,28 @@ export default function produit_lot_edit({ auth, produit_lots }) {
 
     const onFinish = async (values) => {
         const formData = new FormData();
-        formData.append('nom', values.nom);
-        formData.append('description', values.description);
-        formData.append('quantite', values.quantite);
-        formData.append('prix', values.prix);
-        formData.append('etat', values.etat);
-        formData.append('categorie_id', values.categorie_id);
-        formData.append('vendeur_id', auth.user.id);
-        
-        if (values.image_lot && values.image_lot[0]) {
-            formData.append('image_lot', values.image_lot[0].originFileObj);
-        }
+        Object.keys(values).forEach(key => {
+            if (key === 'image_lot' && !values[key]) {
+                return;
+            }
+            formData.append(key, values[key]);
+        });
 
-        try {
-            await put(route('Produit_Lot.update', produit_lots.id), formData);
-            message.success('Le lot a été modifié avec succès');
-        } catch (error) {
-            console.error(error);
-            message.error('Une erreur est survenue lors de la modification du lot');
-        }
+        put(route('Produit_Lot.update', produit_lots.id), formData, {
+            preserveScroll: true,
+            preserveState: true,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            onSuccess: () => {
+                message.success('Le lot a été modifié avec succès');
+                form.resetFields();
+            },
+            onError: (errors) => {
+                console.error(errors);
+                message.error('Une erreur est survenue lors de la modification du lot');
+            },
+        });
     };
 
     useEffect(() => {
@@ -78,13 +87,6 @@ export default function produit_lot_edit({ auth, produit_lots }) {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0 },
     };
-
-    const initialFileList = produit_lots.image_lot ? [{
-        uid: '-1',
-        name: 'Image actuelle',
-        status: 'done',
-        url: produit_lots.image_lot
-    }] : [];
 
     return (
         <AuthenticatedLayout
@@ -139,11 +141,7 @@ export default function produit_lot_edit({ auth, produit_lots }) {
                                             validateStatus={errors.nom && 'error'}
                                             help={errors.nom}
                                         >
-                                            <Input
-                                                className="hover:border-blue-500 focus:border-blue-500 transition-colors duration-300"
-                                                value={data.nom}
-                                                onChange={(e) => setData('nom', e.target.value)}
-                                            />
+                                            <Input onChange={(e) => setData('nom', e.target.value)} />
                                         </Form.Item>
                                     </motion.div>
 
@@ -154,11 +152,7 @@ export default function produit_lot_edit({ auth, produit_lots }) {
                                             validateStatus={errors.description && 'error'}
                                             help={errors.description}
                                         >
-                                            <Input.TextArea
-                                                className="hover:border-blue-500 focus:border-blue-500 transition-colors duration-300"
-                                                value={data.description}
-                                                onChange={(e) => setData('description', e.target.value)}
-                                            />
+                                            <Input.TextArea onChange={(e) => setData('description', e.target.value)} />
                                         </Form.Item>
                                     </motion.div>
 
@@ -175,7 +169,10 @@ export default function produit_lot_edit({ auth, produit_lots }) {
                                             validateStatus={errors.categorie_id && 'error'}
                                             help={errors.categorie_id}
                                         >
-                                            <Select placeholder="Sélectionnez une catégorie" className="rounded-md" value={data.categorie_id} onChange={(value) => setData('categorie_id', value)}>
+                                            <Select
+                                                placeholder="Sélectionnez une catégorie"
+                                                onChange={(value) => setData('categorie_id', value)}
+                                            >
                                                 {categories.map(category => (
                                                     <Option key={category.id} value={category.id}>{category.nom}</Option>
                                                 ))}
@@ -193,8 +190,7 @@ export default function produit_lot_edit({ auth, produit_lots }) {
                                         >
                                             <InputNumber
                                                 min={1}
-                                                className="w-full hover:border-blue-500 focus:border-blue-500 transition-colors duration-300"
-                                                value={data.quantite}
+                                                className="w-full"
                                                 onChange={(value) => setData('quantite', value)}
                                             />
                                         </Form.Item>
@@ -211,8 +207,7 @@ export default function produit_lot_edit({ auth, produit_lots }) {
                                             <InputNumber
                                                 min={0}
                                                 addonBefore="€"
-                                                className="w-full hover:border-blue-500 focus:border-blue-500 transition-colors duration-300"
-                                                value={data.prix}
+                                                className="w-full"
                                                 onChange={(value) => setData('prix', value)}
                                             />
                                         </Form.Item>
@@ -231,7 +226,10 @@ export default function produit_lot_edit({ auth, produit_lots }) {
                                             validateStatus={errors.etat && 'error'}
                                             help={errors.etat}
                                         >
-                                            <Select placeholder="Sélectionnez l'état du produit" className="rounded-md" value={data.etat} onChange={(value) => setData('etat', value)}>
+                                            <Select
+                                                placeholder="Sélectionnez l'état du produit"
+                                                onChange={(value) => setData('etat', value)}
+                                            >
                                                 <Option value="Bon état">Bon état</Option>
                                                 <Option value="Retour client fonctionnel">Retour client fonctionnel</Option>
                                                 <Option value="Neuf avec emballage d'origine">Neuf avec emballage d'origine</Option>
@@ -248,10 +246,23 @@ export default function produit_lot_edit({ auth, produit_lots }) {
 
                                     <motion.div variants={itemVariants}>
                                         <Form.Item
-                                            name="image_lot"
-                                            label="Image du lot"
+                                            label="Image"
                                             validateStatus={errors.image_lot && 'error'}
                                             help={errors.image_lot}
+                                        >
+                                            {produit_lots.image_lot && (
+                                                <div className="mb-4">
+                                                    <p className="mb-2">Image actuelle :</p>
+                                                    <img
+                                                        src={`/storage/${produit_lots.image_lot}`}
+                                                        alt="Image actuelle"
+                                                        className="max-w-xs rounded-lg shadow-md"
+                                                    />
+                                                </div>
+                                            )}
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="image_lot"
                                         >
                                             <Upload
                                                 name="image_lot"
@@ -259,24 +270,28 @@ export default function produit_lot_edit({ auth, produit_lots }) {
                                                 maxCount={1}
                                                 beforeUpload={() => false}
                                                 onChange={(info) => {
+                                                    setFileList(info.fileList);
                                                     if (info.file) {
                                                         setData('image_lot', info.file.originFileObj || info.file)
                                                     }
                                                 }}
-                                                defaultFileList={initialFileList}
+                                                fileList={fileList.filter(file => !file.url || !file.url.includes(produit_lots.image_lot))}
                                             >
-                                                <Button icon={<UploadOutlined />} className="hover:bg-blue-500 hover:text-white transition-colors duration-300">Télécharger une image</Button>
+                                                <Button icon={<UploadOutlined />}>Télécharger une nouvelle image</Button>
                                             </Upload>
                                         </Form.Item>
                                     </motion.div>
+
                                     <motion.div variants={itemVariants}>
                                         <Form.Item>
-                                            <Link href={route('Produit_Lot.index')} className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5">
-                                                Annuler
-                                            </Link>
-                                            <Button type="primary" htmlType="submit" className="bg-blue-500 hover:bg-blue-600 transition-colors duration-300" disabled={processing}>
-                                                Modifier le lot
-                                            </Button>
+                                            <div>
+                                                <Link href={route('Produit_Lot.index')} className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5">
+                                                    Annuler
+                                                </Link>
+                                                <Button type="primary" htmlType="submit" className="bg-blue-500" disabled={processing}>
+                                                    Modifier le lot
+                                                </Button>
+                                            </div>
                                         </Form.Item>
                                     </motion.div>
                                 </motion.div>

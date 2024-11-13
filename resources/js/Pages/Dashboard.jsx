@@ -5,6 +5,10 @@ import { useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import Chart_vendeur from '../Components/Chart_vendeur';
 import Diagramme from '../Components/Diagramme';
+import LineChart from '../Components/LineChart';
+import BarChart from '../Components/BarChart';
+import { CurrencyDollarIcon, UsersIcon, CubeIcon } from '@heroicons/react/24/solid';
+import DashboardCard from '../Components/DashboardCard';
 
 export default function Dashboard({ auth }) {
     const { data, setData, post, processing, errors, reset } = useForm();
@@ -59,9 +63,9 @@ export default function Dashboard({ auth }) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
-                        className=' overflow-hidden p-4 mt-5'
+                        className=' overflow-hidden p-4 mt-5 space-y-8'
                     >
-                        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 mb-5'>
+                        {/* <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 mb-5'>
                             <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
                                 <Chartjx />
                             </motion.div>
@@ -70,25 +74,37 @@ export default function Dashboard({ auth }) {
                             </motion.div>
 
                             <Diagramme />
+                        </div> */}
+
+                        <div className='grid grid-cols-1 gap-4 lg:grid-cols-3 items-center'>
+                        <DashboardCard
+                            title="Sales"
+                            value="$24,560"
+                            icon={CurrencyDollarIcon}
+                            footer="Increased by 10% since last month"
+                            additionalInfo="Order #1,234"
+                        />
+                        <DashboardCard
+                            title="Customers"
+                            value="1,234"
+                            icon={UsersIcon}
+                            footer="120 new customers this month"
+                            additionalInfo="Avg. Value: $85"
+                        />
+                        <DashboardCard
+                            title="Active Products"
+                            value="456"
+                            icon={CubeIcon}
+                            footer="23 new products added this week"
+                            additionalInfo="Inactive: 32"
+                        />
                         </div>
 
-                        {/* <motion.div
-                            initial={{ y: 20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ duration: 0.5, delay: 0.6 }}
-                            className="grid grid-cols-1 lg:grid-cols-3 gap-5"
-                        >
-                            {produits.map((produit, index) => (
-                                <motion.div
-                                    key={produit.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                                >
-                                    <ProductCard produit={produit} />
-                                </motion.div>
-                            ))}
-                        </motion.div> */}
+                        <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+                            <LineChart/>
+                            <LineChart/>
+                            <BarChart/>
+                        </div>
                     </motion.div>
                 </div>
             </motion.div>

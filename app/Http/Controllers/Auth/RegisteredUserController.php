@@ -232,17 +232,13 @@ class RegisteredUserController extends Controller
         $user = Auth::user();
         if ($role === 'acheteur') {
             if ($user->acheteur === null) {
-                return Inertia::render('Auth/Register_acheteur_2', [
-                    'user' => $user,
-                ]);
+                return redirect()->route('register_acheteur2')->with('user', $user);
             }
             $user->switchRole($role);
             return Inertia::location(route('Acheteur'));
         } elseif ($role === 'vendeur') {
             if ($user->vendeur === null) {
-                return Inertia::render('Auth/Register_vendeur_2', [
-                    'user' => $user,
-                ]);
+                return redirect()->route('register_vendeur2')->with('user', $user);
             }
             $user->switchRole($role);
             return Inertia::location(route('dashboard'));

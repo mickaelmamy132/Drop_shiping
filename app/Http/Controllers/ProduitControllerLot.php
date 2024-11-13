@@ -8,6 +8,7 @@ use App\Http\Resources\EnchereResource;
 use App\Models\Panie;
 use App\Models\Produit;
 use App\Models\Produit_lot;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Storage;
@@ -109,18 +110,17 @@ class ProduitControllerLot extends Controller
     public function update(UpdateProduit_lotRequest $request, $produit_lot)
     {
         $validated = $request->validated();
+        // dd($validated);
         $produit = Produit_lot::findOrFail($produit_lot);
 
-        if ($request->hasFile('image_lot')) {
-            // Supprimer l'ancienne image
-            if ($produit->image_lot && Storage::disk('public')->exists($produit->image_lot)) {
-                Storage::disk('public')->delete($produit->image_lot);
-            }
-            $image_lot = $request->file('image_lot');
-            $path = $image_lot->store('Produits_lot', 'public');
-            $validated['image_lot'] = $path;
-        }
-
+        // if ($request->hasFile('image_lot')) {
+        //     if ($produit->image_lot && Storage::disk('public')->exists($produit->image_lot)) {
+        //         Storage::disk('public')->delete($produit->image_lot);
+        //     }
+        //     $image_lot = $request->file('image_lot');
+        //     $path = $image_lot->store('Produits_lot', 'public');
+        //     $validated['image_lot'] = $path;
+        // }
         $prix_public = $validated['quantite'] * $validated['prix'];
         $validated['prix_public'] = $prix_public;
 
@@ -132,6 +132,17 @@ class ProduitControllerLot extends Controller
      */
     public function destroy(Produit_lot $produit_lot, $id)
     {
-        //
-    }
-}
+        $produit_lot = Produit_lot::findOrFail($id);
+        if ($produit_lot->vendeur_id !==Auth::user()->id) {
+            return back()->with('erro', 'Vous ne pouvez pas supprimer cet lot');
+        } 
+        if (!$produit_lot) {
+            return back()->with('error', 'lot non trouvé');
+        }
+        if ($produit_lot->image_lot) {
+            Storage::disk('public')->delete($produit_lot->image_lot);
+        }
+
+        $produit_lot->delete();
+        return back()->with('success', 'Produit supprimé');
+    }}

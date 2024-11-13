@@ -55,8 +55,6 @@ class ProduirController extends Controller
      */
     public function store(StoreProduitRequest $request)
     {
-        // dd($request);
-
         $validated = $request->validated();
         if ($request->hasFile('image_rubrique')) {
             $path = $request->file('image_rubrique')->store('Produits', 'public');
@@ -135,7 +133,7 @@ class ProduirController extends Controller
         }
 
         $produit->delete();
-        return with('success', 'Produit supprimé');
+        return redirect()->route('Mes_rubrique/show')->with('success', 'Produit mis à jour');
 
     }
 }
