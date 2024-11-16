@@ -307,7 +307,7 @@ export default function Inbox_acheteur({ auth, produit, acheteur }) {
                                         selectedConversation.messages.slice().reverse().map((message) => (
                                             <div key={message.id} className={`flex flex-col mb-4 transition-all duration-300 group ${message.sender_id === auth.user.id ? 'items-end' : 'items-start'}`}>
                                                 <div className={`flex rounded-lg px-4 py-2 max-w-[70%] break-words ${message.sender_id === auth.user.id ? 'bg-blue-600 text-white rounded-xl' : 'bg-gray-200 rounded-xl text-gray-800'}`}>
-                                                    {message.type === 'text' && <p className="text-base break-words">{message.content}</p>}
+                                                    {message.type === 'text' && <p className="text-lg break-words">{message.content}</p>}
                                                     {message.type === 'image' && <img src={message.url} alt="Shared" className="max-w-full rounded" />}
                                                     {message.type === 'audio' && <audio controls src={message.url} className="max-w-full" />}
                                                 </div>
