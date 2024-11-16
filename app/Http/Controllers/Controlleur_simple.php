@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Categorie;
 use App\Models\Produit;
 use App\Models\Produit_lot;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -39,12 +40,14 @@ class Controlleur_simple extends Controller
 
     public function inbox()
     {
-        $produit = Produit_lot::all();
-        return Inertia::render('ViewClientAcheteur/Inbox_acheteur', ['produit' => $produit]);
+        $produit = Produit_lot::with(['enchere', 'vendeur.user', 'categorie'])->get();
+        $acheteur = User::with(['acheteur', 'vendeur'])->get();
+        return Inertia::render('ViewClientAcheteur/Inbox_acheteur', ['produit' => $produit, 'acheteur' => $acheteur]);
     }
     public function inbox_vendeur()
     {
-        $produit = Produit_lot::all();
-        return Inertia::render('ViewClientVendeur/Inbox_vendeur', ['produit' => $produit]);
+        $produit = Produit_lot::with(['enchere', 'vendeur.user', 'categorie'])->get();
+        $acheteur = User::with(['acheteur', 'vendeur'])->get();
+        return Inertia::render('ViewClientVendeur/Inbox_vendeur', ['produit' => $produit, 'acheteur' => $acheteur]);
     }
 }

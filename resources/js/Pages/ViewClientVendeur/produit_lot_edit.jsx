@@ -17,13 +17,13 @@ export default function produit_lot_edit({ auth, produit_lots }) {
         status: 'done',
         url: `/storage/${produit_lots.image_lot}`
     }] : []);
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         nom: produit_lots.nom || '',
         description: produit_lots.description || '',
         quantite: produit_lots.quantite || '',
-        prix: produit_lots.prix || '',
+        prix_total: produit_lots.prix_total || '',
         etat: produit_lots.etat || '',
-        image_lot: undefined,
+        image_lot: '',
         categorie_id: produit_lots.categorie_id || '',
         vendeur_id: auth.user.id,
     });
@@ -36,14 +36,17 @@ export default function produit_lot_edit({ auth, produit_lots }) {
 
     const onFinish = async (values) => {
         const formData = new FormData();
-        Object.keys(values).forEach(key => {
-            if (key === 'image_lot' && !values[key]) {
-                return;
+        Object.keys(data).forEach(key => {
+            if (key === 'image_lot' && data.image_lot && data.image_lot.originFileObj) {
+                // Append the image file directly
+                formData.append(key, data.image_lot.originFileObj);
+            } else {
+                formData.append(key, data[key]);
             }
-            formData.append(key, values[key]);
         });
+        console.log(data);
 
-        put(route('Produit_Lot.update', produit_lots.id), formData, {
+        post(route('lot.updates', produit_lots.id), formData, {
             preserveScroll: true,
             preserveState: true,
             headers: {
@@ -198,17 +201,17 @@ export default function produit_lot_edit({ auth, produit_lots }) {
 
                                     <motion.div variants={itemVariants}>
                                         <Form.Item
-                                            name="prix"
-                                            label="Prix unitaire"
+                                            name="prix_total"
+                                            label="Prix totale"
                                             rules={[{ required: true, message: 'Veuillez entrer le prix' }]}
-                                            validateStatus={errors.prix && 'error'}
-                                            help={errors.prix}
+                                            validateStatus={errors.prix_total && 'error'}
+                                            help={errors.prix_total}
                                         >
                                             <InputNumber
                                                 min={0}
                                                 addonBefore="€"
                                                 className="w-full"
-                                                onChange={(value) => setData('prix', value)}
+                                                onChange={(value) => setData('prix_total', value)}
                                             />
                                         </Form.Item>
                                     </motion.div>

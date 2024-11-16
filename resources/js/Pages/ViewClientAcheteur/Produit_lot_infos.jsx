@@ -272,7 +272,7 @@ export default function Produit_lot_infos({ auth, produit_lot }) {
                                 <ChatBubbleBottomCenterTextIcon className="w-6 h-6 mr-2" />
                                 Discuter avec le vendeur
                             </StyledButton>
-                            <Chat_acheteur
+                            <Chat_acheteur 
                                 productId={produit_lot[0].id}
                                 buyerId={auth.user.id}
                                 sellerId= {produit_lot[0].vendeur.user.id}

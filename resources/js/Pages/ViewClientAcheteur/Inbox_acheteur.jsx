@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import {ref, push, onValue, update} from "firebase/database";
+import { ref, push, onValue, update } from "firebase/database";
 import { database } from '../../../../firebaseConfig';
 import EmojiPicker from 'emoji-picker-react';
 
-export default function Inbox_acheteur({ auth, produit }) {
+export default function Inbox_acheteur({ auth, produit, acheteur }) {
+    console.log(produit)
     const [conversations, setConversations] = useState([]);
     const [selectedConversation, setSelectedConversation] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -12,12 +13,17 @@ export default function Inbox_acheteur({ auth, produit }) {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [imagePreview, setImagePreview] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [showBuyerInfo, setShowBuyerInfo] = useState(false);
+
 
     useEffect(() => {
-        const fetchConversations = async () => {
+
+        let unsubscribers = [];
+
+        const fetchConversations = () => {
             setIsLoading(true);
             const conversationsMap = new Map();
-            const unsubscribers = [];
+
 
             for (const product of produit) {
                 const chatRef = ref(database, `chats/${product.id}/messages`);
@@ -28,8 +34,6 @@ export default function Inbox_acheteur({ auth, produit }) {
                         const messagesList = Object.entries(data).map(([key, value]) => ({
                             id: key,
                             productId: product.id,
-                            productName: product.name,
-                            productImageUrl: product.imageUrl,
                             content: value.content || '',
                             isDelivered: value.isDelivered || false,
                             isRead: value.isRead || false,
@@ -38,57 +42,78 @@ export default function Inbox_acheteur({ auth, produit }) {
                             timestamp: value.timestamp,
                             type: value.type || 'text',
                             url: value.url || ''
-                        })).filter(message =>
-                            message.sender_id === auth.user.id ||
-                            message.receiver_id === auth.user.id
+                        })
                         );
 
-                        if (messagesList.length > 0) {
-                            const conversation = {
-                                productId: product.id,
-                                productName: product.name,
-                                productImageUrl: product.imageUrl,
-                                messages: messagesList,
-                                unreadCount: messagesList.filter(msg => 
-                                    !msg.isRead && msg.receiver_id === auth.user.id
-                                ).length
-                            };
-                            conversationsMap.set(product.id, conversation);
+                        const groupedMessages = messagesList.reduce((acc, message) => {
+                            const otherPartyId = message.sender_id === auth.user.id ? message.receiver_id : message.sender_id;
+                            if (!acc[otherPartyId]) {
+                                acc[otherPartyId] = [];
+                            }
+                            acc[otherPartyId].push(message);
+                            return acc;
+                        }, {});
 
-                            const newConversations = Array.from(conversationsMap.values());
-                            setConversations(newConversations);
-                            
-                            if (selectedConversation && product.id === selectedConversation.productId) {
-                                setSelectedConversation(prev => ({
-                                    ...prev,
-                                    messages: messagesList
-                                }));
+                        Object.entries(groupedMessages).forEach(([otherPartyId, messages]) => {
+                            if (messages.some(msg =>
+                                msg.sender_id === auth.user.id ||
+                                msg.receiver_id === auth.user.id
+                            )) {
+                                const conversationKey = `${product.id}-${otherPartyId}`;
+                                const conversation = {
+                                    productId: product.id,
+                                    acheteur: product.nom,
+                                    productImageUrl: `/storage/${product.image_lot}`,
+                                    senderId: parseInt(otherPartyId),
+                                    messages: messages,
+                                    unreadCount: messages.filter(msg =>
+                                        !msg.isRead && msg.receiver_id === auth.user.id
+                                    ).length,
+                                    productName: product.nom,
+                                    productCategory: product.categorie.nom,
+                                    productPrice: product.prix
+                                };
+                                conversationsMap.set(conversationKey, conversation);
+                            }
+                        });
+
+                        const newConversations = Array.from(conversationsMap.values());
+                        setConversations(newConversations);
+
+                        if (selectedConversation) {
+                            const currentKey = `${selectedConversation.productId}-${selectedConversation.senderId}`;
+                            const updatedConversation = conversationsMap.get(currentKey);
+                            if (updatedConversation) {
+                                setSelectedConversation(updatedConversation);
                             }
                         }
                     }
-                    setIsLoading(false);
                 });
 
                 unsubscribers.push(unsubscribe);
             }
-
-            return () => {
-                unsubscribers.forEach(unsubscribe => unsubscribe());
-            };
+            setIsLoading(false);
         };
 
         fetchConversations();
+
+
+        return () => {
+            unsubscribers.forEach(unsubscribe => unsubscribe());
+        };
     }, [produit, auth.user.id, selectedConversation]);
 
     const handleSelectConversation = async (conversation) => {
-        if (selectedConversation?.productId === conversation.productId) {
+        if (selectedConversation?.productId === conversation.productId &&
+            selectedConversation?.senderId === conversation.senderId) {
             return;
         }
-        
+
         setSelectedConversation(conversation);
-    
+
         const updatedConversations = conversations.map((conv) => {
-            if (conv.productId === conversation.productId) {
+            if (conv.productId === conversation.productId &&
+                conv.senderId === conversation.senderId) {
                 const updatedMessages = conv.messages.map((message) => {
                     if (!message.isRead && message.receiver_id === auth.user.id) {
                         const messageRef = ref(database, `chats/${conv.productId}/messages/${message.id}`);
@@ -101,9 +126,10 @@ export default function Inbox_acheteur({ auth, produit }) {
             }
             return conv;
         });
-    
+
         setConversations(updatedConversations);
     };
+
     const handleImageSelect = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -119,16 +145,13 @@ export default function Inbox_acheteur({ auth, produit }) {
 
     const handleSendMessage = async (content = newMessage, type = 'text', url = null) => {
         if (!selectedConversation) return;
-        
+
         if ((type === 'text' && content.trim() !== '') || type === 'image' || type === 'audio') {
             const chatRef = ref(database, `chats/${selectedConversation.productId}/messages`);
-            const otherParty = selectedConversation.messages.find(msg => 
-                msg.sender_id !== auth.user.id
-            );
-            
+
             const messageData = {
                 sender_id: auth.user.id,
-                receiver_id: otherParty ? otherParty.sender_id : null,
+                receiver_id: selectedConversation.senderId,
                 content: content,
                 type: type,
                 url: url,
@@ -140,12 +163,6 @@ export default function Inbox_acheteur({ auth, produit }) {
             await push(chatRef, messageData);
             setNewMessage('');
             setShowEmojiPicker(false);
-            
-            // Update selectedConversation with the new message
-            setSelectedConversation(prev => ({
-                ...prev,
-                messages: [...prev.messages, { ...messageData, id: Date.now().toString() }]
-            }));
         }
     };
 
@@ -158,10 +175,13 @@ export default function Inbox_acheteur({ auth, produit }) {
             setImagePreview(null);
             setSelectedImage(null);
         }
+
     };
 
     return (
-        <AuthenticatedLayout user={auth.user} role={auth.role}>
+        <AuthenticatedLayout
+            user={auth.user}
+            role={auth.role}>
             <div className="w-full flex flex-col md:flex-row h-[calc(100vh-4rem)] fixed overflow-x-hidden">
                 <div className="w-full md:w-1/4 border-r border-gray-200 p-4">
                     <h2 className="text-xl font-semibold mb-4">Discussions</h2>
@@ -173,58 +193,108 @@ export default function Inbox_acheteur({ auth, produit }) {
                             </svg>
                         </div>
                     ) : (
-                    <div className="space-y-4">
-                        {conversations
-                            .sort((a, b) => {
-                                const latestMessageA = a.messages[a.messages.length - 1];
-                                const latestMessageB = b.messages[b.messages.length - 1];
-                                return latestMessageB.timestamp - latestMessageA.timestamp;
-                            })
-                            .map((conversation) => {
-                                const latestMessage = conversation.messages[conversation.messages.length - 1];
-                                const isSelected = selectedConversation && selectedConversation.productId === conversation.productId;
-                                const showUnreadCount = !isSelected && conversation.unreadCount > 0;
+                        <div className="space-y-4">
+                            {conversations
+                                .sort((a, b) => {
+                                    const latestMessageA = a.messages[a.messages.length - 1];
+                                    const latestMessageB = b.messages[b.messages.length - 1];
+                                    return latestMessageB.timestamp - latestMessageA.timestamp;
+                                })
+                                .map((conversation) => {
+                                    const latestMessage = conversation.messages[conversation.messages.length - 1];
+                                    const isSelected = selectedConversation && selectedConversation.productId === conversation.productId;
+                                    const showUnreadCount = !isSelected && conversation.unreadCount > 0;
+                                    const buyerName = acheteur.find(a => a.id === conversation.senderId)?.name;
 
-                                return (
-                                    <div
-                                        key={conversation.productId}
-                                        onClick={() => handleSelectConversation(conversation)}
-                                        className={`p-4 border rounded-lg hover:bg-gray-50 cursor-pointer flex items-center space-x-4 ${showUnreadCount ? 'bg-blue-50' : ''}`}
-                                    >
-                                        <img
-                                            src={conversation.productImageUrl}
-                                            alt={conversation.productName}
-                                            className="w-10 h-10 rounded-full object-cover"
-                                        />
-                                        <div className="flex-1 min-w-0">
-                                            <p className="font-medium truncate">Produit: {conversation.productName}</p>
-                                            <p className="text-sm text-gray-500 truncate">
-                                                {latestMessage.content}
-                                            </p>
-                                            <p className="text-xs text-gray-400">
-                                                {latestMessage.timestamp
-                                                    ? new Date(latestMessage.timestamp).toLocaleTimeString()
-                                                    : 'Inconnu'}
-                                            </p>
+                                    return (
+                                        <div
+                                            key={`${conversation.productId}-${conversation.senderId}`}
+                                            onClick={() => handleSelectConversation(conversation)}
+                                            className={`p-4 border rounded-lg hover:bg-gray-50 cursor-pointer flex items-center space-x-4 ${showUnreadCount ? 'bg-blue-50' : ''}`}
+                                        >
+                                            <img
+                                                src={conversation.productImageUrl}
+                                                alt={conversation.productName}
+                                                className="w-10 h-10 rounded-full object-cover"
+                                            />
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-medium truncate">{buyerName}</p>
+                                                <p className="text-sm text-gray-500 truncate">
+                                                    {latestMessage.content}
+                                                </p>
+                                                <p className="text-xs text-gray-400">
+                                                    {latestMessage.timestamp
+                                                        ? new Date(latestMessage.timestamp).toLocaleTimeString()
+                                                        : 'Inconnu'}
+                                                </p>
+                                            </div>
+                                            {showUnreadCount && (
+                                                <span className="bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                                                    {conversation.unreadCount}
+                                                </span>
+                                            )}
                                         </div>
-                                        {showUnreadCount && (
-                                            <span className="bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
-                                                {conversation.unreadCount}
-                                            </span>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                    </div>
+                                    );
+                                })}
+                        </div>
                     )}
                 </div>
                 <div className="w-full md:w-2/4 lg:w-3/6 sm:w-1/5 overflow-y-auto">
                     <div className="p-4 flex flex-col h-[calc(85vh-4rem)]">
                         {selectedConversation ? (
                             <div className="flex flex-col h-full relative">
-                                <h3 className="text-lg font-semibold mb-2 truncate">
-                                    Conversation pour {selectedConversation.productName}
-                                </h3>
+                                <div className="bg-indigo-600 flex items-center justify-between mb-2 rounded-xl">
+                                    <h3 className="px-5 text-lg font-semibold truncate">
+                                        <span className="font-poppins text-white">Conversation pour le lot: {selectedConversation.productName}</span>
+                                    </h3>
+                                    <div className="flex items-center relative">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                setShowBuyerInfo(!showBuyerInfo)
+                                            }}
+                                            className="p-2 hover:bg-gray-100 rounded-full transition-all duration-300"
+                                        >
+                                            <svg
+                                                className="w-6 h-6 text-gray-600 bg-white rounded-full"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth="2"
+                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                />
+                                            </svg>
+                                        </button>
+                                        {showBuyerInfo && (
+                                            <div
+                                                className="absolute top-full right-0 mt-2 w-64 bg-white rounded-lg shadow-xl z-20 border"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                <div className="p-4">
+                                                    <h4 className="font-semibold mb-2">Informations du lot</h4>
+                                                    <div className="space-y-2">
+                                                        <p className="text-sm">
+                                                            <span className="font-medium">Nom du lot:</span>{" "}
+                                                            {selectedConversation.productName}
+                                                        </p>
+                                                        <p className="text-sm">
+                                                            <span className="font-medium">Categorie:</span>{" "}
+                                                            {selectedConversation.productCategory}
+                                                        </p>
+                                                        <p className="text-sm">
+                                                            <span className="font-medium">Prix:</span>{" "}
+                                                            {selectedConversation.productPrice} €
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                                 <div className="flex-1 p-4 bg-gray-50 transition-all duration-300 flex flex-col-reverse overflow-y-auto">
                                     {isLoading ? (
                                         <div className="flex justify-center items-center h-full">
@@ -235,13 +305,13 @@ export default function Inbox_acheteur({ auth, produit }) {
                                         </div>
                                     ) : (
                                         selectedConversation.messages.slice().reverse().map((message) => (
-                                            <div key={message.id} className={`flex flex-col mb-4 transition-all duration-300 hover:scale-105 group ${message.sender_id === auth.user.id ? 'items-end' : 'items-start'}`}>
+                                            <div key={message.id} className={`flex flex-col mb-4 transition-all duration-300 group ${message.sender_id === auth.user.id ? 'items-end' : 'items-start'}`}>
                                                 <div className={`flex rounded-lg px-4 py-2 max-w-[70%] break-words ${message.sender_id === auth.user.id ? 'bg-blue-600 text-white rounded-xl' : 'bg-gray-200 rounded-xl text-gray-800'}`}>
                                                     {message.type === 'text' && <p className="text-base break-words">{message.content}</p>}
                                                     {message.type === 'image' && <img src={message.url} alt="Shared" className="max-w-full rounded" />}
                                                     {message.type === 'audio' && <audio controls src={message.url} className="max-w-full" />}
                                                 </div>
-                                                {message.sender_id === auth.user.id && (
+                                                {message.sender_id === auth.user.id ? (
                                                     <div className="text-sm mt-1 text-gray-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                                                         {message.isDelivered ? (
                                                             message.isRead ? (
@@ -256,6 +326,10 @@ export default function Inbox_acheteur({ auth, produit }) {
                                                                 </span>
                                                             )
                                                         ) : null}
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-sm mt-1 text-gray-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                                        <span className="ml-2">{new Date(message.timestamp).toLocaleTimeString()} ({Math.floor((Date.now() - message.timestamp) / 60000)} min)</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -336,7 +410,7 @@ export default function Inbox_acheteur({ auth, produit }) {
                         )}
                     </div>
                 </div>
-                </div>
+            </div>
         </AuthenticatedLayout>
     );
 }

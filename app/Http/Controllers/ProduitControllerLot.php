@@ -127,15 +127,34 @@ class ProduitControllerLot extends Controller
         $produit->update($validated);
         return redirect()->route('Produit_Lot.index')->with('success', 'Lot modifié avec succès');
     }
+    public function updates(UpdateProduit_lotRequest $request, $produit_lot)
+    {
+        $produit = Produit_lot::findOrFail($produit_lot);
+        $validated = $request->validated();
+
+        if ($request->hasFile('image_lot')) {
+            if ($produit->image_lot && Storage::disk('public')->exists($produit->image_lot)) {
+                Storage::disk('public')->delete($produit->image_lot);
+            }
+            $image_lot = $request->file('image_lot');
+            $path = $image_lot->store('Produits_lot', 'public');
+            $validated['image_lot'] = $path;
+        } else {
+            unset($validated['image_lot']);
+        }
+
+        $produit->update($validated);
+        return redirect()->route('Produit_Lot.index')->with('success', 'Lot modifié avec succès');
+    }
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Produit_lot $produit_lot, $id)
     {
         $produit_lot = Produit_lot::findOrFail($id);
-        if ($produit_lot->vendeur_id !==Auth::user()->id) {
+        if ($produit_lot->vendeur_id !== Auth::user()->id) {
             return back()->with('erro', 'Vous ne pouvez pas supprimer cet lot');
-        } 
+        }
         if (!$produit_lot) {
             return back()->with('error', 'lot non trouvé');
         }
@@ -145,4 +164,5 @@ class ProduitControllerLot extends Controller
 
         $produit_lot->delete();
         return back()->with('success', 'Produit supprimé');
-    }}
+    }
+}

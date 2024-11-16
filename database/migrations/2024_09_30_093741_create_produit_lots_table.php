@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('etat');
             $table->string('image_lot')->nullable();
             $table->unsignedBigInteger('vendeur_id');
-            $table->foreign('vendeur_id')->references('id')->on('vendeurs')->onDelete('cascade');
+            $table->foreign('vendeur_id')->references('user_id')->on('vendeurs')->onDelete('cascade');
 
             $table->unsignedBigInteger('categorie_id');
             $table->foreign('categorie_id')->references('id')->on('categories')->onDelete('cascade');

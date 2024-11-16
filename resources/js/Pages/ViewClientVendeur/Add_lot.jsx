@@ -33,6 +33,7 @@ export default function Add_lot({ auth }) {
             }
 
         });
+        console.log(data);
         // Make a POST request
         post(route('Produit_Lot.store'), {
             preserveScroll: true,

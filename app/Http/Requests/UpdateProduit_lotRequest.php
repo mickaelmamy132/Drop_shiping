@@ -28,7 +28,7 @@ class UpdateProduit_lotRequest extends FormRequest
             'prix' => 'required|numeric|min:0',
             'etat' => 'required|string|max:255',
             'image_lot' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:50048',
-            'vendeur_id' => 'required|exists:vendeurs,id',
+            'vendeur_id' => 'required|exists:vendeurs,user_id',
             'categorie_id' => 'required|exists:categories,id',
         ];
     }

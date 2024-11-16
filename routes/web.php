@@ -22,8 +22,17 @@ Route::get('/', function () {
         'canLogin_acheteurr' => Route::has('login_acheteur'),
         'canRegisterAcheteur' => Route::has('register_acheteur'),
         'canRegisterVendeur' => Route::has('register_vendeur'),
+        'canAssistace' => Route::has('assistace'),
+        'canBlog' => Route::has('blog'),
     ]);
 });
+
+Route::get('/assistance', function () {
+    return Inertia::render('Assistance');
+})->name('assistance');
+Route::get('/blog', function () {
+    return Inertia::render('Blog');
+})->name('blog');
 
 Route::get('/categorieses', [Controlleur_simple::class, 'Categories'])->name('categorieses');
 
@@ -40,6 +49,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/Produit/show_form/{produit}', [ProduirController::class, 'show_vendeur_form'])->name('Produit.show_form');
     Route::resource('Produit', ProduirController::class);
     Route::resource('Produit_Lot', ProduitControllerLot::class);
+    Route::post('lot/updates/{produit_lot}', [ProduitControllerLot::class, 'updates'])->name('lot.updates');
+    
     Route::resource('enchere', EnchereController::class);
 
     Route::delete('PanieLot/destroy/{produit_lot}', [PanieController::class, 'destroy_lot'])->name('panieLot.destroy');

@@ -29,7 +29,7 @@ class StoreProduit_lotRequest extends FormRequest
             'etat' => 'required|string|max:255',
             'image_lot' => 'required|image|mimes:jpeg,png,jpg,gif|max:50048',
             'categorie_id' => 'required|exists:categories,id',
-            'vendeur_id' => 'required|exists:vendeurs,id',
+            'vendeur_id' => 'required|exists:vendeurs,user_id',
         ];
     }
 }
