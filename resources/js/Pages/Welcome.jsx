@@ -6,6 +6,52 @@ import { useState } from 'react';
 import Accueil from '../Layouts/Accueil';
 
 export default function Welcome({ auth }) {
+
+    const categories = [
+        {
+            title: "Nourriture",
+            description: "Découvrez les meilleures offres de produits alimentaires à prix réduits.",
+            linkText: "Voir les offres",
+            linkHref: "#nourriture", // Ajouter un lien vers la section Nourriture
+            image: "https://images.unsplash.com/photo-1506807803488-8eafc15316c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400", // Image pour la catégorie Nourriture
+        },
+        {
+            title: "Maison",
+            description: "Trouvez des meubles et des articles pour la maison à prix cassés.",
+            linkText: "Voir les offres",
+            linkHref: "#maison", // Ajouter un lien vers la section Maison
+            image: "https://images.unsplash.com/photo-1589216532372-d07603a0f9f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400", // Image pour la catégorie Maison
+        },
+        {
+            title: "Vêtements",
+            description: "Des vêtements pour tous les styles et toutes les tailles à prix réduits.",
+            linkText: "Voir les offres",
+            linkHref: "#vetements", // Ajouter un lien vers la section Vêtements
+            image: "https://images.unsplash.com/photo-1533251100970-0a2deb6d2624?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400", // Image pour la catégorie Vêtements
+        },
+        {
+            title: "Électronique",
+            description: "Des appareils électroniques à prix imbattables.",
+            linkText: "Voir les offres",
+            linkHref: "#electronique", // Ajouter un lien vers la section Électronique
+            image: "https://images.unsplash.com/photo-1518770660439-4636190af475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400", // Image pour la catégorie Électronique
+        },
+        {
+            title: "Sport",
+            description: "Équipements sportifs de qualité à prix réduits.",
+            linkText: "Voir les offres",
+            linkHref: "#sport", // Ajouter un lien vers la section Sport
+            image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400", // Image pour la catégorie Sport
+        },
+        {
+            title: "Accessoires",
+            description: "Trouvez une large gamme d'accessoires à des prix intéressants.",
+            linkText: "Voir les offres",
+            linkHref: "#accessoires", // Ajouter un lien vers la section Accessoires
+            image: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400", // Image pour la catégorie Accessoires
+        }
+    ];
+
     return (
         <Accueil
             auth={auth}
@@ -54,9 +100,86 @@ export default function Welcome({ auth }) {
                 </motion.div>
 
 
-                <div className='mb-10'>
+                {/* <div className='mb-10'>
                     <CarouselCustomArrows />
+                    
+                </div> */}
+                {/* <div className="mb-10 overflow-hidden">
+                    <div className="mb-6">
+                        <p className="text-2xl font-bold">Section Catégories</p>
+                        <p className="text-gray-500">Découvrez nos principales catégories</p>
+                    </div>
+                    <motion.div
+                        className="flex space-x-4"
+                        initial={{ x: "100%" }}
+                        animate={{ x: 0 }}
+                        transition={{ type: "spring", stiffness: 50, damping: 20 }}
+                    >
+                        {categories.map((category) => (
+                            <motion.div
+                                key={category.id}
+                                className="border rounded-[16px] overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex-shrink-0"
+                                style={{ width: "300px", height: "400px" }}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.5, delay: category.id * 0.2 }}
+                            >
+                                <img
+                                    src={category.image}
+                                    alt={category.title}
+                                    className="h-2/3 w-full object-cover rounded-tl-[16px] rounded-tr-[16px]" // Bordures pour les coins supérieurs seulement
+                                />
+                                <div className="pt-16 px-4">
+                                    <h3 className="text-lg font-bold">{category.title}</h3>
+                                    <p className="text-sm text-gray-500">Trouvez les meilleures offres</p>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                </div> */}
+                <div className="mb-10 overflow-hidden">
+                    <div className="mb-6">
+                        <p className="text-2xl font-bold">Section Catégories</p>
+                        <p className="text-gray-500">Découvrez nos principales catégories</p>
+                    </div>
+                    <motion.div
+                        className="flex space-x-4 overflow-x-auto"
+                        initial={{ x: "100%" }}
+                        animate={{ x: 0 }}
+                        transition={{ type: "spring", stiffness: 50, damping: 20 }}
+                    >
+                        {categories.map((category, index) => (
+                            <motion.div
+                                key={index}
+                                className="border rounded-[16px] overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex-shrink-0"
+                                style={{ width: "300px", height: "400px" }}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{
+                                    duration: 0.5,
+                                    delay: index * 0.3, // Augmente le délai pour chaque carte
+                                }}
+                            >
+                                <img
+                                    src={category.image}
+                                    alt={category.title}
+                                    className="h-2/3 w-full object-cover rounded-tl-[16px] rounded-tr-[16px]"
+                                />
+                                <div className="pt-10 px-4">
+                                    <h3 className="text-xl font-bold mb-4">{category.title}</h3> {/* Ajout d'une marge inférieure */}
+                                    <a
+                                        href={category.linkHref}
+                                        className="text-blue-500 hover:underline"
+                                    >
+                                        {category.linkText}
+                                    </a>
+                                </div>
+
+                            </motion.div>
+                        ))}
+                    </motion.div>
                 </div>
+
 
                 <motion.div
                     initial={{ opacity: 0, y: 50 }}

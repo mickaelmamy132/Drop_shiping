@@ -21,7 +21,7 @@ export default function produit_lot_edit({ auth, produit_lots }) {
         nom: produit_lots.nom || '',
         description: produit_lots.description || '',
         quantite: produit_lots.quantite || '',
-        prix_total: produit_lots.prix_total || '',
+        prix: produit_lots.prix || '',
         etat: produit_lots.etat || '',
         image_lot: '',
         categorie_id: produit_lots.categorie_id || '',
@@ -44,7 +44,6 @@ export default function produit_lot_edit({ auth, produit_lots }) {
                 formData.append(key, data[key]);
             }
         });
-        console.log(data);
 
         post(route('lot.updates', produit_lots.id), formData, {
             preserveScroll: true,
@@ -201,17 +200,17 @@ export default function produit_lot_edit({ auth, produit_lots }) {
 
                                     <motion.div variants={itemVariants}>
                                         <Form.Item
-                                            name="prix_total"
-                                            label="Prix totale"
+                                            name="prix"
+                                            label="Prix"
                                             rules={[{ required: true, message: 'Veuillez entrer le prix' }]}
-                                            validateStatus={errors.prix_total && 'error'}
-                                            help={errors.prix_total}
+                                            validateStatus={errors.prix && 'error'}
+                                            help={errors.prix}
                                         >
                                             <InputNumber
                                                 min={0}
                                                 addonBefore="€"
                                                 className="w-full"
-                                                onChange={(value) => setData('prix_total', value)}
+                                                onChange={(value) => setData('prix', value)}
                                             />
                                         </Form.Item>
                                     </motion.div>

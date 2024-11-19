@@ -15,6 +15,7 @@ export default function ProductCard({ produit }) {
   const {
     data: formData,
     delete: destroy,
+    get:get,
     processing: deleteProcessing,
   } = useForm();
 

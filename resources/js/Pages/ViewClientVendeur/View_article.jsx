@@ -6,7 +6,6 @@ import ProductCard from './Produit';
 
 
 export default function View_article({ auth, produits }) { 
-    console.log(produits);
     return (
         <AuthenticatedLayout
             user={auth.user}

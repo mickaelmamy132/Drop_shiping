@@ -6,8 +6,9 @@ use App\Http\Requests\StoreProduitRequest;
 use App\Http\Requests\UpdateProduitRequest;
 use App\Http\Resources\ProduitResource;
 use App\Models\Produit;
-use Illuminate\Container\Attributes\Storage;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Exists;
 use Inertia\Inertia;
 
 class ProduirController extends Controller
@@ -105,7 +106,11 @@ class ProduirController extends Controller
         $validated = $request->validated();
 
         if ($request->hasFile('image_rubrique')) {
-            $path = $request->file('image_rubrique')->store('Produits', 'public');
+            if($produit->image_rubrique && Storage::disk('public')->exists($produit->image_rubrique)){
+                Storage::disk('public')->delete($produit->image_rubrique);
+            }
+            $image = $request->file('image_rubrique');
+            $path = $image->store('Produits','public');
             $validated['image_rubrique'] = $path;
         } else {
             $validated['image_rubrique'] = $produit->image_rubrique;
@@ -130,6 +135,9 @@ class ProduirController extends Controller
 
         if ($produit->vendeur_id !== Auth::user()->id) {
             return back()->with('erro', 'Vous ne pouvez pas supprimer cet artile');
+        }
+        if ($produit->image_rubrique) {
+            Storage::disk('public')->delete($produit->image_rubrique);
         }
 
         $produit->delete();

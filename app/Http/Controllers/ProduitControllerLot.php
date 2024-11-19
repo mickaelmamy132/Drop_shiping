@@ -128,7 +128,7 @@ class ProduitControllerLot extends Controller
         return redirect()->route('Produit_Lot.index')->with('success', 'Lot modifié avec succès');
     }
     public function updates(UpdateProduit_lotRequest $request, $produit_lot)
-    {
+    {  
         $produit = Produit_lot::findOrFail($produit_lot);
         $validated = $request->validated();
 
