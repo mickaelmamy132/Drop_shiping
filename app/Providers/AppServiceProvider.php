@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -21,25 +22,11 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(UrlGenerator $url): void
     {
         if (env('APP_ENV') === 'production') {
-            URL::forceScheme('https');
+            $url->forceScheme('https');
         }
 
-        Inertia::share([
-            'auth' => [
-                'user' => fn() => Auth::user(),
-            ],
-            'ziggy' => fn() => [
-                ...(new Ziggy)->toArray(),
-                'location' => url()->current(),
-            ],
-            'flash' => [
-                'success' => fn() => session()->get('success'),
-                'error' => fn() => session()->get('error'),
-                'warning' => fn() => session()->get('warning'),
-            ]
-        ]);
     }
 }
