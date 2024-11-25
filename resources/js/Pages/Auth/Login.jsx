@@ -8,7 +8,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import React, { useState } from 'react';
 
 
-export default function Login({ status, canResetPassword }) {
+export default function Login({auth, status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
@@ -24,7 +24,9 @@ export default function Login({ status, canResetPassword }) {
     };
 
     return (
-        <GuestLayout className='rounded-xl '>
+        <GuestLayout
+        auth={auth}
+        className='rounded-xl '>
             <Head title="Log in" />
 
             {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}

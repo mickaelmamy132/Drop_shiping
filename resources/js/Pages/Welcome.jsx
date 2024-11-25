@@ -1,56 +1,13 @@
 import { Link, Head } from '@inertiajs/react';
 import NavLink from '../Components/NavLink';
-import { CarouselCustomArrows } from '../Components/Carousel';
+import { Form, Input, Checkbox, Button, Select, Spin, Card, Col, Row } from 'antd';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Accueil from '../Layouts/Accueil';
 
 export default function Welcome({ auth }) {
 
-    const categories = [
-        {
-            title: "Nourriture",
-            description: "Découvrez les meilleures offres de produits alimentaires à prix réduits.",
-            linkText: "Voir les offres",
-            linkHref: "#nourriture", // Ajouter un lien vers la section Nourriture
-            image: "https://images.unsplash.com/photo-1506807803488-8eafc15316c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400", // Image pour la catégorie Nourriture
-        },
-        {
-            title: "Maison",
-            description: "Trouvez des meubles et des articles pour la maison à prix cassés.",
-            linkText: "Voir les offres",
-            linkHref: "#maison", // Ajouter un lien vers la section Maison
-            image: "https://images.unsplash.com/photo-1589216532372-d07603a0f9f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400", // Image pour la catégorie Maison
-        },
-        {
-            title: "Vêtements",
-            description: "Des vêtements pour tous les styles et toutes les tailles à prix réduits.",
-            linkText: "Voir les offres",
-            linkHref: "#vetements", // Ajouter un lien vers la section Vêtements
-            image: "https://images.unsplash.com/photo-1533251100970-0a2deb6d2624?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400", // Image pour la catégorie Vêtements
-        },
-        {
-            title: "Électronique",
-            description: "Des appareils électroniques à prix imbattables.",
-            linkText: "Voir les offres",
-            linkHref: "#electronique", // Ajouter un lien vers la section Électronique
-            image: "https://images.unsplash.com/photo-1518770660439-4636190af475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400", // Image pour la catégorie Électronique
-        },
-        {
-            title: "Sport",
-            description: "Équipements sportifs de qualité à prix réduits.",
-            linkText: "Voir les offres",
-            linkHref: "#sport", // Ajouter un lien vers la section Sport
-            image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400", // Image pour la catégorie Sport
-        },
-        {
-            title: "Accessoires",
-            description: "Trouvez une large gamme d'accessoires à des prix intéressants.",
-            linkText: "Voir les offres",
-            linkHref: "#accessoires", // Ajouter un lien vers la section Accessoires
-            image: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400", // Image pour la catégorie Accessoires
-        }
-    ];
+   
 
     return (
         <Accueil
@@ -100,84 +57,94 @@ export default function Welcome({ auth }) {
                 </motion.div>
 
 
-                {/* <div className='mb-10'>
-                    <CarouselCustomArrows />
-                    
-                </div> */}
-                {/* <div className="mb-10 overflow-hidden">
-                    <div className="mb-6">
-                        <p className="text-2xl font-bold">Section Catégories</p>
-                        <p className="text-gray-500">Découvrez nos principales catégories</p>
-                    </div>
-                    <motion.div
-                        className="flex space-x-4"
-                        initial={{ x: "100%" }}
-                        animate={{ x: 0 }}
-                        transition={{ type: "spring", stiffness: 50, damping: 20 }}
-                    >
-                        {categories.map((category) => (
-                            <motion.div
-                                key={category.id}
-                                className="border rounded-[16px] overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex-shrink-0"
-                                style={{ width: "300px", height: "400px" }}
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ duration: 0.5, delay: category.id * 0.2 }}
-                            >
-                                <img
-                                    src={category.image}
-                                    alt={category.title}
-                                    className="h-2/3 w-full object-cover rounded-tl-[16px] rounded-tr-[16px]" // Bordures pour les coins supérieurs seulement
-                                />
-                                <div className="pt-16 px-4">
-                                    <h3 className="text-lg font-bold">{category.title}</h3>
-                                    <p className="text-sm text-gray-500">Trouvez les meilleures offres</p>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </motion.div>
-                </div> */}
                 <div className="mb-10 overflow-hidden">
                     <div className="mb-6">
                         <p className="text-2xl font-bold">Section Catégories</p>
                         <p className="text-gray-500">Découvrez nos principales catégories</p>
                     </div>
-                    <motion.div
-                        className="flex space-x-4 overflow-x-auto"
-                        initial={{ x: "100%" }}
-                        animate={{ x: 0 }}
-                        transition={{ type: "spring", stiffness: 50, damping: 20 }}
-                    >
-                        {categories.map((category, index) => (
-                            <motion.div
-                                key={index}
-                                className="border rounded-[16px] overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex-shrink-0"
-                                style={{ width: "300px", height: "400px" }}
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{
-                                    duration: 0.5,
-                                    delay: index * 0.3, // Augmente le délai pour chaque carte
-                                }}
-                            >
-                                <img
-                                    src={category.image}
-                                    alt={category.title}
-                                    className="h-2/3 w-full object-cover rounded-tl-[16px] rounded-tr-[16px]"
-                                />
-                                <div className="pt-10 px-4">
-                                    <h3 className="text-xl font-bold mb-4">{category.title}</h3> {/* Ajout d'une marge inférieure */}
-                                    <a
-                                        href={category.linkHref}
-                                        className="text-blue-500 hover:underline"
-                                    >
-                                        {category.linkText}
-                                    </a>
-                                </div>
-
-                            </motion.div>
-                        ))}
-                    </motion.div>
+                    <div style={{ overflow: 'hidden', position: 'relative', whiteSpace: 'nowrap' }}>
+                        <motion.div
+                            initial={{ x: 0 }}
+                            animate={{ x: ['0%', '-100%'] }}
+                            transition={{
+                                duration: 30,
+                                repeat: Infinity,
+                                ease: 'linear',
+                            }}
+                            style={{ display: 'flex', gap: '16px' }}
+                        >
+                            {Array(2)
+                                .fill([
+                                    {
+                                        title: "Nourriture",
+                                        description: "Découvrez les meilleures offres de produits alimentaires à prix réduits.",
+                                        linkText: "Voir les offres",
+                                        linkHref: "#nourriture",
+                                        image: "https://images.unsplash.com/photo-1506807803488-8eafc15316c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
+                                    },
+                                    {
+                                        title: "Maison",
+                                        description: "Trouvez des meubles et des articles pour la maison à prix cassés.",
+                                        linkText: "Voir les offres",
+                                        linkHref: "#maison",
+                                        image: "https://images.unsplash.com/photo-1589216532372-d07603a0f9f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
+                                    },
+                                    {
+                                        title: "Vêtements",
+                                        description: "Des vêtements pour tous les styles et toutes les tailles à prix réduits.",
+                                        linkText: "Voir les offres",
+                                        linkHref: "#vetements",
+                                        image: "https://images.unsplash.com/photo-1533251100970-0a2deb6d2624?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
+                                    },
+                                    {
+                                        title: "Électronique",
+                                        description: "Des appareils électroniques à prix imbattables.",
+                                        linkText: "Voir les offres",
+                                        linkHref: "#electronique",
+                                        image: "https://images.unsplash.com/photo-1518770660439-4636190af475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
+                                    },
+                                    {
+                                        title: "Sport",
+                                        description: "Équipements sportifs de qualité à prix réduits.",
+                                        linkText: "Voir les offres",
+                                        linkHref: "#sport",
+                                        image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
+                                    },
+                                    {
+                                        title: "Accessoires",
+                                        description: "Trouvez une large gamme d'accessoires à des prix intéressants.",
+                                        linkText: "Voir les offres",
+                                        linkHref: "#accessoires",
+                                        image: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
+                                    }
+                                ])
+                                .flat()
+                                .map((item, index) => (
+                                    <div key={index} style={{ minWidth: '250px', flexShrink: 0 }}>
+                                        <motion.div
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            transition={{ duration: 0.2 }}
+                                            style={{ width: '250px', height: '100%' }}
+                                        >
+                                            <Card
+                                                title={item.title}
+                                                bordered={false}
+                                                cover={<img src={item.image} alt={item.title} style={{ height: '150px', objectFit: 'cover' }} />}
+                                                style={{ height: '100%', width: '100%', overflow: 'hidden' }}
+                                            >
+                                                <div style={{ whiteSpace: 'normal', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                    {item.description}
+                                                </div>
+                                                <Link href={item.linkHref} className="text-blue-500 hover:text-blue-700 mt-2 inline-block">
+                                                    {item.linkText}
+                                                </Link>
+                                            </Card>
+                                        </motion.div>
+                                    </div>
+                                ))}
+                        </motion.div>
+                    </div>
                 </div>
 
 
@@ -245,45 +212,48 @@ export default function Welcome({ auth }) {
                     className="mb-5"
                 >
                     <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <li className="rounded py-20 md:py-4 max-w-[420px] mx-auto flex flex-col items-center justify-center px-4 xl:px-6 relative text-center bg-gray-200 shadow-2xl border-2 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
-                            <h3 className="mb-6 text-lg text-center md:text-xl lg:text-2xl leading-tight font-semibold text-gray-900">
+                        <li className="rounded py-20 md:py-4 max-w-[420px] mx-auto flex flex-col items-center justify-center px-4 xl:px-6 relative text-center bg-gradient-to-br from-blue-50 to-gray-100 shadow-lg border border-blue-200 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
+                            <div className="absolute top-0 left-0 w-full h-2 bg-blue-500"></div>
+                            <h3 className="mb-6 text-lg text-center md:text-xl lg:text-2xl leading-tight font-bold text-blue-900">
                                 Visitez notre marketplace dès maintenant
                             </h3>
-                            <p className="mb-6 md:text-lg">
+                            <p className="mb-6 md:text-lg text-gray-700">
                                 Découvrez une large gamme de produits à des prix compétitifs
                             </p>
-                            <a className="outline-focus rounded border-[1.5px] font-medium transition duration-150 ease-in text-center bg-blue-500 hover:bg-blue-600 text-white py-2.5 px-[16px] w-full" href="">Voir les rubriques</a>
+                            <a className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg" href="">Voir les rubriques</a>
                         </li>
-                        <li className="rounded py-20 md:py-4 max-w-[420px] flex flex-col items-center justify-center bg-gray-200 shadow-2xl border-2 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
-                            <h3 className="mb-6 text-lg text-center md:text-xl lg:text-2xl leading-tight font-semibold text-gray-900">
+                        <li className="rounded py-20 md:py-4 max-w-[420px] flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-gray-100 shadow-lg border border-green-200 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
+                            <div className="absolute top-0 left-0 w-full h-2 bg-green-500"></div>
+                            <h3 className="mb-6 text-lg text-center md:text-xl lg:text-2xl leading-tight font-bold text-green-900">
                                 Devenez vendeur
                             </h3>
-                            <p className="mb-6 md:text-lg">
+                            <p className="mb-6 md:text-lg text-gray-700">
                                 Rejoignez notre communauté de vendeurs et développez votre activité
                             </p>
-                            <a className="outline-focus rounded border-[1.5px] font-medium transition duration-150 ease-in text-center bg-blue-500 hover:bg-blue-600 text-white py-2.5 px-[16px] w-full" href="">S'inscrire comme vendeur</a>
+                            <a className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg" href="">S'inscrire comme vendeur</a>
                         </li>
-                        <li className="rounded py-20 md:py-4 max-w-[420px] flex flex-col items-center justify-center bg-gray-200 shadow-2xl border-2 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
-                            <h3 className="mb-6 text-lg text-center md:text-xl lg:text-2xl leading-tight font-semibold text-gray-900">
+                        <li className="rounded py-20 md:py-4 max-w-[420px] flex flex-col items-center justify-center bg-gradient-to-br from-purple-50 to-gray-100 shadow-lg border border-purple-200 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
+                            <div className="absolute top-0 left-0 w-full h-2 bg-purple-500"></div>
+                            <h3 className="mb-6 text-lg text-center md:text-xl lg:text-2xl leading-tight font-bold text-purple-900">
                                 Gérez vos stocks
                             </h3>
-                            <p className="mb-6 md:text-lg">
+                            <p className="mb-6 md:text-lg text-gray-700">
                                 Utilisez nos outils pour optimiser votre gestion des stocks
                             </p>
-                            <a className="outline-focus rounded border-[1.5px] font-medium transition duration-150 ease-in text-center bg-blue-500 hover:bg-blue-600 text-white py-2.5 px-[16px] w-full" href="">Accéder à la gestion des stocks</a>
+                            <a className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg" href="">Accéder à la gestion des stocks</a>
                         </li>
-                        <li className="rounded py-20 md:py-4 max-w-[420px] flex flex-col items-center justify-center bg-gray-200 shadow-2xl border-2 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
-                            <h3 className="mb-6 text-lg text-center md:text-xl lg:text-2xl leading-tight font-semibold text-gray-900">
+                        <li className="rounded py-20 md:py-4 max-w-[420px] flex flex-col items-center justify-center bg-gradient-to-br from-orange-50 to-gray-100 shadow-lg border border-orange-200 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
+                            <div className="absolute top-0 left-0 w-full h-2 bg-orange-500"></div>
+                            <h3 className="mb-6 text-lg text-center md:text-xl lg:text-2xl leading-tight font-bold text-orange-900">
                                 Support client
                             </h3>
-                            <p className="mb-6 md:text-lg">
+                            <p className="mb-6 md:text-lg text-gray-700">
                                 Notre équipe est là pour vous aider à chaque étape
                             </p>
-                            <a className="outline-focus rounded border-[1.5px] font-medium transition duration-150 ease-in text-center bg-blue-500 hover:bg-blue-600 text-white py-2.5 px-[16px] w-full" href="">Contacter le support</a>
+                            <a className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg" href="">Contacter le support</a>
                         </li>
                     </ul>
                 </motion.section>
-
                 <motion.div
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}

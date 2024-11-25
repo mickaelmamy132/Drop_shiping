@@ -1,5 +1,6 @@
 import NavLink from '../Components/NavLink';
 import { useState } from 'react';
+import { Khepri } from '../images';
 
 export default function Accueil({ auth, children }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -22,10 +23,10 @@ export default function Accueil({ auth, children }) {
 
     return (
         <>
-             <header className="bg-white">
+            <header className="bg-white">
                 <nav className="flex justify-between items-center w-[92%] mx-auto bg-white border-b pb-4 mb-4">
-                    <div className="w-20 h-20 p-5">
-                        <img className="w-full h-full object-contain" src="/storage/icons/Fuji-Dark.png" alt="Logo" onError={handleImageError} />
+                    <div className="w-32 h-24">
+                        <img className="w-full h-full object-contain hover:scale-105 transition-transform duration-300 filter drop-shadow-md" src={Khepri} alt="Logo" onError={handleImageError} />
                     </div>
                     <div className="nav-links flex items-center md:static absolute bg-white md:min-h-fit min-h-[10vh] right-0 top-0 md:w-auto w-[30%]">
                         <div className="relative">
@@ -119,7 +120,7 @@ export default function Accueil({ auth, children }) {
                                         </li>
                                         <li className="md:flex md:items-center">
                                             <NavLink
-                                            href={route('assistance')}
+                                                href={route('assistance')}
                                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-blue-600 after:left-0 after:bottom-0 hover:after:w-full after:transition-all after:duration-300"
                                             >
                                                 Assistance
@@ -127,7 +128,7 @@ export default function Accueil({ auth, children }) {
                                         </li>
                                         <li className="md:flex md:items-center">
                                             <NavLink
-                                            // href={route('blog')}
+                                                // href={route('blog')}
                                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-blue-600 after:left-0 after:bottom-0 hover:after:w-full after:transition-all after:duration-300"
                                             >
                                                 Blog
@@ -150,16 +151,16 @@ export default function Accueil({ auth, children }) {
                             <h3 className="text-lg font-semibold mb-4 text-white">À propos</h3>
                             <ul className="space-y-2">
                                 <li>
-                                    <NavLink 
-                                    // href={route('about')} 
-                                    className="text-gray-100 hover:text-blue-600">
+                                    <NavLink
+                                        // href={route('about')} 
+                                        className="text-gray-100 hover:text-blue-600">
                                         Qui sommes-nous
                                     </NavLink>
                                 </li>
                                 <li>
                                     <NavLink
-                                    //  href={route('careers')} 
-                                     className="text-gray-100 hover:text-blue-600">
+                                        //  href={route('careers')} 
+                                        className="text-gray-100 hover:text-blue-600">
                                         Carrières
                                     </NavLink>
                                 </li>
@@ -170,15 +171,15 @@ export default function Accueil({ auth, children }) {
                             <ul className="space-y-2">
                                 <li>
                                     <NavLink
-                                    //  href={route('contact')} 
-                                     className="text-gray-100 hover:text-blue-600">
+                                        //  href={route('contact')} 
+                                        className="text-gray-100 hover:text-blue-600">
                                         Contact
                                     </NavLink>
                                 </li>
                                 <li>
                                     <NavLink
-                                    //  href={route('faq')} 
-                                     className="text-gray-100 hover:text-blue-600">
+                                        //  href={route('faq')} 
+                                        className="text-gray-100 hover:text-blue-600">
                                         FAQ
                                     </NavLink>
                                 </li>
@@ -189,15 +190,15 @@ export default function Accueil({ auth, children }) {
                             <ul className="space-y-2">
                                 <li>
                                     <NavLink
-                                    //  href={route('privacy')} 
-                                    className="text-gray-100 hover:text-blue-600">
+                                        //  href={route('privacy')} 
+                                        className="text-gray-100 hover:text-blue-600">
                                         Confidentialité
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink 
-                                    // href={route('terms')}
-                                     className="text-gray-100 hover:text-blue-600">
+                                    <NavLink
+                                        // href={route('terms')}
+                                        className="text-gray-100 hover:text-blue-600">
                                         Conditions d'utilisation
                                     </NavLink>
                                 </li>
