@@ -97,7 +97,7 @@ export default function Login_acheteur({ auth, status, canResetPassword }) {
                 >
                     <motion.img 
                         src={loginAcheteur} 
-                        alt="" 
+                        alt="login_acheteur" 
                         className="w-full h-auto object-cover"
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}

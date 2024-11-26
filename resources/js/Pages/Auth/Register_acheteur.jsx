@@ -207,7 +207,7 @@ export default function register_acheteur({ auth }) {
                 transition={{ duration: 0.7 }}
                 className='flex flex-row items-center gap-0 mt-5 bg-white  p-5'
             >
-                <div className='w-1/2'>
+                <div className='w-1/2 p-5'>
                     <Form
                         onFinish={onFinish}
                         layout="vertical"

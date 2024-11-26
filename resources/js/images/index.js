@@ -5,8 +5,9 @@ import Equipe from "./Equipe.jpg"
 import check from "./check.jpg"
 import loginAcheteur from "./loginAcheteur.jpg"
 import Khepri from "./Khepri.jpeg"
-
-
+import vendeur_login from "./vendeur_login.jpg"
+import gereProduit from "./gereProduit.jpg"
+import Dasboard from "./Dasboard.jpg"
 
 export {
     BackgroundImage,
@@ -15,5 +16,8 @@ export {
     Equipe,
     check,
     loginAcheteur,
-    Khepri
+    Khepri,
+    vendeur_login,
+    gereProduit,
+    Dasboard,
 };

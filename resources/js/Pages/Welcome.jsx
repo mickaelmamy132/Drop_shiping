@@ -1,13 +1,13 @@
 import { Link, Head } from '@inertiajs/react';
 import NavLink from '../Components/NavLink';
-import { Form, Input, Checkbox, Button, Select, Spin, Card, Col, Row } from 'antd';
+import { Card, Col, Row } from 'antd';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Accueil from '../Layouts/Accueil';
 
 export default function Welcome({ auth }) {
 
-   
+
 
     return (
         <Accueil
@@ -40,7 +40,9 @@ export default function Welcome({ auth }) {
                             </a>
                         </li>
                         <li>
-                            <a className="inline-block text-blue-600 font-display font-extrabold text-1xl rounded-lg bg-white px-6 py-4 hover:bg-blue-100 transition-colors duration-300" href="">
+                            <a
+                                href={route('assistance')}
+                                className="inline-block text-blue-600 font-display font-extrabold text-1xl rounded-lg bg-white px-6 py-4 hover:bg-blue-100 transition-colors duration-300" >
                                 Assistance
                             </a>
                         </li>
@@ -220,7 +222,9 @@ export default function Welcome({ auth }) {
                             <p className="mb-6 md:text-lg text-gray-700">
                                 Découvrez une large gamme de produits à des prix compétitifs
                             </p>
-                            <a className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg" href="">Voir les rubriques</a>
+                            <a
+                                href='/voir-rubriques'
+                                className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg">Voir les rubriques</a>
                         </li>
                         <li className="rounded py-20 md:py-4 max-w-[420px] flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-gray-100 shadow-lg border border-green-200 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
                             <div className="absolute top-0 left-0 w-full h-2 bg-green-500"></div>
@@ -233,14 +237,14 @@ export default function Welcome({ auth }) {
                             <a className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg" href="">S'inscrire comme vendeur</a>
                         </li>
                         <li className="rounded py-20 md:py-4 max-w-[420px] flex flex-col items-center justify-center bg-gradient-to-br from-purple-50 to-gray-100 shadow-lg border border-purple-200 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
-                            <div className="absolute top-0 left-0 w-full h-2 bg-purple-500"></div>
+                            <div className="absolute top-0 left-0 w-full h-2 bg-blue-500"></div>
                             <h3 className="mb-6 text-lg text-center md:text-xl lg:text-2xl leading-tight font-bold text-purple-900">
                                 Gérez vos stocks
                             </h3>
                             <p className="mb-6 md:text-lg text-gray-700">
                                 Utilisez nos outils pour optimiser votre gestion des stocks
                             </p>
-                            <a className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg" href="">Accéder à la gestion des stocks</a>
+                            <a className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-purple-500  bg-blue-500 hover:from-purple-600 hover:to-purple-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg" href="">Accéder à la gestion des stocks</a>
                         </li>
                         <li className="rounded py-20 md:py-4 max-w-[420px] flex flex-col items-center justify-center bg-gradient-to-br from-orange-50 to-gray-100 shadow-lg border border-orange-200 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
                             <div className="absolute top-0 left-0 w-full h-2 bg-orange-500"></div>
@@ -250,7 +254,10 @@ export default function Welcome({ auth }) {
                             <p className="mb-6 md:text-lg text-gray-700">
                                 Notre équipe est là pour vous aider à chaque étape
                             </p>
-                            <a className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg" href="">Contacter le support</a>
+                            <a
+                                className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg">
+                                Contacter le support
+                            </a>
                         </li>
                     </ul>
                 </motion.section>

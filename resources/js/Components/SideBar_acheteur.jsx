@@ -16,6 +16,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { Link, usePage } from "@inertiajs/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Khepri } from "../images";
 
 export function MultiLevelSidebar_acheteur({ darkMode }) {
   const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
@@ -87,10 +88,11 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
             >
               <div className={`${showingNavigationDropdown && isScreenSmall ? 'bg-black bg-opacity-50' : ''}`} onClick={() => isScreenSmall && setShowingNavigationDropdown(false)} />
               <Card className={`h-screen w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                <div className="mb-2 p-4 text-center">
-                  <Typography variant="h5" color={darkMode ? "white" : "blue-gray"} className="font-bold">
-                    Menu Principal
-                  </Typography>
+                <div className="mb-2 p-4 justify-center w-50 h-24">
+                  <img
+                    className="w-full h-full object-contain hover:scale-105 transition-transform duration-300 filter drop-shadow-md"
+                    src={Khepri}
+                    alt="image" />
                 </div>
                 <List>
                   <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.1 }}>
@@ -151,11 +153,11 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                       )}
                     </AnimatePresence>
                   </motion.div>
-                  
+
                   <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.4 }} className="flex justify-center">
                     <Link
                       href={route('Commande')}
-                      className={`w-full text-center ${isActive('/Commande')? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}>
+                      className={`w-full text-center ${isActive('/Commande') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}>
                       <div className={`flex items-center justify-center gap-3 p-3 hover:bg-blue-50 transition-colors duration-300 ${darkMode ? 'text-gray-300 hover:bg-gray-700' : ''}`}>
                         <ShoppingBagIcon className="h-5 w-5" />
                         <span>Commande</span>
