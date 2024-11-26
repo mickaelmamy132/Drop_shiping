@@ -48,25 +48,34 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
   };
 
   return (
-    <div className="block min-h-screen">
-      <div className={`${isScreenSmall ? 'w-full' : 'w-[20\rem]'}`}>
+    <div className="flex min-h-screen">
+      <div className={`${isScreenSmall ? "w-full" : "w-[20rem]"}`}>
         {isScreenSmall && (
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setShowingNavigationDropdown((prev) => !prev)}
-            className={`fixed top-4 left-4 inline-flex items-center justify-center p-2 rounded-md ${darkMode ? 'text-gray-400 hover:text-gray-300 hover:bg-gray-700' : 'text-gray-400 hover:text-gray-500 hover:bg-gray-100'} focus:outline-none transition duration-150 ease-in-out z-50`}
+            className={`fixed top-4 left-4 inline-flex items-center justify-center p-2 rounded-md ${
+              darkMode
+                ? "text-gray-400 hover:text-gray-300 hover:bg-gray-700"
+                : "text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+            } focus:outline-none transition duration-150 ease-in-out z-50`}
           >
-            <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+            <svg
+              className="h-6 w-6"
+              stroke="currentColor"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
               <path
-                className={!showingNavigationDropdown ? 'inline-flex' : 'hidden'}
+                className={!showingNavigationDropdown ? "inline-flex" : "hidden"}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
                 d="M4 6h16M4 12h16M4 18h16"
               />
               <path
-                className={showingNavigationDropdown ? 'inline-flex' : 'hidden'}
+                className={showingNavigationDropdown ? "inline-flex" : "hidden"}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
@@ -84,50 +93,90 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
               exit="closed"
               variants={sidebarVariants}
               transition={{ duration: 0.3 }}
-              className="block h-full"
+              className="h-full"
             >
-              <div className={`${showingNavigationDropdown && isScreenSmall ? 'bg-black bg-opacity-50' : ''}`} onClick={() => isScreenSmall && setShowingNavigationDropdown(false)} />
-              <Card className={`h-screen w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                <div className="mb-2 p-4 justify-center w-50 h-24">
+              <Card
+                className={`h-screen w-[20rem] p-4 shadow-xl ${
+                  darkMode ? "bg-gray-800" : "bg-white"
+                }`}
+              >
+                <div className="mb-4 text-center">
                   <img
-                    className="w-full h-full object-contain hover:scale-105 transition-transform duration-300 filter drop-shadow-md"
+                    className="w-32 h-32 mx-auto object-contain transition-transform duration-300 transform hover:scale-105"
                     src={Khepri}
-                    alt="image" />
+                    alt="Khepri Logo"
+                  />
                 </div>
                 <List>
-                  <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.1 }}>
-                    <Link href={route('Acheteur')}
-                      className={`flex items-center justify-center gap-3 w-full ${isActive('/Acheteur') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}>
+                  <motion.div
+                    variants={listItemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    transition={{ delay: 0.1 }}
+                  >
+                    <Link
+                      href={route("Acheteur")}
+                      className={`flex items-center gap-3 py-3 px-4 rounded-md ${
+                        isActive("/Acheteur")
+                          ? "text-blue-500 bg-blue-50"
+                          : darkMode
+                          ? "text-gray-300 hover:bg-gray-700"
+                          : "text-blue-gray-700 hover:bg-blue-50"
+                      }`}
+                    >
                       <PresentationChartBarIcon className="h-5 w-5" />
-                      <Typography color={isActive('/Acheteur') ? "blue" : darkMode ? "white" : "blue-gray"} className="font-normal">
-                        Tableau de bord
-                      </Typography>
-                    </Link>
-                  </motion.div>
-                  <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.2 }}>
-                    <Link href={route('Panie.index')} className={`flex items-center justify-center gap-3 w-full ${isActive('/Panie') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}>
-                      <ShoppingCartIcon className="h-5 w-5" />
-                      <Typography color={isActive('/Panie') ? "blue" : darkMode ? "white" : "blue-gray"} className="font-normal">
-                        Mon panier
-                      </Typography>
+                      <Typography className="font-normal">Tableau de bord</Typography>
                     </Link>
                   </motion.div>
 
-                  <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
+                  <motion.div
+                    variants={listItemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    transition={{ delay: 0.2 }}
+                  >
+                    <Link
+                      href={route("Panie.index")}
+                      className={`flex items-center gap-3 py-3 px-4 rounded-md ${
+                        isActive("/Panie")
+                          ? "text-blue-500 bg-blue-50"
+                          : darkMode
+                          ? "text-gray-300 hover:bg-gray-700"
+                          : "text-blue-gray-700 hover:bg-blue-50"
+                      }`}
+                    >
+                      <ShoppingCartIcon className="h-5 w-5" />
+                      <Typography className="font-normal">Mon panier</Typography>
+                    </Link>
+                  </motion.div>
+
+                  <motion.div
+                    variants={listItemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    transition={{ delay: 0.3 }}
+                  >
                     <div
                       onClick={() => setShowLotsSubMenu(!showLotsSubMenu)}
-                      className={`flex items-center justify-center w-full cursor-pointer ${isActive('/Produit_lots') || isActive('/Produit') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}
+                      className={`flex items-center justify-between cursor-pointer py-3 px-4 rounded-md ${
+                        isActive("/Produit_lots") || isActive("/Produit")
+                          ? "text-blue-500 bg-blue-50"
+                          : darkMode
+                          ? "text-gray-300 hover:bg-gray-700"
+                          : "text-blue-gray-700 hover:bg-blue-50"
+                      }`}
                     >
-                      <div className="flex items-center justify-center w-full">
-                        <div className="flex items-center justify-center gap-3">
-                          <ListBulletIcon className="h-5 w-5" />
-                          <Typography color={isActive('/Produit_lots') || isActive('/Produit') ? "blue" : darkMode ? "white" : "blue-gray"} className="font-normal">
-                            Liste des lots
-                          </Typography>
-                        </div>
-                        {showLotsSubMenu ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
+                      <div className="flex items-center gap-3">
+                        <ListBulletIcon className="h-5 w-5" />
+                        <Typography className="font-normal">Liste des lots</Typography>
                       </div>
+                      {showLotsSubMenu ? (
+                        <ChevronUpIcon className="h-5 w-5" />
+                      ) : (
+                        <ChevronDownIcon className="h-5 w-5" />
+                      )}
                     </div>
+
                     <AnimatePresence>
                       {showLotsSubMenu && (
                         <motion.div
@@ -135,17 +184,25 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                           initial="hidden"
                           animate="visible"
                           exit="hidden"
-                          className="ml-8 block text-center"
+                          className="ml-8 space-y-2"
                         >
                           <Link
-                            href={route('Produit_lots')}
-                            className={`block py-2 ${darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500`}
+                            href={route("Produit_lots")}
+                            className={`block py-2 ${
+                              darkMode
+                                ? "text-gray-300 hover:text-blue-500"
+                                : "text-blue-gray-700 hover:text-blue-500"
+                            }`}
                           >
                             Tous les lots
                           </Link>
                           <Link
-                            href={route('Produit.index')}
-                            className={`block py-2 ${darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500`}
+                            href={route("Produit.index")}
+                            className={`block py-2 ${
+                              darkMode
+                                ? "text-gray-300 hover:text-blue-500"
+                                : "text-blue-gray-700 hover:text-blue-500"
+                            }`}
                           >
                             Tous les articles
                           </Link>
@@ -154,27 +211,47 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                     </AnimatePresence>
                   </motion.div>
 
-                  <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.4 }} className="flex justify-center">
+                  <motion.div
+                    variants={listItemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    transition={{ delay: 0.4 }}
+                  >
                     <Link
-                      href={route('Commande')}
-                      className={`w-full text-center ${isActive('/Commande') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}>
-                      <div className={`flex items-center justify-center gap-3 p-3 hover:bg-blue-50 transition-colors duration-300 ${darkMode ? 'text-gray-300 hover:bg-gray-700' : ''}`}>
-                        <ShoppingBagIcon className="h-5 w-5" />
-                        <span>Commande</span>
-                        <Chip value="14" size="sm" variant="ghost" color="blue" className="rounded-full" />
-                      </div>
+                      href={route("Commande")}
+                      className={`flex items-center gap-3 py-3 px-4 rounded-md ${
+                        isActive("/Commande")
+                          ? "text-blue-500 bg-blue-50"
+                          : darkMode
+                          ? "text-gray-300 hover:bg-gray-700"
+                          : "text-blue-gray-700 hover:bg-blue-50"
+                      }`}
+                    >
+                      <ShoppingBagIcon className="h-5 w-5" />
+                      <Typography className="font-normal">Commande</Typography>
+                      <Chip value="14" size="sm" variant="ghost" color="blue" className="rounded-full" />
                     </Link>
                   </motion.div>
 
-                  <motion.div variants={listItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.4 }} className="flex justify-center">
+                  <motion.div
+                    variants={listItemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    transition={{ delay: 0.5 }}
+                  >
                     <Link
-                      href={route('inbox')}
-                      className={`w-full text-center ${isActive('/inbox') ? 'text-blue-500 border-b-2 border-blue-500' : darkMode ? 'text-gray-300' : 'text-blue-gray-700'} hover:text-blue-500 transition-colors duration-300 mb-4`}>
-                      <div className={`flex items-center justify-center gap-3 p-3 hover:bg-blue-50 transition-colors duration-300 ${darkMode ? 'text-gray-300 hover:bg-gray-700' : ''}`}>
-                        <InboxIcon className="h-5 w-5" />
-                        <span>Inbox</span>
-                        <Chip value="14" size="sm" variant="ghost" color="blue" className="rounded-full" />
-                      </div>
+                      href={route("inbox")}
+                      className={`flex items-center gap-3 py-3 px-4 rounded-md ${
+                        isActive("/inbox")
+                          ? "text-blue-500 bg-blue-50"
+                          : darkMode
+                          ? "text-gray-300 hover:bg-gray-700"
+                          : "text-blue-gray-700 hover:bg-blue-50"
+                      }`}
+                    >
+                      <InboxIcon className="h-5 w-5" />
+                      <Typography className="font-normal">Inbox</Typography>
+                      <Chip value="14" size="sm" variant="ghost" color="blue" className="rounded-full" />
                     </Link>
                   </motion.div>
 
