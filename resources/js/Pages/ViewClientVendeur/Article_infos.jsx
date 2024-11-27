@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Link, useForm } from '@inertiajs/react';
 
 export default function Article_infos({ auth, produit }) {
+    console.log(produit);
     const { data, get, setData, processing, errors } = useForm({});
 
     const handleSubmit = (e) => {

@@ -68,6 +68,7 @@ export default function register_acheteur({ auth }) {
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 className="text-center mb-8"
             >
                 <h3 className="text-3xl font-bold mb-4">

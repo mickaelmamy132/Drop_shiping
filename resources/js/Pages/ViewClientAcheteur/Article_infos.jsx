@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 const { Option } = Select;
 
 export default function Article_infos({ auth, produit }) {
+    console.log(produit);
 
     const [quantite, setQuantity] = useState(1);
 
@@ -107,7 +108,7 @@ export default function Article_infos({ auth, produit }) {
 
                             <section className="seller-info">
                                 <div className='flex items-center'>
-                                    <p className="font-semibold mb-2 text-xl">Vendeur: <span>{produit.vendeur.user.name}</span></p>
+                                    <p className="font-semibold mb-2 text-xl">Vendeur: <span>{produit.vendeur.user_id}</span></p>
                                 </div>
                             </section>
 

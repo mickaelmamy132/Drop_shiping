@@ -33,7 +33,7 @@ class Vendeur extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id'); // Relation avec le modèle user
+        return $this->belongsTo(User::class, 'user_id'); 
     }
     public function produits()
     {
