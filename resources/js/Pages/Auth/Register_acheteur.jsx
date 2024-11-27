@@ -361,9 +361,9 @@ export default function register_acheteur({ auth }) {
                                 onChange={(value) => setData('genre', value)}
                                 className="border border-gray-300 rounded-md"
                             >
-                                <Select.Option value="male">Male</Select.Option>
-                                <Select.Option value="female">Female</Select.Option>
-                                <Select.Option value="other">Other</Select.Option>
+                                <Select.Option value="male">Homme</Select.Option>
+                                <Select.Option value="female">Femme</Select.Option>
+                                <Select.Option value="other">autre</Select.Option>
                             </Select>
                         </Form.Item>
 

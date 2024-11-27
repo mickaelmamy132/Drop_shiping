@@ -117,6 +117,8 @@ class AuthenticatedSessionController extends Controller
         // Régénération du token de session
         $request->session()->regenerateToken();
 
+        Auth::logout();
+
         // Redirection vers la page d'accueil
         return redirect('/');
     }
