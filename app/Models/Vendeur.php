@@ -39,4 +39,9 @@ class Vendeur extends Model
     {
         return $this->hasMany(Produit::class, 'vendeur_id');
     }
+
+    public function produit_lots()
+    {
+        return $this->hasMany(Produit_lot::class, 'vendeur_id');
+    }
 }

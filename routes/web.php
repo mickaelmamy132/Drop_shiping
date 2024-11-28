@@ -71,6 +71,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('inbox_vendeur',[Controlleur_simple::class, 'inbox_vendeur'])->name('inbox_vendeur');
 
     Route::get('admin/dashboard',[Controlleur_simple::class, 'view_dashboard'])->name('admin.dashboard');
+
+    Route::get('admin/gereCompte/acheteurs',[Controlleur_simple::class,'gereComptesacheteur'])->name('admin.gereCompte.acheteurs');
+    Route::get('admin/gereCompte/vendeur',[Controlleur_simple::class,'gereComptesvendeur'])->name('admin.gereCompte.vendeur');
+
+    // infos pour vendeur et accheteur
+    Route::get('admin.infos_vendeur/{id}',[Controlleur_simple::class,'infos_vendeur'])->name('admin.infos_vendeur');
 });
 
 

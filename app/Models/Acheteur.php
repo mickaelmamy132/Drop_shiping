@@ -21,7 +21,7 @@ class Acheteur extends Model
     
     public function user()
     {
-        return $this->belongsTo(User::class); // Relation avec le modèle user
+        return $this->belongsTo(User::class, 'user_id'); 
     }
 
     // public function estClientFidele()

@@ -7,7 +7,12 @@ import { CurrencyDollarIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion'
 import Donate from '../../Components/Donate'
 
-export default function Dashboard({ auth, produit, produit_lot, allUser }) {
+export default function Dashboard({
+  auth, produit, produit_lot,
+  VendeurCount, AcheteurCount,
+  CommandeParMois, produitCount,
+  produit_lotCount
+}) {
   const chartData = [
     { value: 10, label: 'Jan' },
     { value: 20, label: 'Feb' },
@@ -24,45 +29,45 @@ export default function Dashboard({ auth, produit, produit_lot, allUser }) {
         whileInView={{ opacity: 1, x: 0, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 sm: 2xl:grid-cols-4 gap-12 p-2"
-      >
-        <motion.div className="mb-6" whileHover={{ scale: 1.05, x: 5, y: -5 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
+        className="flex flex-row flex-wrap justify-center p-2"      >
+        <motion.div className="mb-4 scale-90" whileHover={{ scale: 0.95, x: 5, y: -5 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
           <DashboardCard
             title="Acheteur"
-            value={allUser.length}
+            value={AcheteurCount}
             icon={CurrencyDollarIcon}
             footer="Increased by 10% since last month"
             additionalInfo="Order #1,234"
           />
         </motion.div>
-        <motion.div className="mb-6 mx-4" whileHover={{ scale: 1.05, x: 5, y: -5 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
+        <motion.div className="mb-4 mx-2 scale-90" whileHover={{ scale: 0.95, x: 5, y: -5 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
           <DashboardCard
             title="Vendeur"
-            value={allUser.length}
+            value={VendeurCount}
             icon={CurrencyDollarIcon}
             footer="Increased by 10% since last month"
             additionalInfo="Order #1,234"
           />
         </motion.div>
-        <motion.div className="mb-6 mx-4" whileHover={{ scale: 1.05, x: 5, y: -5 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
+        <motion.div className="mb-4 mx-2 scale-90" whileHover={{ scale: 0.95, x: 5, y: -5 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
           <DashboardCard
             title="Articles"
-            value={allUser.length}
+            value={produitCount}
             icon={CurrencyDollarIcon}
             footer="Increased by 10% since last month"
             additionalInfo="Order #1,234"
           />
         </motion.div>
-        <motion.div className="mb-6 mx-4" whileHover={{ scale: 1.05, x: 5, y: -5 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
+        <motion.div className="mb-4 mx-2 scale-90" whileHover={{ scale: 0.95, x: 5, y: -5 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
           <DashboardCard
             title="Lots"
-            value={allUser.length}
+            value={produit_lotCount}
             icon={CurrencyDollarIcon}
             footer="Increased by 10% since last month"
             additionalInfo="Order #1,234"
           />
         </motion.div>
-      </motion.div>      <motion.div
+      </motion.div>
+      <motion.div
         initial={{ opacity: 0, x: -50, y: 50 }}
         animate={{ opacity: 1, x: 0, y: 0 }}
         whileInView={{ opacity: 1, x: 0, y: 0 }}

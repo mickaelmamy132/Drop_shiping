@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Acheteur;
 use App\Models\Categorie;
+use App\Models\Commande;
 use App\Models\Produit;
 use App\Models\Produit_lot;
 use App\Models\User;
+use App\Models\Vendeur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -63,12 +66,56 @@ class Controlleur_simple extends Controller
     {
         $user = Auth::user();
         $produit = Produit::all();
+        $produitCount = Produit::count();
         $produit_lot = Produit_lot::count();
-        $allUser = User::where('id', '!=', $user->id)->get();
+        $produit_lotCount = Produit_lot::count();
+        $AcheteurCount = Acheteur::where('user_id', '!=', $user->id)->count();
+        $VendeurCount = Vendeur::where('user_id', '!=', $user->id)->count();
+        $CommandeParMois = Commande::selectRaw('MONTH(created_at) as mois, COUNT(*) as total')
+            ->groupBy('mois')
+            ->orderBy('mois')
+            ->get();
         return Inertia::render('Admin/Dashboard', [
             'produit' => $produit,
             'produit_lot' => $produit_lot,
-            'allUser' => $allUser
+            'AcheteurCount' => $AcheteurCount,
+            'VendeurCount' => $VendeurCount,
+            'CommandeParMois' => $CommandeParMois,
+            'produitCount' => $produitCount,
+            'produit_lotCount' => $produit_lotCount,
+        ]);
+    }
+
+    public function gereComptesacheteur()
+    {
+        $allAcheteur = Acheteur::with('user')->get();
+        return Inertia::render('Admin/GereComptes_acheteur', [
+            'allAcheteur' => $allAcheteur,
+        ]);
+    }
+
+    public function gereComptesvendeur()
+    {
+        $produit = Produit::count();
+        $produit_lot = Produit_lot::count();
+        $allVendeur = Vendeur::with('user')->get();
+        return Inertia::render('Admin/GereComptes_vendeur', [
+            'allVendeur' => $allVendeur,
+            'produit' => $produit,
+            'produit_lot' => $produit_lot,
+        ]);
+    }
+
+    public function infos_vendeur($id)
+    {
+        $vendeur = Vendeur::where('user_id', $id)->firstOrFail();
+        $produit = Produit::where('vendeur_id', $vendeur->user_id)->get();
+        $produit_lot = Produit_lot::where('vendeur_id', $vendeur->user_id)->get();
+        return Inertia::render('Admin/View/View_vendeur', [
+            'produit' => $produit,
+            'produit_lot' => $produit_lot,
+            'vendeur' => $vendeur,
         ]);
     }
 }
+
