@@ -14,6 +14,11 @@ use App\Http\Controllers\PanieController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
+    Route::get('login_admin', [RegisteredUserController::class, 'login_admin_view'])
+        ->name('login_admin');
+
+    Route::post('login_admin', [RegisteredUserController::class, 'login_admin']);
+
 
     Route::get('register_vendeur', [RegisteredUserController::class, 'create_vendeur'])
         ->name('register_vendeur');
@@ -45,19 +50,16 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
-
-
-
 });
 
 Route::middleware('auth')->group(function () {
-    
+
 
     Route::get('register_acheteur2', [AuthenticatedSessionController::class, 'create_acheteur2'])
-    ->name('register_acheteur2');
-    
+        ->name('register_acheteur2');
+
     Route::get('register_vendeur2', [AuthenticatedSessionController::class, 'create_vendeur2'])
-    ->name('register_vendeur2');
+        ->name('register_vendeur2');
 
 
 

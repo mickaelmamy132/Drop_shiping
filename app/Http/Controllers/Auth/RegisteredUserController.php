@@ -13,6 +13,8 @@ use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Acheteur;
+use App\Models\Produit;
+use App\Models\Produit_lot;
 use App\Models\Vendeur;
 
 use PhpParser\Node\Expr\Exit_;
@@ -247,5 +249,29 @@ class RegisteredUserController extends Controller
         }
 
         return back()->withErrors(['error' => 'Rôle invalide']);
+    }
+
+    public function login_admin_view(Request $request)
+    {
+        return Inertia::render('Admin/Admin');
+    }
+
+    public function login_admin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+        $credentials = $request->only('email', 'password');
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            if ($user->role = 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
+        }
+
+        return back()->withErrors([
+            'email' => 'Les identifiants fournis ne correspondent pas à nos enregistrements.',
+        ]);
     }
 }

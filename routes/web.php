@@ -69,6 +69,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('inbox', [Controlleur_simple::class, 'inbox'])->name('inbox');
     Route::get('inbox_vendeur',[Controlleur_simple::class, 'inbox_vendeur'])->name('inbox_vendeur');
+
+    Route::get('admin/dashboard',[Controlleur_simple::class, 'view_dashboard'])->name('admin.dashboard');
 });
 
 

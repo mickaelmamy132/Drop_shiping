@@ -7,6 +7,7 @@ use App\Models\Produit;
 use App\Models\Produit_lot;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class Controlleur_simple extends Controller
@@ -49,5 +50,25 @@ class Controlleur_simple extends Controller
         $produit = Produit_lot::with(['enchere', 'vendeur.user', 'categorie'])->get();
         $acheteur = User::with(['acheteur', 'vendeur'])->get();
         return Inertia::render('ViewClientVendeur/Inbox_vendeur', ['produit' => $produit, 'acheteur' => $acheteur]);
+    }
+
+    /**
+     * Renders the dashboard view with the list of products.
+     *
+     * This method retrieves all the products from the database and passes them to the 'dashboard' Inertia view.
+     *
+     * @return \Inertia\Response
+     */
+    public function view_dashboard()
+    {
+        $user = Auth::user();
+        $produit = Produit::all();
+        $produit_lot = Produit_lot::count();
+        $allUser = User::where('id', '!=', $user->id)->get();
+        return Inertia::render('Admin/Dashboard', [
+            'produit' => $produit,
+            'produit_lot' => $produit_lot,
+            'allUser' => $allUser
+        ]);
     }
 }

@@ -8,6 +8,7 @@ import Khepri from "./Khepri.jpeg"
 import vendeur_login from "./vendeur_login.jpg"
 import gereProduit from "./gereProduit.jpg"
 import Dasboard from "./Dasboard.jpg"
+import admin from "./Admin.jpg"
 
 export {
     BackgroundImage,
@@ -20,4 +21,5 @@ export {
     vendeur_login,
     gereProduit,
     Dasboard,
+    admin,
 };
