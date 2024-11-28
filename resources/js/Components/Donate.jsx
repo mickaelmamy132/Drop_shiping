@@ -28,6 +28,14 @@ export default function Donate() {
       series={[
         {
           data: data.map((d) => ({ label: d.team, id: d.team, value: d.points })),
+          innerRadius: 30,
+          outerRadius: 100,
+          paddingAngle: 5,
+          cornerRadius: 5,
+          startAngle: -45,
+          endAngle: 225,
+          cx: 150,
+          cy: 150,
           valueFormatter: (v, { dataIndex }) => {
             const { rank } = data[dataIndex];
             return `has ${v.value} points and is ranked ${rank}.`;

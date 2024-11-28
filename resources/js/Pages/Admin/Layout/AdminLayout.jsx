@@ -60,7 +60,7 @@ export default function Dashboard({ children, auth }) {
             </motion.div>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col  overflow-y-auto h-full">
                 <motion.header 
                     initial={{ y: -100 }}
                     animate={{ y: 0 }}
