@@ -82,7 +82,7 @@ class ProduirController extends Controller
         $produit = Produit::with('categorie', 'vendeur.user')->findOrFail($id);
         return Inertia('ViewClientVendeur/Article_infos', [
             'produit' => new ProduitResource($produit),
-        ]);
+        ]); 
     }
 
     /**
