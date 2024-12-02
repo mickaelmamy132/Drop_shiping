@@ -2,12 +2,16 @@ import React from 'react'
 import FAQs from '../Components/FAQs'
 import Accueil from '../Layouts/Accueil'
 import { motion } from 'framer-motion'
+import { Link } from '@inertiajs/react'
 
 function Assistance({ auth }) {
     return (
         <Accueil
             auth={auth}
         >
+            <Link href="/" className="block mb-6 text-blue-600 hover:text-blue-800 transition-colors">
+                ← Retour à l'accueil
+            </Link>
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
