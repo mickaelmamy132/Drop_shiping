@@ -35,6 +35,8 @@ Route::get('/blog', function () {
 })->name('blog');
 
 Route::get('/categorieses', [Controlleur_simple::class, 'Categories'])->name('categorieses');
+Route::get('/blog', [Controlleur_simple::class, 'Blog_view'])->name('blog');
+
 
 
 Route::get('/voir-rubriques',[Controlleur_simple::class,'voir_artcles'])->name('voir-rubriques');

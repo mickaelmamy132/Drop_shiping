@@ -117,5 +117,10 @@ class Controlleur_simple extends Controller
             'vendeur' => $vendeur,
         ]);
     }
+
+    public function Blog_view ()
+    {
+        return Inertia::render('Bloc');
+    }
 }
 

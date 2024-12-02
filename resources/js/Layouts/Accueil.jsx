@@ -125,10 +125,10 @@ export default function Accueil({ auth, children }) {
                                             >
                                                 Assistance
                                             </NavLink>
-                                        </li>
+                                        </li> 
                                         <li className="md:flex md:items-center">
                                             <NavLink
-                                                // href={route('blog')}
+                                                href={route('blog')}
                                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-blue-600 after:left-0 after:bottom-0 hover:after:w-full after:transition-all after:duration-300"
                                             >
                                                 Blog

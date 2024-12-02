@@ -60,91 +60,90 @@ export default function Welcome({ auth }) {
 
 
                 <div className="mb-10 overflow-hidden">
-                    <div className="mb-6">
+                    <div className="mb-6 ml-8">
                         <p className="text-2xl font-bold">Section Catégories</p>
                         <p className="text-gray-500">Découvrez nos principales catégories</p>
                     </div>
                     <div style={{ overflow: 'hidden', position: 'relative', whiteSpace: 'nowrap' }}>
                         <motion.div
                             initial={{ x: 0 }}
-                            animate={{ x: ['0%', '-100%'] }}
+                            animate={{ x: ['0%', '-50%'] }}
                             transition={{
-                                duration: 30,
+                                duration: 20,
                                 repeat: Infinity,
                                 ease: 'linear',
+                                repeatType: "reverse"
                             }}
-                            style={{ display: 'flex', gap: '16px' }}
-                        >
-                            {Array(2)
-                                .fill([
-                                    {
-                                        title: "Nourriture",
-                                        description: "Découvrez les meilleures offres de produits alimentaires à prix réduits.",
-                                        linkText: "Voir les offres",
-                                        linkHref: "#nourriture",
-                                        image: "https://images.unsplash.com/photo-1506807803488-8eafc15316c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
-                                    },
-                                    {
-                                        title: "Maison",
-                                        description: "Trouvez des meubles et des articles pour la maison à prix cassés.",
-                                        linkText: "Voir les offres",
-                                        linkHref: "#maison",
-                                        image: "https://images.unsplash.com/photo-1589216532372-d07603a0f9f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
-                                    },
-                                    {
-                                        title: "Vêtements",
-                                        description: "Des vêtements pour tous les styles et toutes les tailles à prix réduits.",
-                                        linkText: "Voir les offres",
-                                        linkHref: "#vetements",
-                                        image: "https://images.unsplash.com/photo-1533251100970-0a2deb6d2624?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
-                                    },
-                                    {
-                                        title: "Électronique",
-                                        description: "Des appareils électroniques à prix imbattables.",
-                                        linkText: "Voir les offres",
-                                        linkHref: "#electronique",
-                                        image: "https://images.unsplash.com/photo-1518770660439-4636190af475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
-                                    },
-                                    {
-                                        title: "Sport",
-                                        description: "Équipements sportifs de qualité à prix réduits.",
-                                        linkText: "Voir les offres",
-                                        linkHref: "#sport",
-                                        image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
-                                    },
-                                    {
-                                        title: "Accessoires",
-                                        description: "Trouvez une large gamme d'accessoires à des prix intéressants.",
-                                        linkText: "Voir les offres",
-                                        linkHref: "#accessoires",
-                                        image: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
-                                    }
-                                ])
-                                .flat()
-                                .map((item, index) => (
-                                    <div key={index} style={{ minWidth: '250px', flexShrink: 0 }}>
-                                        <motion.div
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            transition={{ duration: 0.2 }}
-                                            style={{ width: '250px', height: '100%' }}
+                            style={{ display: 'flex', gap: '24px', padding: '16px' }}
+                        >                            {Array(2)
+                            .fill([
+                                {
+                                    title: "Vêtements",
+                                    description: "Découvrez les meilleures offres de vêtements de stock à prix réduits.",
+                                    linkText: "Voir les offres",
+                                    linkHref: "#vetements",
+                                    image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
+                                },
+                                {
+                                    title: "Bricolage",
+                                    description: "Trouvez des outils et du matériel de bricolage à prix cassés.",
+                                    linkText: "Voir les offres",
+                                    linkHref: "#bricolage",
+                                    image: "https://images.unsplash.com/photo-1581783898377-1c85bf937427?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
+                                },
+                                {
+                                    title: "Sport",
+                                    description: "Des équipements sportifs pour tous les niveaux à prix réduits.",
+                                    linkText: "Voir les offres",
+                                    linkHref: "#sport",
+                                    image: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
+                                },
+                                {
+                                    title: "Cuisine",
+                                    description: "Des ustensiles et équipements de cuisine à prix imbattables.",
+                                    linkText: "Voir les offres",
+                                    linkHref: "#cuisine",
+                                    image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
+                                },
+                                {
+                                    title: "Entretien Ménager",
+                                    description: "Équipements et produits d'entretien ménager à prix réduits.",
+                                    linkText: "Voir les offres",
+                                    linkHref: "#menager",
+                                    image: "https://images.unsplash.com/photo-1563453392212-326f5e854473?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
+                                },
+                                {
+                                    title: "Électronique",
+                                    description: "Trouvez une large gamme de matériel électronique à des prix intéressants.",
+                                    linkText: "Voir les offres",
+                                    linkHref: "#electronique",
+                                    image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
+                                }])
+                            .flat()
+                            .map((item, index) => (
+                                <div key={index} style={{ minWidth: '250px', flexShrink: 0 }}>
+                                    <motion.div
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        transition={{ duration: 0.2 }}
+                                        style={{ width: '250px', height: '100%' }}
+                                    >
+                                        <Card
+                                            title={item.title}
+                                            bordered={false}
+                                            cover={<img src={item.image} alt={item.title} style={{ height: '150px', objectFit: 'cover' }} />}
+                                            style={{ height: '100%', width: '100%', overflow: 'hidden' }}
                                         >
-                                            <Card
-                                                title={item.title}
-                                                bordered={false}
-                                                cover={<img src={item.image} alt={item.title} style={{ height: '150px', objectFit: 'cover' }} />}
-                                                style={{ height: '100%', width: '100%', overflow: 'hidden' }}
-                                            >
-                                                <div style={{ whiteSpace: 'normal', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                                    {item.description}
-                                                </div>
-                                                <Link href={item.linkHref} className="text-blue-500 hover:text-blue-700 mt-2 inline-block">
-                                                    {item.linkText}
-                                                </Link>
-                                            </Card>
-                                        </motion.div>
-                                    </div>
-                                ))}
+                                            <div style={{ whiteSpace: 'normal', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                {item.description}
+                                            </div>
+                                            <Link href={item.linkHref} className="text-blue-500 hover:text-blue-700 mt-2 inline-block">
+                                                {item.linkText}
+                                            </Link>
+                                        </Card>
+                                    </motion.div>
+                                </div>
+                            ))}
                         </motion.div>
                     </div>
                 </div>
@@ -163,8 +162,8 @@ export default function Welcome({ auth }) {
                     </div>
 
                     <div className="flex flex-col md:flex-row items-center">
-                        <img className="transition duration-150 ease-in max-w-lg h-auto rounded-lg mb-8 md:mb-12 opacity-120"
-                            src="{{ asset('images/medium-shot-man-logistic-warehouses.jpg') }}" alt="Logistique en entrepôt" />
+                        <img className="transition duration-150 ease-in max-w-xl h-64 rounded-lg mb-8 md:mb-12 opacity-120"
+                            src="https://images.unsplash.com/photo-1553413077-190dd305871c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=735&q=80" alt="Logistique en entrepôt" />
                         <div className="mx-auto text-center mb-0 text-lg md:text-xl md:ml-8">
                             <p className="font-bold">Optimisez votre chaîne d'approvisionnement et réduisez vos coûts grâce à notre plateforme de drop shipping innovante. Connectez-vous à un réseau mondial de fournisseurs fiables et gérez vos commandes en toute simplicité.</p>
                         </div>
@@ -328,7 +327,7 @@ export default function Welcome({ auth }) {
                             whileTap={{ scale: 0.95 }}
                             className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                         >
-                            Devenir vendeur
+                            <Link href={route('register_vendeur')}>Devenir vendeur</Link>
                         </motion.button>
                     </motion.div>
 
@@ -362,7 +361,7 @@ export default function Welcome({ auth }) {
                             whileTap={{ scale: 0.95 }}
                             className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                         >
-                            Devenir acheteur
+                            <Link href={route('register_acheteur')}>Devenir acheteur</Link>
                         </motion.button>
                     </motion.div>
                 </motion.section>
