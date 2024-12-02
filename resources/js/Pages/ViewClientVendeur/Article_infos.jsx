@@ -16,51 +16,65 @@ export default function Article_infos({ auth, produit }) {
             user={auth.user}
             role={auth.role}
         >
-            <main className='flex items-center min-h-screen bg-gradient-to-r from-blue-100 to-purple-100'>
-                <div className='bg-white rounded-2xl shadow-2xl p-10 w-full max-w-7xl mx-auto'>
-                    <Link href={route('Mes_rubrique/show')} className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5">retour</Link>
+            <main className='min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8'>
+                <div className='max-w-7xl mx-auto'>
+                    <div className='mb-8'>
+                        <Link href={route('Mes_rubrique/show')} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700">
+                            ← Retour
+                        </Link>
+                    </div>
 
-                        <h3 className='text-center font-bold text-5xl text-gray-800 mb-12'>
-                            Informations du produit
-                        </h3>
-                        <div className="flex flex-col sm:flex-col md:flex-col lg:flex-row xl:flex-row gap-16">
-                            <div className="w-full md:w-1/2">
-                                <img
-                                    src={`/storage/${produit.image_rubrique}`}
-                                    alt={produit.name}
-                                    className="w-full h-auto object-contain rounded-xl shadow-lg transition-transform duration-300 hover:scale-105"
-                                />
-                            </div>
-
-                            <div className="flex flex-col space-y-8 flex-1">
-                                <h1 className="text-4xl font-bold text-gray-800">{produit.nom}</h1>
-
-                                <div className="flex items-center">
-                                    <span className="text-4xl font-bold text-green-600">${produit.prix}</span>
+                    <div className='bg-white shadow-xl rounded-lg overflow-hidden'>
+                        <div className='p-6 sm:p-10'>
+                            <div className='grid grid-cols-1 lg:grid-cols-2 gap-10'>
+                                <div className='space-y-6'>
+                                    <div className='aspect-w-1 aspect-h-1'>
+                                        <img
+                                            src={`/storage/${produit.image_rubrique}`}
+                                            alt={produit.name}
+                                            className='w-full h-full object-cover rounded-lg shadow-md'
+                                        />
+                                    </div>
                                 </div>
 
-                                <div className="flex items-center">
-                                    <p className="text-4xl font-bold text-green-600">Quantite: {produit.quantite}</p>
-                                </div>
+                                <div className='space-y-6'>
+                                    <h1 className='text-3xl font-bold text-gray-900'>{produit.nom}</h1>
+                                    
+                                    <div className='border-t border-b border-gray-200 py-4'>
+                                        <div className='flex justify-between items-center'>
+                                            <span className='text-2xl font-semibold text-gray-900'>Prix</span>
+                                            <span className='text-3xl font-bold text-green-600'>${produit.prix}</span>
+                                        </div>
+                                        <div className='flex justify-between items-center mt-4'>
+                                            <span className='text-2xl font-semibold text-gray-900'>Quantité</span>
+                                            <span className='text-3xl font-bold text-green-600'>{produit.quantite}</span>
+                                        </div>
+                                    </div>
 
-                                <div className='mt-10'>
-                                    <InfoItem label="Description" value={produit.description} />
-                                </div>
+                                    <div className='bg-gray-50 rounded-lg p-6'>
+                                        <h3 className='text-xl font-semibold text-gray-900 mb-4'>Description</h3>
+                                        <p className='text-gray-700'>{produit.description}</p>
+                                    </div>
 
-                                <div className='flex items-center'>
-                                    <p className="font-semibold mb-2 text-xl">Vendeur: <span>{produit.vendeur.user.name}</span></p>
-                                </div>
-                                <Link className='bg-red-500 p-2 text-center w-20'>
-                                    supprimer
-                                </Link>
+                                    <div className='bg-gray-50 rounded-lg p-6'>
+                                        <h3 className='text-xl font-semibold text-gray-900 mb-2'>Vendeur</h3>
+                                        <p className='text-gray-700'>{produit.vendeur.user.name}</p>
+                                    </div>
 
-                                <form onSubmit={handleSubmit} className='flex gap-2'>
-                                    <button type="submit" className="bg-yellow-500 hover:bg-gray-400 hover:text-yellow-400 text-white font-bold py-2 px-4 rounded">
-                                        modifier
-                                    </button>
-                                </form>
+                                    <div className='flex space-x-4 mt-8'>
+                                        <form onSubmit={handleSubmit} className='flex-1'>
+                                            <button type="submit" className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-lg transition duration-200">
+                                                Modifier
+                                            </button>
+                                        </form>
+                                        <Link className='flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg text-center transition duration-200'>
+                                            Supprimer
+                                        </Link>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    </div>
                 </div>
             </main>
         </AuthenticatedLayout>

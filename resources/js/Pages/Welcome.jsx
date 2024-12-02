@@ -175,31 +175,32 @@ export default function Welcome({ auth }) {
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
+                    className="py-12 bg-gradient-to-b from-white to-gray-50"
                 >
-                    <ul className="px-8 gap-4 gap-y-8 mb-12 sm:grid-cols-2 items-center lg:flex sm:justify-center lg:justify-evenly">
-                        <li className="md:w-auto flex items-lg justify-center">
-                            <p className="text-center md:text-lg text-gary-800">
-                                <span className="inline-block text-blue-500 font-display font-extrabold text-4xl px-6 py-2 rounded-lg bg-indigo-50">+12 500</span>
+                    <ul className="px-8 gap-8 mb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-center justify-center max-w-7xl mx-auto">
+                        <li className="transform hover:scale-105 transition-transform duration-300">
+                            <p className="text-center md:text-lg text-gray-800 p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                                <span className="inline-block text-blue-500 font-display font-extrabold text-5xl px-8 py-3 rounded-lg bg-indigo-50 shadow-inner mb-4">+12 500</span>
                                 <br />
-                                <span className="leading-tight text-lg inline-block max-w[24ch] mt-2">
+                                <span className="leading-tight text-xl font-semibold inline-block max-w-[24ch] mt-4">
                                     acheteurs professionnels qualifiés
                                 </span>
                             </p>
                         </li>
-                        <li className="md:w-auto flex items-lg justify-center">
-                            <p className="text-center md:text-lg text-gary-800">
-                                <span className="inline-block text-blue-500 font-display font-extrabold text-4xl px-6 py-2 rounded-lg bg-indigo-50">+50 000</span>
+                        <li className="transform hover:scale-105 transition-transform duration-300">
+                            <p className="text-center md:text-lg text-gray-800 p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                                <span className="inline-block text-blue-500 font-display font-extrabold text-5xl px-8 py-3 rounded-lg bg-indigo-50 shadow-inner mb-4">+50 000</span>
                                 <br />
-                                <span className="leading-tight text-lg inline-block max-w[24ch] mt-2">
+                                <span className="leading-tight text-xl font-semibold inline-block max-w-[24ch] mt-4">
                                     produits vendus
                                 </span>
                             </p>
                         </li>
-                        <li className="md:w-auto flex items-lg justify-center">
-                            <p className="text-center md:text-lg text-gary-800">
-                                <span className="inline-block text-blue-500 font-display font-extrabold text-4xl px-6 py-2 rounded-lg bg-indigo-50">+8 000</span>
+                        <li className="transform hover:scale-105 transition-transform duration-300">
+                            <p className="text-center md:text-lg text-gray-800 p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                                <span className="inline-block text-blue-500 font-display font-extrabold text-5xl px-8 py-3 rounded-lg bg-indigo-50 shadow-inner mb-4">+8 000</span>
                                 <br />
-                                <span className="leading-tight text-lg inline-block max-w[24ch] mt-2">
+                                <span className="leading-tight text-xl font-semibold inline-block max-w-[24ch] mt-4">
                                     produits recyclés
                                 </span>
                             </p>
@@ -211,52 +212,59 @@ export default function Welcome({ auth }) {
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.6 }}
-                    className="mb-5"
+                    className="mb-8 max-w-9xl mx-auto px-6"
                 >
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <li className="rounded py-20 md:py-4 max-w-[420px] mx-auto flex flex-col items-center justify-center px-4 xl:px-6 relative text-center bg-gradient-to-br from-blue-50 to-gray-100 shadow-lg border border-blue-200 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
-                            <div className="absolute top-0 left-0 w-full h-2 bg-blue-500"></div>
-                            <h3 className="mb-6 text-lg text-center md:text-xl lg:text-2xl leading-tight font-bold text-blue-900">
-                                Visitez notre marketplace dès maintenant
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-8xl mx-auto">
+                        <li className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-blue-500 transform hover:-translate-y-2">
+                            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                                Marketplace
                             </h3>
-                            <p className="mb-6 md:text-lg text-gray-700">
-                                Découvrez une large gamme de produits à des prix compétitifs
+                            <p className="text-gray-600 mb-6">
+                                Trouvez des lots et du déstockage à prix avantageux
                             </p>
                             <a
                                 href='/voir-rubriques'
-                                className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg">Voir les rubriques</a>
+                                className="inline-block w-full text-center bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-semibold">
+                                Explorer
+                            </a>
                         </li>
-                        <li className="rounded py-20 md:py-4 max-w-[420px] flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-gray-100 shadow-lg border border-green-200 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
-                            <div className="absolute top-0 left-0 w-full h-2 bg-green-500"></div>
-                            <h3 className="mb-6 text-lg text-center md:text-xl lg:text-2xl leading-tight font-bold text-green-900">
-                                Devenez vendeur
+                        <li className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-green-500 transform hover:-translate-y-2">
+                            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                                Espace Vendeur
                             </h3>
-                            <p className="mb-6 md:text-lg text-gray-700">
-                                Rejoignez notre communauté de vendeurs et développez votre activité
-                            </p>
-                            <a className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg" href="">S'inscrire comme vendeur</a>
-                        </li>
-                        <li className="rounded py-20 md:py-4 max-w-[420px] flex flex-col items-center justify-center bg-gradient-to-br from-purple-50 to-gray-100 shadow-lg border border-purple-200 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
-                            <div className="absolute top-0 left-0 w-full h-2 bg-blue-500"></div>
-                            <h3 className="mb-6 text-lg text-center md:text-xl lg:text-2xl leading-tight font-bold text-purple-900">
-                                Gérez vos stocks
-                            </h3>
-                            <p className="mb-6 md:text-lg text-gray-700">
-                                Utilisez nos outils pour optimiser votre gestion des stocks
-                            </p>
-                            <a className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-purple-500  bg-blue-500 hover:from-purple-600 hover:to-purple-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg" href="">Accéder à la gestion des stocks</a>
-                        </li>
-                        <li className="rounded py-20 md:py-4 max-w-[420px] flex flex-col items-center justify-center bg-gradient-to-br from-orange-50 to-gray-100 shadow-lg border border-orange-200 overflow-hidden hover:transform hover:scale-105 transition-transform duration-300">
-                            <div className="absolute top-0 left-0 w-full h-2 bg-orange-500"></div>
-                            <h3 className="mb-6 text-lg text-center md:text-xl lg:text-2xl leading-tight font-bold text-orange-900">
-                                Support client
-                            </h3>
-                            <p className="mb-6 md:text-lg text-gray-700">
-                                Notre équipe est là pour vous aider à chaque étape
+                            <p className="text-gray-600 mb-6">
+                                Vendez vos surplus et stocks dormants
                             </p>
                             <a
-                                className="outline-focus rounded-full border-none font-semibold transition duration-300 ease-in-out text-center bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 px-8 w-full shadow-md hover:shadow-lg">
-                                Contacter le support
+                                href=""
+                                className="inline-block w-full text-center bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-6 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 font-semibold">
+                                Commencer
+                            </a>
+                        </li>
+                        <li className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-indigo-500 transform hover:-translate-y-2">
+                            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                                Gestion Stocks
+                            </h3>
+                            <p className="text-gray-600 mb-6">
+                                Pilotez vos stocks efficacement
+                            </p>
+                            <a
+                                href=""
+                                className="inline-block w-full text-center bg-gradient-to-r from-indigo-500 to-indigo-600 text-white py-3 px-6 rounded-lg hover:from-indigo-600 hover:to-indigo-700 transition-all duration-300 font-semibold">
+                                Gérer
+                            </a>
+                        </li>
+                        <li className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-orange-500 transform hover:-translate-y-2">
+                            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                                Assistance
+                            </h3>
+                            <p className="text-gray-600 mb-6">
+                                Besoin d'aide ? Contactez-nous
+                            </p>
+                            <a
+                                href=""
+                                className="inline-block w-full text-center bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 font-semibold">
+                                Contact
                             </a>
                         </li>
                     </ul>
@@ -265,15 +273,15 @@ export default function Welcome({ auth }) {
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="flex flex-col text-center bottom-smaller mt-10 mb-12"
+                    className="flex flex-col text-center bottom-smaller mt-16 mb-16"
                 >
-                    <h2 className="mx-auto mb-5 max-w-[26ch] order-2 text-primary-900 !text-2xl md:!text-3xl lg:!text-4xl">
+                    <h2 className="mx-auto mb-6 max-w-[26ch] order-2 text-primary-900 !text-3xl md:!text-4xl lg:!text-5xl font-bold">
                         Espace pour tous vos besoins commerciaux
                     </h2>
-                    <p className="order-1 mb-2 uppercase text-blue-300 font-semibold">
+                    <p className="order-1 mb-3 uppercase text-blue-500 font-bold tracking-wider">
                         Des affaires pour tous
                     </p>
-                    <div className="order-3 prose text-center max-w-[64ch] mx-auto md:text-lg">
+                    <div className="order-3 prose text-center max-w-[64ch] mx-auto md:text-xl text-gray-600 leading-relaxed">
                         <p>
                             Vous trouverez ici l'ensemble des infos utiles relatives au déstockage, aux invendus, aux palettes,
                             à la supply chain des overstock, ainsi que des opportunités uniques pour développer votre activité.
@@ -285,23 +293,23 @@ export default function Welcome({ auth }) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+                    className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16"
                 >
                     <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        className="rounded-lg py-8 px-5 md:px-10 lg:flex lg:flex-col bg-[#EFF6FF]"
+                        whileHover={{ scale: 1.02 }}
+                        className="rounded-2xl py-10 px-8 md:px-12 lg:flex lg:flex-col bg-gradient-to-br from-blue-50 to-white shadow-xl"
                     >
-                        <h2 className="!text-[26px] !leading-[0.9] font-bold mb-8 text-blue-800">
+                        <h2 className="text-3xl font-bold mb-10 text-blue-800">
                             Vendeur
                         </h2>
-                        <figure className="relative w-full aspect-video rounded-lg overflow-hidden border-[3px] mb-8 border-[#60A5FA]/[.35]">
+                        <figure className="relative w-full aspect-video rounded-xl overflow-hidden border-4 mb-10 border-blue-200 shadow-lg">
                             <picture className="absolute inset-0">
-                                <img className="transition duration-150 ease-in min-w-full min-h-full object-cover w-full opacity-100 loaded"
+                                <img className="transition duration-300 ease-in min-w-full min-h-full object-cover w-full hover:scale-105"
                                     src="https://ik.imagekit.io/uwzsb7j5w/wp-content/uploads/sites/2/2022/12/stocklear-fr-dashboard-vendeurs.jpg"
                                     alt="Dashboard vendeurs" />
                             </picture>
                         </figure>
-                        <div className="text-gray-600 mb-12 prose">
+                        <div className="text-gray-700 mb-12 prose prose-lg">
                             <p>
                                 Notre marketplace permet aux retailers majeurs (marques et distributeurs) d'écouler de manière
                                 contrôlée leurs stocks, invendus et retours clients.
@@ -316,29 +324,29 @@ export default function Welcome({ auth }) {
                             </p>
                         </div>
                         <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="bg-blue-500 text-white px-6 py-2 rounded-full"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                         >
                             Devenir vendeur
                         </motion.button>
                     </motion.div>
 
                     <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        className="rounded-lg py-8 px-5 md:px-10 lg:flex lg:flex-col bg-[#EFF6FF]"
+                        whileHover={{ scale: 1.02 }}
+                        className="rounded-2xl py-10 px-8 md:px-12 lg:flex lg:flex-col bg-gradient-to-br from-blue-50 to-white shadow-xl"
                     >
-                        <h2 className="!text-[26px] !leading-[0.9] font-bold mb-8 text-blue-800">
+                        <h2 className="text-3xl font-bold mb-10 text-blue-800">
                             Acheteur
                         </h2>
-                        <figure className="relative w-full aspect-video rounded-lg overflow-hidden border-[3px] mb-8 border-[#60A5FA]/[.35]">
+                        <figure className="relative w-full aspect-video rounded-xl overflow-hidden border-4 mb-10 border-blue-200 shadow-lg">
                             <picture className="absolute inset-0">
-                                <img className="transition duration-150 ease-in min-w-full min-h-full object-cover w-full opacity-100 loaded"
+                                <img className="transition duration-300 ease-in min-w-full min-h-full object-cover w-full hover:scale-105"
                                     src="https://ik.imagekit.io/uwzsb7j5w/wp-content/uploads/sites/2/2022/12/stocklear-fr-dashboard-acheteurs.jpg"
                                     alt="Dashboard acheteurs" />
                             </picture>
                         </figure>
-                        <div className="text-gray-600 mb-12 prose">
+                        <div className="text-gray-700 mb-12 prose prose-lg">
                             <p>
                                 Notre marketplace offre aux acheteurs une opportunité unique d'accéder à des stocks de grandes marques à des prix compétitifs.
                             </p>
@@ -350,9 +358,9 @@ export default function Welcome({ auth }) {
                             </p>
                         </div>
                         <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="bg-blue-500 text-white px-6 py-2 rounded-full"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                         >
                             Devenir acheteur
                         </motion.button>
@@ -363,37 +371,37 @@ export default function Welcome({ auth }) {
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
-                    className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6"
+                    className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8"
                 >
-                    <motion.div whileHover={{ scale: 1.05 }} className="bg-white p-6 rounded-lg shadow-lg">
-                        <h3 className="text-xl font-bold mb-4 text-blue-800">Gestion des stocks</h3>
-                        <p className="text-gray-600 mb-4">Optimisez votre inventaire avec nos outils de gestion avancés.</p>
+                    <motion.div whileHover={{ scale: 1.03 }} className="bg-gradient-to-br from-white to-blue-50 p-8 rounded-2xl shadow-xl">
+                        <h3 className="text-2xl font-bold mb-6 text-blue-800">Gestion des stocks</h3>
+                        <p className="text-gray-700 mb-8 text-lg">Optimisez votre inventaire avec nos outils de gestion avancés.</p>
                         <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="bg-blue-500 text-white px-4 py-2 rounded"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                         >
                             En savoir plus
                         </motion.button>
                     </motion.div>
-                    <motion.div whileHover={{ scale: 1.05 }} className="bg-white p-6 rounded-lg shadow-lg">
-                        <h3 className="text-xl font-bold mb-4 text-blue-800">Analyses et rapports</h3>
-                        <p className="text-gray-600 mb-4">Accédez à des insights détaillés pour prendre des décisions éclairées.</p>
+                    <motion.div whileHover={{ scale: 1.03 }} className="bg-gradient-to-br from-white to-blue-50 p-8 rounded-2xl shadow-xl">
+                        <h3 className="text-2xl font-bold mb-6 text-blue-800">Analyses et rapports</h3>
+                        <p className="text-gray-700 mb-8 text-lg">Accédez à des insights détaillés pour prendre des décisions éclairées.</p>
                         <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="bg-blue-500 text-white px-4 py-2 rounded"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                         >
                             Voir les rapports
                         </motion.button>
                     </motion.div>
-                    <motion.div whileHover={{ scale: 1.05 }} className="bg-white p-6 rounded-lg shadow-lg">
-                        <h3 className="text-xl font-bold mb-4 text-blue-800">Support client</h3>
-                        <p className="text-gray-600 mb-4">Notre équipe est là pour vous aider à chaque étape de votre parcours.</p>
+                    <motion.div whileHover={{ scale: 1.03 }} className="bg-gradient-to-br from-white to-blue-50 p-8 rounded-2xl shadow-xl">
+                        <h3 className="text-2xl font-bold mb-6 text-blue-800">Support client</h3>
+                        <p className="text-gray-700 mb-8 text-lg">Notre équipe est là pour vous aider à chaque étape de votre parcours.</p>
                         <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            className="bg-blue-500 text-white px-4 py-2 rounded"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                         >
                             Contacter le support
                         </motion.button>

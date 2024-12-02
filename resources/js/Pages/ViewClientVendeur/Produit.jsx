@@ -4,6 +4,7 @@ import { Link } from '@inertiajs/react';
 import { useForm } from '@inertiajs/react';
 import { EyeIcon } from '@heroicons/react/24/solid';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { message } from 'antd';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import Modal from '../../Components/Modal';
@@ -15,7 +16,7 @@ export default function ProductCard({ produit }) {
   const {
     data: formData,
     delete: destroy,
-    get:get,
+    get: get,
     processing: deleteProcessing,
   } = useForm();
 
@@ -41,19 +42,11 @@ export default function ProductCard({ produit }) {
         onSuccess: () => {
           setIsModalOpen(false);
           setselectedProduit(null);
-          notification.success({
-            message: 'Succès',
-            description: 'Produit retiré du panier avec succès',
-            placement: 'topRight',
-          });
+          message.success('Produit supprimé avec succès');
         },
         onError: (error) => {
-          notification.error({
-            message: 'Erreur',
-            description: 'Erreur lors du retirement du panier, veuillez réessayer.',
-            placement: 'topRight',
-          });
-          console.error('Error deleting panie:', error);
+          console.error(errors);
+          message.error('Une erreur est survenue lors du suppression du produit');
         },
       });
     } else {

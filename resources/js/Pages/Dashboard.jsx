@@ -9,6 +9,7 @@ import LineChart from '../Components/LineChart';
 import BarChart from '../Components/BarChart';
 import { CurrencyDollarIcon, UsersIcon, CubeIcon } from '@heroicons/react/24/solid';
 import DashboardCard from '../Components/DashboardCard';
+import { CubeTransparentIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
 
 export default function Dashboard({ auth }) {
     const { data, setData, post, processing, errors, reset } = useForm();
@@ -22,7 +23,7 @@ export default function Dashboard({ auth }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className='flex'
+                className='flex dark:bg-gray-800'
             >
                 {/* Main Content Area */}
                 <div className='flex-1 items-center mt-5'>
@@ -30,9 +31,9 @@ export default function Dashboard({ auth }) {
                         initial={{ y: -20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ duration: 0.5 }}
-                        className='flex justify-between items-center p-5 bg-white rounded-lg shadow-md mb-4'
+                        className='flex justify-between items-center p-5 bg-white dark:bg-gray-700 rounded-lg shadow-md mb-4'
                     >
-                        <h2 className='text-2xl font-bold'>
+                        <h2 className='text-2xl font-bold dark:text-white'>
                            Bienvenu sur votre dashboard vendeur
                         </h2>
                         <div className='flex gap-2'>
@@ -50,7 +51,7 @@ export default function Dashboard({ auth }) {
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     type="submit"
-                                    className='bg-gray-100 py-2 px-2 rounded-xl mx-auto text-center text-black hover:bg-gray-150'
+                                    className='bg-gray-100 dark:bg-gray-600 py-2 px-2 rounded-xl mx-auto text-center text-black dark:text-white hover:bg-gray-150 dark:hover:bg-gray-500'
                                 >
                                     Se connecter en tant que acheteur
                                 </motion.button>
@@ -63,38 +64,27 @@ export default function Dashboard({ auth }) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
-                        className=' overflow-hidden p-4 mt-5 space-y-8'
+                        className='overflow-hidden p-4 mt-5 space-y-8 dark:bg-gray-800'
                     >
-                        {/* <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 mb-5'>
-                            <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
-                                <Chartjx />
-                            </motion.div>
-                            <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
-                                <Chart_vendeur />
-                            </motion.div>
-
-                            <Diagramme />
-                        </div> */}
-
                         <div className='grid grid-cols-1 gap-4 lg:grid-cols-3 items-center'>
                         <DashboardCard
-                            title="Sales"
+                            title="Articles"
                             value="$24,560"
-                            icon={CurrencyDollarIcon}
+                            icon={ShoppingCartIcon}
                             footer="Increased by 10% since last month"
                             additionalInfo="Order #1,234"
                         />
                         <DashboardCard
-                            title="Customers"
+                            title="Lot"
                             value="1,234"
-                            icon={UsersIcon}
+                            icon={CubeTransparentIcon}
                             footer="120 new customers this month"
                             additionalInfo="Avg. Value: $85"
                         />
                         <DashboardCard
-                            title="Active Products"
+                            title="Commandes"
                             value="456"
-                            icon={CubeIcon}
+                            icon={CubeTransparentIcon}
                             footer="23 new products added this week"
                             additionalInfo="Inactive: 32"
                         />

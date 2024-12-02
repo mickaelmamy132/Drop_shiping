@@ -54,97 +54,91 @@ export default function Article_infos({ auth, produit }) {
             user={auth.user}
             role={auth.role}
         >
-            <main className='flex items-center min-h-screen bg-gradient-to-r from-blue-100 to-purple-100'>
+            <main className='min-h-screen bg-gray-50 py-12'>
                 <motion.div 
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className='bg-white rounded-2xl shadow-2xl p-10 w-full max-w-7xl mx-auto'
+                    className='container mx-auto px-4'
                 >
-                    <Link href={route('Produit.index')} className='max-w-20 text-center flex bg-red-200 rounded-xl p-2 px-4 font-semibold transition-all duration-300 transform hover:-translate-y-2'>retour</Link>
+                    <Link href={route('Produit.index')} className='inline-flex items-center mb-8 px-6 py-3 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-700 font-medium transition-all'>
+                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Retour
+                    </Link>
 
-                    <motion.h3 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        className='text-center font-bold text-5xl text-gray-800 mb-12'
-                    >
-                        Informations du produit
-                    </motion.h3>
-
-                    <div>
-                        <motion.div>
-                            <motion.div
-                                variants={fadeIn}
-                                whileHover={hoverAnimation}
-                            >
-                                <img
-                                    src={`/storage/${produit.image_rubrique}`}
-                                    alt={produit.name}
-                                    className="w-full h-auto object-cover rounded-xl shadow-lg transition-transform duration-300 hover:scale-105"
-                                />
-                            </motion.div>
+                    <div className='grid md:grid-cols-2 gap-12'>
+                        <motion.div
+                            variants={fadeIn}
+                            whileHover={hoverAnimation}
+                            className="bg-white rounded-2xl overflow-hidden shadow-lg"
+                        >
+                            <img
+                                src={`/storage/${produit.image_rubrique}`}
+                                alt={produit.name}
+                                className="w-full h-[400px] object-cover"
+                            />
                         </motion.div>
 
                         <motion.div 
                             initial={{ opacity: 0, x: 50 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.5, delay: 0.3 }}
-                            className="flex flex-col space-y-8 flex-1"
+                            className="bg-white rounded-2xl p-8 shadow-lg"
                         >
-                            <section className="product-info">
-                                <h1 className="text-4xl font-bold text-gray-800">{produit.nom}</h1>
-                                <div className="flex items-center mt-4">
-                                    <span className="text-4xl font-bold text-green-600">${produit.prix}</span>
-                                </div>
-                                <div className="flex items-center mt-4">
-                                    <p className="text-4xl font-bold text-green-600">Quantite: {produit.quantite}</p>
-                                </div>
-                            </section>
+                            <h1 className="text-3xl font-bold text-gray-900 mb-4">{produit.nom}</h1>
+                            
+                            <div className="flex items-center space-x-4 mb-6">
+                                <span className="text-3xl font-bold text-emerald-600">{produit.prix} €</span>
+                                <span className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm">
+                                    En stock: {produit.quantite}
+                                </span>
+                            </div>
 
-                            <section className="product-description mt-10">
-                                <InfoItem label="Description" value={produit.description} />
-                            </section>
+                            <div className="border-t border-b border-gray-200 py-6 mb-6">
+                                <h3 className="text-lg font-semibold mb-3">Description</h3>
+                                <p className="text-gray-600">{produit.description}</p>
+                            </div>
 
-                            <section className="seller-info">
-                                <div className='flex items-center'>
-                                    <p className="font-semibold mb-2 text-xl">Vendeur: <span>{produit.vendeur.user_id}</span></p>
+                            <div className="mb-8">
+                                <div className="flex items-center space-x-2">
+                                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    <span className="text-gray-600">Vendu par:</span>
+                                    <span className="font-medium">{produit.vendeur.user_id}</span>
                                 </div>
-                            </section>
+                            </div>
 
-                            <motion.section 
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.5 }}
-                                className="add-to-cart"
-                            >
-                                <form onSubmit={handleSubmit} className='flex gap-2'>
-                                    <div className='items-center justify-center text-center'>
-                                        <label htmlFor="">nombres: </label>
-                                        <Select
-                                            label="Quantité"
-                                            value={quantite}
-                                            onChange={(value) => setQuantity(String(value))}
-                                            className="w-32 font-medium mb-4"
-                                        >
-                                            {[...Array(produit.quantite)].map((_, index) => (
-                                                <Option key={index + 1} value={index + 1}>
-                                                    {index + 1}
-                                                </Option>
-                                            ))}
-                                        </Select>
-                                    </div>
-                                    <Button
-                                        type="primary"
-                                        htmlType="submit"
-                                        className="w-full md:w-2/3 bg-blue-600 hover:bg-blue-700 text-white text-center text-xl py-4 rounded-xl transition-all duration-300 transform hover:scale-105"
-                                        disabled={processing}
-                                        loading={processing}
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div className="flex items-center space-x-4">
+                                    <label className="text-gray-700 font-medium">Quantité:</label>
+                                    <Select
+                                        value={quantite}
+                                        onChange={(value) => setQuantity(String(value))}
+                                        className="w-24"
+                                        size="large"
                                     >
-                                        {processing ? 'Ajout en cours...' : 'Ajouter au panier'}
-                                    </Button>
-                                </form>
-                            </motion.section>
+                                        {[...Array(produit.quantite)].map((_, index) => (
+                                            <Option key={index + 1} value={index + 1}>
+                                                {index + 1}
+                                            </Option>
+                                        ))}
+                                    </Select>
+                                </div>
+
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    size="large"
+                                    className="w-full bg-blue-600 hover:bg-blue-700 h-14 text-lg font-medium rounded-xl"
+                                    disabled={processing}
+                                    loading={processing}
+                                >
+                                    {processing ? 'Ajout en cours...' : 'Ajouter au panier'}
+                                </Button>
+                            </form>
                         </motion.div>
                     </div>
                 </motion.div>

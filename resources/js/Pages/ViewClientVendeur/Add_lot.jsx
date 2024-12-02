@@ -43,7 +43,7 @@ export default function Add_lot({ auth }) {
             },
             onSuccess: () => {
                 message.success('Le lot a été ajouté avec succès');
-                form.resetFields();
+                form.resetFields(); 
             },
             onError: (errors) => {
                 console.error(errors);

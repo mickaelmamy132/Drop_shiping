@@ -13,19 +13,24 @@ return new class extends Migration
     {
         Schema::create('panies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('acheteur_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('produit_id')->nullable()->constrained('produits')->onDelete('cascade');
-            $table->foreignId('produit_lot_id')->nullable()->constrained('produit_lots')->onDelete('cascade');
-            $table->foreignId('vendeur_id')->constrained('users')->onDelete('cascade');
+            $table->unsignedBigInteger('acheteur_id');
+            $table->unsignedBigInteger('produit_id')->nullable();
+            $table->unsignedBigInteger('produit_lot_id')->nullable();
+            $table->unsignedBigInteger('vendeur_id');
             $table->foreignId('commande_id')->nullable()->constrained();
             $table->integer('quantite');
             $table->decimal('prix', 8, 2);
             $table->decimal('prix_totale', 8, 2);
             $table->string('status');
             $table->timestamps();
+
+            $table->foreign('acheteur_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('produit_id')->references('id')->on('produits')->onDelete('cascade');
+            $table->foreign('produit_lot_id')->references('id')->on('produit_lots')->onDelete('cascade');
+            $table->foreign('vendeur_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
-
+ 
     /**
      * Reverse the migrations.
      */

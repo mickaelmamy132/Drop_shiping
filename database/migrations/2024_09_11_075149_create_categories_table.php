@@ -26,8 +26,10 @@ return new class extends Migration
             ['nom' => 'materiel de cuisine', 'description_categorie' => 'Équipements et ustensiles pour la cuisine'],
             ['nom' => 'bricolage', 'description_categorie' => 'Matériel et outils pour les travaux de bricolage'],
             ['nom' => 'sport', 'description_categorie' => 'Matériel et outils de sport'],
-        ]);
-    }
+            ['nom' => 'electromenager', 'description_categorie' => 'Appareils électroménagers pour la maison'],
+            ['nom' => 'equipement professionels', 'description_categorie' => 'Équipements et matériels pour professionnels'],
+            ['nom' => 'jouts', 'description_categorie' => 'Jouets et jeux pour tous les âges'],
+        ]);    }
 
     /**
      * Reverse the migrations.

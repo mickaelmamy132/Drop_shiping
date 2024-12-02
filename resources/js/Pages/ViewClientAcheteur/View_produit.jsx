@@ -72,16 +72,7 @@ export default function View_produit({ auth, produits }) {
     return (
         <AuthenticatedLayout user={auth.user} role={auth.role}>
             <div className="py-12 min-h-screen">
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className='mb-5'
-                >
-                    <Link href={route('Acheteur')} className="rounded-xl bg-red-600 text-white p-3 px-5 mr-5 items-center justify-center">
-                        retour
-                    </Link>
-                </motion.div>
+            
 
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
@@ -250,7 +241,7 @@ export default function View_produit({ auth, produits }) {
                                     </div>
                                 </div>
                                 <div className="flex">
-                                    <div className="p-6 text-gray-900 grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+                                    <div className="p-6 text-gray-900 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3">
                                         {filteredProduits.length === 0 ? (
                                             <p>Aucun produit disponible</p>
                                         ) : (
