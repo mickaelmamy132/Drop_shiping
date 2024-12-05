@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import Chartjx from '../../Components/Chart';
 import Donate from '../../Components/Donate';
@@ -9,9 +9,10 @@ export default function Acheteur({ auth }) {
 
     return (
         <AuthenticatedLayout
-            user={auth.user}
+            user={auth.user} 
             role={auth.role}
         >
+            <Head title="Tableau de bord" />
 
             <motion.main
                 className='flex'

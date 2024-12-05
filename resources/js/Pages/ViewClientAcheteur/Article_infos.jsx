@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Button, message, Select } from 'antd';
-import { Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 
 const { Option } = Select;
@@ -54,6 +54,7 @@ export default function Article_infos({ auth, produit }) {
             user={auth.user}
             role={auth.role}
         >
+            <Head title="Article-infos" />
             <main className='min-h-screen bg-gray-50 py-12'>
                 <motion.div 
                     initial={{ opacity: 0, y: 50 }}

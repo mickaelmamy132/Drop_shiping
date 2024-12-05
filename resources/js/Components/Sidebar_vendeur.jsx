@@ -100,7 +100,7 @@ export function MultiLevelSidebar_vendeur({ darkMode }) {
               >
                 <div className="mb-4 text-center">
                   <Typography variant="h5" color={darkMode ? "white" : "blue-gray"} className="font-bold">
-                    Menu Principal
+                    Vendeur
                   </Typography>
                 </div>
                 <List>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
-import { Link } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { ChatBubbleBottomCenterTextIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/outline';
 import { Button } from 'antd';
 import Chat_acheteur from '../../Components/Chat_acheteur';
@@ -127,6 +127,7 @@ export default function Produit_lot_infos({ auth, produit_lot }) {
             user={auth.user}
             role={auth.role}
         >
+            <Head title="Lot-infos" />
             <Container>
                 <motion.div
                     className="produit-lot-infos"

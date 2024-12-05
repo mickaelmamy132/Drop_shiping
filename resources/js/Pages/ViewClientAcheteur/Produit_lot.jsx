@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { notification } from 'antd';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -291,6 +291,7 @@ export default function Produit_lot({ lots, auth }) {
             user={auth.user}
             role={auth.role}
         >
+            <Head title="Lots" />
             <div className="py-12 min-h-screen">
 
                 <motion.div

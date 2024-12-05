@@ -101,11 +101,12 @@ export function MultiLevelSidebar_acheteur({ darkMode }) {
                 }`}
               >
                 <div className="mb-4 text-center">
-                  <img
-                    className="w-32 h-32 mx-auto object-contain transition-transform duration-300 transform hover:scale-105"
+                  {/* <img
+                    className=" w-32 h-32 mx-auto object-contain transition-transform duration-300 transform hover:scale-105"
                     src={Khepri}
                     alt="Khepri Logo"
-                  />
+                  /> */}
+                  <Typography variant="h5" className="mt-2">Acheteur</Typography>
                 </div>
                 <List>
                   <motion.div

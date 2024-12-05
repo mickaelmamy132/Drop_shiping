@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { motion } from 'framer-motion';
 import ProductCard from './produit';
-import { Link } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
 export default function View_produit({ auth, produits }) {
     const [categories, setCategories] = useState([]);
@@ -71,6 +71,7 @@ export default function View_produit({ auth, produits }) {
 
     return (
         <AuthenticatedLayout user={auth.user} role={auth.role}>
+            <Head title="Articles" />
             <div className="py-12 min-h-screen">
             
 

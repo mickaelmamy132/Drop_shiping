@@ -6,6 +6,7 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
 import { MultiLevelSidebar_acheteur } from '../Components/SideBar_acheteur';
 import { MultiLevelSidebar_vendeur } from '../Components/Sidebar_vendeur';
+import { Khepri } from '../images';
 
 export default function Authenticated({ user, header, children, role }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
@@ -34,7 +35,14 @@ export default function Authenticated({ user, header, children, role }) {
             <div className="flex flex-col flex-1 overflow-hidden">
                 {header && (
                     <header className="bg-white dark:bg-gray-800 shadow">
-                        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">{header}</div>
+                        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center">
+                            <img
+                                className=" w-32 h-32 mx-auto object-contain transition-transform duration-300 transform hover:scale-105"
+                                src={Khepri}
+                                alt="Khepri Logo"
+                            />
+                            {header}
+                        </div>
                     </header>
                 )}
 
@@ -43,19 +51,16 @@ export default function Authenticated({ user, header, children, role }) {
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                             <div className="flex justify-between h-20">
                                 <div className="flex items-center">
-                                    {/* <div className="shrink-0 flex items-center">
-                                        <Link href="/" className="transform transition-transform duration-300 hover:scale-110">
-                                            <ApplicationLogo className="block h-12 w-auto fill-current text-gray-800 dark:text-white" />
-                                        </Link>
-                                    </div> */}
+                                    <div className="shrink-0 flex items-center ml-0">
 
-                                    <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                        <NavLink href={route('dashboard')} active={route().current('dashboard')} className="text-gray-800 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-300">
-                                            Dashboard
-                                        </NavLink>
+                                        <img
+                                            className="h-16 w-auto object-contain transition-transform duration-300 transform hover:scale-105"
+                                            src={Khepri}
+                                            alt="Khepri Logo"
+                                        />
+
                                     </div>
                                 </div>
-
                                 <div className="hidden sm:flex sm:items-center sm:ms-6">
                                     <button
                                         onClick={toggleDarkMode}
@@ -105,6 +110,7 @@ export default function Authenticated({ user, header, children, role }) {
                                             </Dropdown.Content>
                                         </Dropdown>
                                     </div>
+
                                 </div>
 
                                 <div className="-me-2 flex items-center sm:hidden">
@@ -159,11 +165,11 @@ export default function Authenticated({ user, header, children, role }) {
                     <div className="py-6 mb-5">
                         <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
                             {children}
-                            
+
                         </div>
-                    
+
                     </div>
-                    
+
                 </main>
 
             </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Link, usePage, useForm } from '@inertiajs/react';
+import { Link, usePage, useForm, Head } from '@inertiajs/react';
 import { Form, Button, notification } from 'antd';
 import Modal from '../../Components/Modal';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -160,6 +160,7 @@ export default function Panier({ auth, panies }) {
             user={auth.user}
             role={auth.role}
         >
+            <Head title="Panier" />
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { message } from 'antd';
 import { ArrowLeftEndOnRectangleIcon, ArrowPathIcon } from '@heroicons/react/24/solid';
 import { ArrowLeftCircleIcon } from '@heroicons/react/24/outline';
@@ -70,6 +70,7 @@ export default function Article_edit({ auth, panier }) {
             user={auth.user}
             role={auth.role}
         >
+            <Head title="Edite article" />
             <AnimatePresence>
                 {panier ? (
                     <motion.div
@@ -81,13 +82,13 @@ export default function Article_edit({ auth, panier }) {
                         transition={{ duration: 0.5 }}
                         className="font-sans max-w-4xl mx-auto px-4 py-8"
                     >
-                        <motion.div 
+                        <motion.div
                             className="bg-white rounded-xl shadow-2xl overflow-hidden"
                             variants={scaleIn}
                             transition={{ delay: 0.2, duration: 0.5 }}
                         >
                             <div className="p-8">
-                                <motion.h2 
+                                <motion.h2
                                     className="text-4xl font-bold text-gray-800 mb-6 border-b pb-4"
                                     variants={slideIn}
                                     transition={{ delay: 0.3, duration: 0.5 }}
@@ -96,7 +97,7 @@ export default function Article_edit({ auth, panier }) {
                                 </motion.h2>
 
                                 <section className="space-y-6">
-                                    <motion.h3 
+                                    <motion.h3
                                         className="text-2xl font-semibold text-gray-700"
                                         variants={slideIn}
                                         transition={{ delay: 0.4, duration: 0.5 }}
@@ -114,14 +115,14 @@ export default function Article_edit({ auth, panier }) {
                                             </motion.div>
                                         )}
                                     </div>
-                                    
-                                    <motion.form 
-                                        onSubmit={onfinish} 
+
+                                    <motion.form
+                                        onSubmit={onfinish}
                                         className="mt-6 space-y-6"
                                         variants={fadeIn}
                                         transition={{ delay: 0.5, duration: 0.5 }}
                                     >
-                                        <motion.div 
+                                        <motion.div
                                             className="flex items-center justify-between"
                                             variants={slideIn}
                                             transition={{ delay: 0.6, duration: 0.5 }}
@@ -138,7 +139,7 @@ export default function Article_edit({ auth, panier }) {
                                                 ))}
                                             </select>
                                         </motion.div>
-                                        <motion.div 
+                                        <motion.div
                                             className="flex items-center justify-between"
                                             variants={slideIn}
                                             transition={{ delay: 0.7, duration: 0.5 }}
@@ -146,7 +147,7 @@ export default function Article_edit({ auth, panier }) {
                                             <p className="text-lg font-medium text-gray-600">Prix unitaire:</p>
                                             <p className="text-lg font-bold text-green-600">{panier.produit.prix} €</p>
                                         </motion.div>
-                                        <motion.div 
+                                        <motion.div
                                             className="flex items-center justify-between border-t pt-4"
                                             variants={slideIn}
                                             transition={{ delay: 0.8, duration: 0.5 }}
@@ -154,20 +155,20 @@ export default function Article_edit({ auth, panier }) {
                                             <p className="text-xl font-semibold text-gray-700">Prix Total:</p>
                                             <p className="text-xl font-bold text-green-600">{data.prix_totale} €</p>
                                         </motion.div>
-                                        <motion.div 
+                                        <motion.div
                                             className='justify-between flex'
                                             variants={scaleIn}
                                             transition={{ delay: 0.9, duration: 0.5 }}
                                         >
-                                            <Link 
-                                                href={route('Panie.index')} 
+                                            <Link
+                                                href={route('Panie.index')}
                                                 className="rounded bg-red-400 p-2 mt-4 hover:bg-red-500 transition-colors duration-200 flex items-center"
                                             >
                                                 <ArrowLeftCircleIcon className="w-6 h-6 mr-2 text-white" />
                                                 <span className="text-white font-medium">Retour</span>
                                             </Link>
-                                            <motion.button 
-                                                type='submit' 
+                                            <motion.button
+                                                type='submit'
                                                 className='rounded bg-green-400 p-2 mt-4 hover:bg-green-500 transition-colors duration-200 flex items-center'
                                             >
                                                 <ArrowPathIcon className="w-6 h-6 mr-2 text-white" />

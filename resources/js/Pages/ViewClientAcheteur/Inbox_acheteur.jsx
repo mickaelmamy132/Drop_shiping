@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { ref, push, onValue, update } from "firebase/database";
 import { database } from '../../../../firebaseConfig';
 import EmojiPicker from 'emoji-picker-react';
+import { Head } from '@inertiajs/react';
 
 export default function Inbox_acheteur({ auth, produit, acheteur }) {
     console.log(produit)
@@ -182,6 +183,7 @@ export default function Inbox_acheteur({ auth, produit, acheteur }) {
         <AuthenticatedLayout
             user={auth.user}
             role={auth.role}>
+                <Head title="Inbox" />
             <div className="w-full flex flex-col md:flex-row h-[calc(100vh-4rem)] fixed overflow-x-hidden">
                 <div className="w-full md:w-1/4 border-r border-gray-200 p-4">
                     <h2 className="text-xl font-semibold mb-4">Discussions</h2>
