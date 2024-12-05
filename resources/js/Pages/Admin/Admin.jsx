@@ -51,6 +51,7 @@ export default function Admin({ auth, status, canResetPassword }) {
             auth={auth}
             className='rounded-xl '>
             <Head title="Login adminpage" />
+
             <motion.div
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -190,7 +191,7 @@ export default function Admin({ auth, status, canResetPassword }) {
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300"
                             disabled={processing}
                         >
-                            Log in
+                            S'econnecter
                         </PrimaryButton>
                     </motion.div>
                 </motion.form>

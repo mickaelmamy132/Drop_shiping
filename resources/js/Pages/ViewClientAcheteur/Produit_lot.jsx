@@ -320,6 +320,7 @@ export default function Produit_lot({ lots, auth }) {
                     <div className="">
                         {!isSmallScreen ? (
                             <>
+                                <h3 className='font-semibold text-xl underline text-gray-400'>Filtrage</h3>
                                 <div className="flex justify-between items-center cursor-pointer" onClick={toggleCategories}>
                                     <h3 className="text-lg font-semibold">Catégories</h3>
                                     <span>{isCategoriesOpen ? '>' : '<'}</span>
@@ -540,7 +541,7 @@ export default function Produit_lot({ lots, auth }) {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="mt-4 text-center items-center gap-2"> 
+                                            <div className="mt-4 text-center items-center gap-2">
                                                 {endDates[lot.id] !== 0 && (
                                                     <motion.button
                                                         whileHover={{ scale: 1.05 }}

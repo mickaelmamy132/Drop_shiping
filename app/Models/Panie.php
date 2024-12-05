@@ -9,7 +9,7 @@ class Panie extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+    protected $fillable = [ 
         'acheteur_id',
         'produit_id',
         'produit_lot_id',

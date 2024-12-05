@@ -3,7 +3,7 @@ import AdminLayout from './Layout/AdminLayout'
 import { motion } from 'framer-motion'
 import DashboardCard from '../../Components/DashboardCard'
 import { CurrencyDollarIcon, ShoppingBagIcon } from '@heroicons/react/24/outline'
-import { Link } from '@inertiajs/react'
+import { Head, Link } from '@inertiajs/react'
 
 
 
@@ -31,6 +31,7 @@ export default function GereComptes_vendeur({ auth, allVendeur, produit, produit
         <AdminLayout
             auth={auth}
         >
+            <Head title="List-vendeur" />
 
             <motion.div
                 initial={{ opacity: 0, y: -20 }}

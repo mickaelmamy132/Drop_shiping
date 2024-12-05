@@ -73,8 +73,6 @@ export default function View_produit({ auth, produits }) {
         <AuthenticatedLayout user={auth.user} role={auth.role}>
             <Head title="Articles" />
             <div className="py-12 min-h-screen">
-            
-
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -118,8 +116,8 @@ export default function View_produit({ auth, produits }) {
                                                             type="checkbox"
                                                             className="form-checkbox"
                                                             value={category.id}
-                                                            onChange={() => handleCategoryChange(category.id)} // Ajoutez cette ligne
-                                                            checked={selectedCategories.includes(category.id)} // Assurez-vous que la case à cocher soit marquée si elle est sélectionnée
+                                                            onChange={() => handleCategoryChange(category.id)}
+                                                            checked={selectedCategories.includes(category.id)}
                                                         />
                                                         <label className="ml-2">{category.nom}</label>
                                                     </div>
@@ -152,8 +150,8 @@ export default function View_produit({ auth, produits }) {
                                                             type="checkbox"
                                                             className="form-checkbox"
                                                             value={option}
-                                                            onChange={() => handleQualiteChange(option)} // Gérer la sélection
-                                                            checked={selectedQualites.includes(option)} // Assurez-vous que la case à cocher soit marquée si sélectionnée
+                                                            onChange={() => handleQualiteChange(option)}
+                                                            checked={selectedQualites.includes(option)}
                                                         />
                                                         <label className="ml-2">{option}</label>
                                                     </div>
@@ -216,7 +214,7 @@ export default function View_produit({ auth, produits }) {
 
                             {/* Produits */}
                             <motion.div
-                                className="bg-white gap-5 mt-5 p-4"
+                                className="bg-white gap-5 mt-5 p-4 flex-grow"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.2, staggerChildren: 0.1 }}
@@ -237,11 +235,10 @@ export default function View_produit({ auth, produits }) {
                                             <option value="" selected>...</option>
                                             <option value="date">Date d'ajout</option>
                                             <option value="units">Unités</option>
-                                            <option value="auction-end">Fin de l'enchère</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div className="flex">
+                                <div className="flex-grow">
                                     <div className="p-6 text-gray-900 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3">
                                         {filteredProduits.length === 0 ? (
                                             <p>Aucun produit disponible</p>
@@ -260,7 +257,6 @@ export default function View_produit({ auth, produits }) {
                                             ))
                                         )}
                                     </div>
-
                                 </div>
                             </motion.div>
                         </div>

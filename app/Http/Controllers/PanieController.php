@@ -94,7 +94,7 @@ class PanieController extends Controller
     public function edit($panie)
     {
         $userId = Auth::user()->id;
-        $panier = Panie::with('produits.categorie', 'vendeur.user', 'produit_lot')
+        $panier = Panie::with('produits.categorie', 'vendeur', 'produit_lot')
             ->where('acheteur_id', $userId)
             ->where('id', $panie)
             ->first();

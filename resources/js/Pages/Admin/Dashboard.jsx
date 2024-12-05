@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from '@inertiajs/react'
+import { Head, Link } from '@inertiajs/react'
 import AdminLayout from './Layout/AdminLayout'
 import { BarChart } from '@mui/x-charts'
 import DashboardCard from '../../Components/DashboardCard'
@@ -23,6 +23,7 @@ export default function Dashboard({
     <AdminLayout
       auth={auth}
     >
+      <Head title="Dashboard" />
       <motion.div
         initial={{ opacity: 0, x: -50, y: 50 }}
         animate={{ opacity: 1, x: 0, y: 0 }}
