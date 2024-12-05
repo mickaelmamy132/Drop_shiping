@@ -12,6 +12,8 @@ use App\Models\Vendeur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
 
 class Controlleur_simple extends Controller
 {
@@ -75,6 +77,20 @@ class Controlleur_simple extends Controller
             ->groupBy('mois')
             ->orderBy('mois')
             ->get();
+        Stripe::setApiKey(config('Stripe.sk'));
+
+        $paiements = PaymentIntent::all([
+            'limit' => 10, // Par exemple, les 10 derniers paiements
+        ]);
+
+        $totalRevenus = 0;
+        foreach ($paiements->data as $paiement) {
+            if ($paiement->status === 'succeeded') {
+                $totalRevenus += $paiement->amount_received / 100; // Convertir en euros/dollars
+            }
+        }
+
+
         return Inertia::render('Admin/Dashboard', [
             'produit' => $produit,
             'produit_lot' => $produit_lot,
@@ -83,6 +99,7 @@ class Controlleur_simple extends Controller
             'CommandeParMois' => $CommandeParMois,
             'produitCount' => $produitCount,
             'produit_lotCount' => $produit_lotCount,
+            'totalRevenus' => $totalRevenus,
         ]);
     }
 
@@ -118,9 +135,16 @@ class Controlleur_simple extends Controller
         ]);
     }
 
-    public function Blog_view ()
+    public function gereComptesCommande() {
+        $commandes = Commande::with(['produit', 'produit_lot', 'vendeur', 'user.acheteur'])->get();
+        // dd($commandes);
+        return Inertia::render('Admin/GereCommande', [
+            'commandes' => $commandes,
+        ]);    }
+
+
+    public function Blog_view()
     {
         return Inertia::render('Bloc');
     }
 }
-

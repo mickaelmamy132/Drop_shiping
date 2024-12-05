@@ -22,7 +22,7 @@ class StorePanieRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'acheteur_id' => ['required'],
+            // 'acheteur_id' => ['required'],
             'produit_id' => ['required', 'exists:produits,id'],
             'produit_lot_id' => ['nullable'],
             'vendeur_id' => ['required', 'exists:users,id'],

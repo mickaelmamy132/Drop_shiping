@@ -30,6 +30,7 @@ class PanieController extends Controller
     public function index()
     {
         $userId = Auth::user()->id;
+        // dd($userId);
 
         $panier = Panie::with('produits.categorie', 'vendeur.user', 'produit_lot','produits')->where('acheteur_id', $userId)->get();
 
@@ -52,13 +53,16 @@ class PanieController extends Controller
      */
     public function store(StorePanieRequest $request)
     {
+        $userId = Auth::user()->id;
+        
         $validated = $request->validated();
         // dd($validated);
         $product = Produit::findOrFail($validated['produit_id']);
 
         // Vérifier si le produit est déjà dans le panier
-        $existingPanie = Panie::where('produit_id', $validated['produit_id'])->first();
-        if ($existingPanie) {
+        $existingPanie = Panie::where('produit_id', $validated['produit_id'])
+            ->where('acheteur_id', $userId)
+            ->first();        if ($existingPanie) {
             return back()->withErrors(['error' => 'Ce produit est déjà dans votre panier']);
         }
 
@@ -70,6 +74,7 @@ class PanieController extends Controller
         $validated['prix_totale'] = $prix_total;
         $validated['status'] = 'en attente';
         $validated['prix'] = $product->prix;
+        $validated['acheteur_id'] = Auth::user()->id;
 
         $panie = Panie::create($validated);
 

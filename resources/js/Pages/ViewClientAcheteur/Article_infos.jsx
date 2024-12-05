@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 const { Option } = Select;
 
 export default function Article_infos({ auth, produit }) {
-    console.log(produit);
 
     const [quantite, setQuantity] = useState(1);
 
@@ -115,18 +114,20 @@ export default function Article_infos({ auth, produit }) {
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="flex items-center space-x-4">
                                     <label className="text-gray-700 font-medium">Quantité:</label>
-                                    <Select
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max={produit.quantite}
                                         value={quantite}
-                                        onChange={(value) => setQuantity(String(value))}
-                                        className="w-24"
-                                        size="large"
-                                    >
-                                        {[...Array(produit.quantite)].map((_, index) => (
-                                            <Option key={index + 1} value={index + 1}>
-                                                {index + 1}
-                                            </Option>
-                                        ))}
-                                    </Select>
+                                        onChange={(e) => {
+                                            if (e.target.value > produit.quantite) {
+                                                alert("La quantité demandée dépasse le stock disponible!")
+                                                return
+                                            }
+                                            setQuantity(e.target.value)
+                                        }}
+                                        className="w-24 h-10 border border-gray-300 rounded-lg px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
                                 </div>
 
                                 <Button

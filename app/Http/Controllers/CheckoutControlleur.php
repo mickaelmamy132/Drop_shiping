@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Panie;
 use App\Models\Produit;
 use App\Models\Produit_lot;
 use App\Models\User;
@@ -34,6 +35,8 @@ class CheckoutControlleur extends Controller
 
         Stripe::setApiKey(config('Stripe.sk'));
         $user = Auth::user();
+        $panier = Panie::where('acheteur_id', $user->id)->first();
+        
         $produits = $request->input('produits');
         $lineItems = [];
         $vendeursProduits = [];
@@ -45,7 +48,7 @@ class CheckoutControlleur extends Controller
             foreach ($produits as $produit) {
                 if (is_array($produit)) {
                     if (isset($produit['produit_id'])) {
-                       $item = Produit::find($produit['produit_id']);
+                        $item = Produit::find($produit['produit_id']);
                         if ($item) {
                             $lineItems[] = [
                                 'price_data' => [
@@ -93,7 +96,7 @@ class CheckoutControlleur extends Controller
             'line_items' => $lineItems,
             'mode' => 'payment',
             'success_url' => route('Commande', [], true) . '?session_id={CHECKOUT_SESSION_ID}&success=true',
-            'cancel_url' => route('checkout.cancel', [], true),
+            'cancel_url' => route('Panie.index', [], true),
             'metadata' => [
                 'acheteur_id' => $user->id,
                 'vendeurs_produits' => json_encode($vendeursProduits),
@@ -103,7 +106,7 @@ class CheckoutControlleur extends Controller
                 'quantity' => json_encode(array_column($produits, 'quantite')),
                 'prix_unitaires_produits' => json_encode($prixUnitaires_produits),
                 'prix_unitaires_lots' => json_encode($prixUnitaires_lots),
-            ],
+                'panier_id' => $panier->id,            ],
         ]);        // Rediriger vers Stripe
         return Inertia::location($session->url);
     }

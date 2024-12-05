@@ -3,13 +3,15 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import Chartjx from '../../Components/Chart';
 import Donate from '../../Components/Donate';
+import DashboardCard from '../../Components/DashboardCard';
+import { CubeTransparentIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
 
-export default function Acheteur({ auth }) {
+export default function Acheteur({ auth, panie, commande, produit, produit_lot , encheres}) {
     const { post } = useForm();
 
     return (
         <AuthenticatedLayout
-            user={auth.user} 
+            user={auth.user}
             role={auth.role}
         >
             <Head title="Tableau de bord" />
@@ -51,19 +53,48 @@ export default function Acheteur({ auth }) {
                     </motion.div>
 
                     <motion.div
-                        className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8 w-full mt-5"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.4 }}
+                        className='flex flex-row flex-wrap justify-between gap-2 p-2 dark:bg-gray-900'
+                    >
+
+                        <DashboardCard
+                            title="Enchere en cours"
+                            value={encheres}
+                            icon={ShoppingCartIcon}
+                            footer="Increased by 10% since last month"
+                            additionalInfo="Order #1,234"
+                        />
+                        <DashboardCard
+                            title="Commandes"
+                            value={commande}
+                            icon={CubeTransparentIcon}
+                            footer="23 new products added this week"
+                            additionalInfo="Inactive: 32"
+                        />
+                        <DashboardCard
+                            title="Produits dans le panier"
+                            value={`Produit = ${produit} | Produit lot = ${produit_lot}`}
+                            icon={CubeTransparentIcon}
+                            footer="Total des produits"
+                            additionalInfo={`Produit unitaire = ${produit} | Produit lot = ${produit_lot}`}
+                        />
+                    </motion.div>
+                    <motion.div
+                        className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8 w-full mt-5 flex justify-center items-center"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.2, staggerChildren: 0.1 }}
                     >
                         <Chartjx />
-                        <Donate />
+                        {/* <Donate /> */}
 
                     </motion.div>
                 </div>
-                
+
             </motion.main>
-            
+
         </AuthenticatedLayout>
     );
 }

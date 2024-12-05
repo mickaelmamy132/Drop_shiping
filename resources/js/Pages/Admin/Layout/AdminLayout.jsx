@@ -96,14 +96,14 @@ export default function Dashboard({ children, auth }) {
                         </div>
                         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                             <Link
-                                // href=
+                                href={route('admin.gereCompte.commande')}
                                 className={`flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg ${isActive('/admin/orders') ? 'text-blue-500 bg-blue-50 dark:bg-blue-900' : ''}`}
                             >
                                 <ShoppingCartIcon className="w-5 h-5" />                                
                                 <span className="ml-3">Gestion des Commandes</span>
                             </Link>
                         </motion.div>
-                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                        {/* <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                             <Link
                                 href="/admin/sellers"
                                 className={`flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg ${isActive('/admin/sellers') ? 'text-blue-500 bg-blue-50 dark:bg-blue-900' : ''}`}
@@ -111,7 +111,7 @@ export default function Dashboard({ children, auth }) {
                                 <CubeIcon className="w-5 h-5" />
                                 <span className="ml-3">Gestion des Produits</span>
                             </Link>
-                        </motion.div>
+                        </motion.div> */}
                     </div>
                 </nav>
             </motion.div>

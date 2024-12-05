@@ -76,6 +76,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('admin/gereCompte/acheteurs',[Controlleur_simple::class,'gereComptesacheteur'])->name('admin.gereCompte.acheteurs');
     Route::get('admin/gereCompte/vendeur',[Controlleur_simple::class,'gereComptesvendeur'])->name('admin.gereCompte.vendeur');
+    Route::get('admin/gereCompte/commande',[Controlleur_simple::class,'gereComptesCommande'])->name('admin.gereCompte.commande');
 
     // infos pour vendeur et accheteur
     Route::get('admin.infos_vendeur/{id}',[Controlleur_simple::class,'infos_vendeur'])->name('admin.infos_vendeur');

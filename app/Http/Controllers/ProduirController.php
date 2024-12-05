@@ -5,26 +5,70 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProduitRequest;
 use App\Http\Requests\UpdateProduitRequest;
 use App\Http\Resources\ProduitResource;
+use App\Models\Commande;
+use App\Models\Enchere;
+use App\Models\Panie;
 use App\Models\Produit;
+use App\Models\Produit_lot;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Exists;
 use Inertia\Inertia;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
+use Stripe\Charge;
 
 class ProduirController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    private function checkInternetConnection()
+    {
+        $connected = @fsockopen("www.stripe.com", 443);
+        if ($connected) {
+            fclose($connected);
+            return true;
+        }
+        return false;
+    }
+
     public function index_vendeur()
     {
 
-        return Inertia::render('Dashboard');
-    }
+        $userId = Auth::user()->id;
 
+        $produit = Produit::where('vendeur_id', $userId)->count();
+        $produit_lot = Produit_lot::where('vendeur_id', $userId)->count();
+
+        $commande = Commande::where('vendeur_id', $userId)->count();
+        $encheres = Enchere::where('acheteur_id', '!=', $userId);
+
+        Stripe::setApiKey(config('Stripe.sk'));
+       
+        $paiements = PaymentIntent::all([
+            'limit' => 10, // Par exemple, les 10 derniers paiements
+        ]);
+
+        $totalRevenus = 0;
+        foreach ($paiements->data as $paiement) {
+            if ($paiement->status === 'succeeded') {
+                $totalRevenus += $paiement->amount_received / 100; // Convertir en euros/dollars
+            }
+        }
+
+
+        return Inertia::render('Dashboard', [
+            'commande' => $commande,
+            'produit_lot' => $produit_lot,
+            'produit' => $produit,
+            'encheres' => $encheres->count(),
+            'totalRevenus' => $totalRevenus,
+        ]);
+    }
     public function index()
     {
-        $produits = Produit::with('categorie', 'vendeur')->get();
+        $produits = Produit::with('categorie', 'vendeur')->where('quantite', '>', 0)->get();
         return Inertia::render('ViewClientAcheteur/View_produit', ['produits' => $produits]);
     }
 
@@ -39,10 +83,25 @@ class ProduirController extends Controller
 
     public function view_produit_all()
     {
-        return Inertia::render('ViewClientAcheteur/acheteur');
+        $userId = Auth::user()->id;
+        $article = Produit::first();
+        $lot = Produit_lot::first();
+
+        $panie = Panie::where('acheteur_id', $userId)->count();
+        $produit_lot = Panie::where('produit_lot_id', $lot ? $lot->id : 0)->count();
+        $produit = Panie::where('produit_id', $article ? $article->id : 0)->count();
+        $commande = Commande::where('acheteur_id', $userId)->count();
+        $encheres = Enchere::where('acheteur_id', $userId)
+            ->where('statut', 'en_cours')
+            ->count();
+        return Inertia::render('ViewClientAcheteur/acheteur', [
+            'panie' => $panie,
+            'commande' => $commande,
+            'produit_lot' => $produit_lot,
+            'produit' => $produit,
+            'encheres' => $encheres,
+        ]);
     }
-
-
     /**
      * Show the form for creating a new resource.
      */
@@ -82,7 +141,7 @@ class ProduirController extends Controller
         $produit = Produit::with('categorie', 'vendeur.user')->findOrFail($id);
         return Inertia('ViewClientVendeur/Article_infos', [
             'produit' => new ProduitResource($produit),
-        ]); 
+        ]);
     }
 
     /**
@@ -106,11 +165,11 @@ class ProduirController extends Controller
         $validated = $request->validated();
 
         if ($request->hasFile('image_rubrique')) {
-            if($produit->image_rubrique && Storage::disk('public')->exists($produit->image_rubrique)){
+            if ($produit->image_rubrique && Storage::disk('public')->exists($produit->image_rubrique)) {
                 Storage::disk('public')->delete($produit->image_rubrique);
             }
             $image = $request->file('image_rubrique');
-            $path = $image->store('Produits','public');
+            $path = $image->store('Produits', 'public');
             $validated['image_rubrique'] = $path;
         } else {
             $validated['image_rubrique'] = $produit->image_rubrique;
@@ -128,7 +187,7 @@ class ProduirController extends Controller
     public function destroy($id)
     {
         $produit = Produit::findOrFail($id);
-        
+
         if (!$produit) {
             return redirect()->route('Mes_rubrique/show')->with('error', 'Produit non trouvé');
         }
@@ -142,6 +201,5 @@ class ProduirController extends Controller
 
         $produit->delete();
         return redirect()->route('Mes_rubrique/show')->with('success', 'Produit mis à jour');
-
     }
 }

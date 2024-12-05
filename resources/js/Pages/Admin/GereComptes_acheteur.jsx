@@ -99,8 +99,8 @@ export default function GereComptes_acheteur({ auth, allAcheteur, produit, produ
                 <td className="py-2 px-4 border">{acheteur.user.name}</td>
                 <td className="py-2 px-4 border">{acheteur.user.email}</td>
                 <td className="py-2 px-4 border">
-                  <span className={`px-2 py-1 rounded ${acheteur.status === 'Actif' ? 'bg-green-200' : 'bg-red-200'}`}>
-                    {acheteur.status}
+                  <span className={`px-2 py-1 rounded bg-green-200`}>
+                    Actif
                   </span>
                 </td>
                 <td className="py-2 px-4 border">

@@ -20,6 +20,7 @@ export default function Panier({ auth, panies }) {
     const { post, processing } = useForm({
         acheteur_id: auth.user.id,
         produits: data.map(item => ({
+            id_panier: item.id,
             produit_id: item.produit ? item.produit.id : null,
             produit_lot_id: item.produit_lot_id ? item.produit_lot_id : null,
             quantite: item.quantite,
@@ -354,7 +355,7 @@ export default function Panier({ auth, panies }) {
                     >
                         <p className="text-xl text-gray-600 animate-pulse mb-4">Le panier est vide.</p>
                         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                            <Link href='/Acheteur' className='inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-300'>
+                            <Link href={route('Produit.index')} className='inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-300'>
                                 Continuer vos achats
                             </Link>
                         </motion.div>

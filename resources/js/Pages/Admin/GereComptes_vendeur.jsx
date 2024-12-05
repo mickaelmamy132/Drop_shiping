@@ -103,8 +103,8 @@ export default function GereComptes_vendeur({ auth, allVendeur, produit, produit
                                 <td className="py-2 px-4 border">{vendeur.user.name}</td>
                                 <td className="py-2 px-4 border">{vendeur.user.email}</td>
                                 <td className="py-2 px-4 border">
-                                    <span className={`px-2 py-1 rounded ${vendeur.status === 'Actif' ? 'bg-green-200' : 'bg-red-200'}`}>
-                                        {vendeur.status}
+                                    <span className={`px-2 py-1 rounded bg-green-200`}>
+                                        Actif
                                     </span>
                                 </td>
                                 <td className="py-2 px-4 border">

@@ -7,6 +7,8 @@ use Inertia\Inertia;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
 use App\Models\Commande;
+use App\Models\User;
+use App\Notifications\PaymentNotification;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
 
@@ -48,11 +50,16 @@ class CommandeControlleur extends Controller
                                 'vendeur_id' => $vendeurs_produits[$produit_id] ?? null
                             ];
 
-                            Commande::create($commandeData);
+                            $commande = Commande::create($commandeData);
+                            if ($commande) {
+                                $vendeur = User::find($vendeurs_produits[$produit_id]);
+                                if ($vendeur) {
+                                    $vendeur->notify(new PaymentNotification($commande));
+                                }
+                            }
                         }
                     }
 
-                    // Enregistrer les commandes pour chaque produit en lot
                     foreach ($produit_lot_ids as $index => $produit_lot) {
                         $produit_lot_id = is_object($produit_lot) ? $produit_lot->id : $produit_lot;
 
@@ -72,28 +79,38 @@ class CommandeControlleur extends Controller
                                 'vendeur_id' => $vendeurs_lots[$produit_lot_id] ?? null
                             ];
 
-                            Commande::create($commandeData);
+                            $commande = Commande::create($commandeData);
+                            $envoi = 'success';
+                            if ($commande) {
+                                $vendeur = User::find($vendeurs_produits[$produit_id]);
+                                if ($vendeur) {
+                                    $vendeur->notify(new PaymentNotification($envoi));
+                                }
+                            }
                         }
                     }
 
                     return redirect()->route("Commande")->with('success', 'Votre transaction a été effectuée avec succès!');
                 } else {
-                    return redirect()->route('Panier.index')->with('error', 'Le paiement a échoué.');
+                    return redirect()->route('Panie.index')->with('error', 'Le paiement a échoué.');
                 }
-            } catch (\Exception $e) {
-                return redirect()->route('Panier.index')->with('error', 'Une erreur est survenue : ' . $e->getMessage());
+            }
+            
+            
+            catch (\Exception $e) {
+                return redirect()->route('Panie.index')->with('error', 'Une erreur est survenue : ' . $e->getMessage());
             }
         } else {
-            $commandes = Commande::with(['produit', 'produit_lot', 'vendeur','user.acheteur'])->where('acheteur_id', Auth::user()->id)->get();
+            $commandes = Commande::with(['produit', 'produit_lot', 'vendeur', 'user.acheteur'])->where('acheteur_id', Auth::user()->id)->get();
             return Inertia::render("ViewClientAcheteur/Commande", [
                 'commandes' => $commandes
             ]);
         }
     }
 
-    public function index_vendeur() 
+    public function index_vendeur()
     {
-        $commandes = Commande::with(['produit', 'produit_lot', 'vendeur','user.acheteur'])->where('vendeur_id', Auth::user()->id)->get();
+        $commandes = Commande::with(['produit', 'produit_lot', 'vendeur', 'user.acheteur'])->where('vendeur_id', Auth::user()->id)->get();
         // dd($commandes);
         return Inertia::render("ViewClientVendeur/Commande_vendeur", [
             'commandes' => $commandes
