@@ -6,7 +6,9 @@ use App\Jobs\ProcessEnchereExpiree;
 use App\Models\Enchere;
 use App\Models\Panie;
 use App\Models\Produit_lot;
+use App\Models\User;
 use Illuminate\Console\Command;
+use App\Notifications\EnchereGagneeNotification;
 
 class CheckExpiredEncheres extends Command
 {
@@ -58,6 +60,13 @@ class CheckExpiredEncheres extends Command
                         ]);
 
                         $enchereGagnante->update(['statut' => 'vendu']);
+                        $acheteur = User::find($enchereGagnante->acheteur_id);
+                        if ($acheteur) {
+                            $acheteur->notify(new EnchereGagneeNotification($produit_lot, $enchereGagnante->montant));
+                            $this->info("Notification envoyée à : " . $acheteur->email);
+                        } else {
+                            $this->error("Acheteur non trouvé pour l'ID : " . $enchereGagnante->acheteur_id);
+                        }
                     }
                 } catch (\Illuminate\Database\QueryException $e) {
                     $this->error("Erreur lors de la création du panier pour l'enchère ID: " . $enchere->id);

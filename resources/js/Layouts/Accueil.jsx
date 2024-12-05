@@ -26,7 +26,7 @@ export default function Accueil({ auth, children }) {
             <header className="bg-white">
                 <nav className="flex justify-between items-center w-[92%] mx-auto bg-white border-b pb-4 mb-4">
                     <div className="w-32 h-24">
-                        <img className="w-full h-full object-contain hover:scale-105 transition-transform duration-300 filter drop-shadow-md" src={Khepri} alt="Logo" onError={handleImageError} />
+                        <img className="w-full h-full object-contain hover:scale-105 transition-transform duration-300 filter drop-shadow-md rounded-xl" src={Khepri} alt="Logo" onError={handleImageError} />
                     </div>
                     <div className="nav-links flex items-center md:static absolute bg-white md:min-h-fit min-h-[10vh] right-0 top-0 md:w-auto w-[30%]">
                         <div className="relative">

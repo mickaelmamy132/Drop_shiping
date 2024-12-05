@@ -6,9 +6,6 @@ import { useState } from 'react';
 import Accueil from '../Layouts/Accueil';
 
 export default function Welcome({ auth }) {
-
-
-
     return (
         <Accueil
             auth={auth}
