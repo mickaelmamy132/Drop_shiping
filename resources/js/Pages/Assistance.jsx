@@ -9,9 +9,32 @@ function Assistance({ auth }) {
         <Accueil
             auth={auth}
         >
-            <Link href="/" className="block mb-6 text-blue-600 hover:text-blue-800 transition-colors">
-                ← Retour à l'accueil
-            </Link>
+            <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="ml-4"
+            >
+                <Link 
+                    href="/" 
+                    className="inline-flex items-center mb-6 text-blue-600 hover:text-blue-800 transition-all duration-300 transform hover:-translate-x-1"
+                >
+                    <svg 
+                        className="w-4 h-4 mr-2" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                    >
+                        <path 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            strokeWidth="2" 
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                        />
+                    </svg>
+                    Retour à l'accueil
+                </Link>
+            </motion.div>
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}

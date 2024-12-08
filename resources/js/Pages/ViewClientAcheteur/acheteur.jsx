@@ -81,16 +81,16 @@ export default function Acheteur({ auth, panie, commande, produit, produit_lot ,
                             additionalInfo={`Produit unitaire = ${produit} | Produit lot = ${produit_lot}`}
                         />
                     </motion.div>
-                    <motion.div
+                    {/* <motion.div
                         className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8 w-full mt-5 flex justify-center items-center"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.2, staggerChildren: 0.1 }}
                     >
                         <Chartjx />
-                        {/* <Donate /> */}
+                        <Donate />
 
-                    </motion.div>
+                    </motion.div> */}
                 </div>
 
             </motion.main>

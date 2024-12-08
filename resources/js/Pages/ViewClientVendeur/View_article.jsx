@@ -63,7 +63,7 @@ export default function View_article({ auth, produits }) {
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.6 }}
-                        className="grid grid-cols-1 lg:grid-cols-3 gap-5"
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5"
                     >
                         {produits.map((produit, index) => (
                             <motion.div
@@ -71,6 +71,7 @@ export default function View_article({ auth, produits }) {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
+                                className="w-full sm:w-auto"
                             >
                                 <ProductCard produit={produit} />
                             </motion.div>

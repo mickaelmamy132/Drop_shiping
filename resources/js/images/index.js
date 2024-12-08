@@ -9,6 +9,8 @@ import vendeur_login from "./vendeur_login.jpg"
 import gereProduit from "./gereProduit.jpg"
 import Dasboard from "./Dasboard.jpg"
 import admin from "./Admin.jpg"
+import vendeur from "./Vendeur.png"
+import acheteur from "./Acheteur.png"
 
 export {
     BackgroundImage,
@@ -22,4 +24,6 @@ export {
     gereProduit,
     Dasboard,
     admin,
+    vendeur,
+    acheteur
 };

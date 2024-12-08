@@ -41,13 +41,19 @@ class ProduirController extends Controller
         $produit = Produit::where('vendeur_id', $userId)->count();
         $produit_lot = Produit_lot::where('vendeur_id', $userId)->count();
 
+
+        $produit2 = Produit::where('vendeur_id', $userId)
+            ->selectRaw('categorie_id, count(*) as total')
+            ->groupBy('categorie_id')
+            ->get();
+
         $commande = Commande::where('vendeur_id', $userId)->count();
         $encheres = Enchere::where('acheteur_id', '!=', $userId);
 
         Stripe::setApiKey(config('Stripe.sk'));
-       
+
         $paiements = PaymentIntent::all([
-            'limit' => 10, // Par exemple, les 10 derniers paiements
+            'limit' => 10,
         ]);
 
         $totalRevenus = 0;
@@ -64,6 +70,7 @@ class ProduirController extends Controller
             'produit' => $produit,
             'encheres' => $encheres->count(),
             'totalRevenus' => $totalRevenus,
+            'produit2' => $produit2,
         ]);
     }
     public function index()

@@ -4,6 +4,7 @@ import { Card, Col, Row } from 'antd';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Accueil from '../Layouts/Accueil';
+import { acheteur, vendeur } from '../images';
 
 export default function Welcome({ auth }) {
     return (
@@ -18,11 +19,11 @@ export default function Welcome({ auth }) {
                     className="rounded-lg px-4 md:px-8 py-8 md:py-12 lg:py-20 text-center block-cta bg-gradient-to-r from-blue-500 to-purple-600 text-white"
                 >
                     <h2 className="text-2xl md:text-3xl lg:text-4xl no-prose font-bold mb-4">
-                        Bienvenue sur notre plateforme de drop shipping
+                        Bienvenue sur notre plateforme de Khepri-service
                     </h2>
                     <div className="text-center md:text-lg max-w-[64ch] mx-auto">
                         <p>
-                            Découvrez une nouvelle façon de faire du commerce en ligne avec notre plateforme innovante de drop shipping. Gérez votre inventaire, trouvez des fournisseurs fiables et développez votre entreprise sans tracas.
+                            Découvrez une nouvelle façon de faire du commerce en ligne avec notre plateforme innovante de Khepri-service. Gérez votre inventaire, trouvez des fournisseurs fiables et développez votre entreprise sans tracas.
                         </p>
                     </div>
                     <ul className="gap-6 flex flex-col sm:flex-row mt-8 sm:justify-center list-none">
@@ -154,7 +155,7 @@ export default function Welcome({ auth }) {
                 >
                     <div className="items-center md:w-auto mx-auto px-5 py-8 justify-center text-center md:mb-12">
                         <h3 className="max-w-[40ch] text-2xl md:text-3xl font-semibold lg:text-4xl mx-auto text-center mb-8 md:mb-12">
-                            Drop shipping, le milieu professionnel dédié au déstockage
+                            Khepri-service, le milieu professionnel dédié au déstockage
                         </h3>
                     </div>
 
@@ -162,7 +163,7 @@ export default function Welcome({ auth }) {
                         <img className="transition duration-150 ease-in max-w-xl h-64 rounded-lg mb-8 md:mb-12 opacity-120"
                             src="https://images.unsplash.com/photo-1553413077-190dd305871c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=735&q=80" alt="Logistique en entrepôt" />
                         <div className="mx-auto text-center mb-0 text-lg md:text-xl md:ml-8">
-                            <p className="font-bold">Optimisez votre chaîne d'approvisionnement et réduisez vos coûts grâce à notre plateforme de drop shipping innovante. Connectez-vous à un réseau mondial de fournisseurs fiables et gérez vos commandes en toute simplicité.</p>
+                            <p className="font-bold">Optimisez votre chaîne d'approvisionnement et réduisez vos coûts grâce à notre plateforme de  innovante. Connectez-vous à un réseau mondial de fournisseurs fiables et gérez vos commandes en toute simplicité.</p>
                         </div>
                     </div>
                 </motion.div>
@@ -232,7 +233,7 @@ export default function Welcome({ auth }) {
                                 Vendez vos surplus et stocks dormants
                             </p>
                             <a
-                                href=""
+                                href={route('register_vendeur')}
                                 className="inline-block w-full text-center bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-6 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 font-semibold">
                                 Commencer
                             </a>
@@ -245,7 +246,7 @@ export default function Welcome({ auth }) {
                                 Pilotez vos stocks efficacement
                             </p>
                             <a
-                                href=""
+                                href={route('login')}
                                 className="inline-block w-full text-center bg-gradient-to-r from-indigo-500 to-indigo-600 text-white py-3 px-6 rounded-lg hover:from-indigo-600 hover:to-indigo-700 transition-all duration-300 font-semibold">
                                 Gérer
                             </a>
@@ -258,7 +259,7 @@ export default function Welcome({ auth }) {
                                 Besoin d'aide ? Contactez-nous
                             </p>
                             <a
-                                href=""
+                                href={route('assistance')}
                                 className="inline-block w-full text-center bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 font-semibold">
                                 Contact
                             </a>
@@ -301,7 +302,7 @@ export default function Welcome({ auth }) {
                         <figure className="relative w-full aspect-video rounded-xl overflow-hidden border-4 mb-10 border-blue-200 shadow-lg">
                             <picture className="absolute inset-0">
                                 <img className="transition duration-300 ease-in min-w-full min-h-full object-cover w-full hover:scale-105"
-                                    src="https://ik.imagekit.io/uwzsb7j5w/wp-content/uploads/sites/2/2022/12/stocklear-fr-dashboard-vendeurs.jpg"
+                                    src={vendeur}
                                     alt="Dashboard vendeurs" />
                             </picture>
                         </figure>
@@ -338,7 +339,7 @@ export default function Welcome({ auth }) {
                         <figure className="relative w-full aspect-video rounded-xl overflow-hidden border-4 mb-10 border-blue-200 shadow-lg">
                             <picture className="absolute inset-0">
                                 <img className="transition duration-300 ease-in min-w-full min-h-full object-cover w-full hover:scale-105"
-                                    src="https://ik.imagekit.io/uwzsb7j5w/wp-content/uploads/sites/2/2022/12/stocklear-fr-dashboard-acheteurs.jpg"
+                                    src={acheteur}
                                     alt="Dashboard acheteurs" />
                             </picture>
                         </figure>

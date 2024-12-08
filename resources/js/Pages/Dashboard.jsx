@@ -11,8 +11,9 @@ import { CurrencyDollarIcon, UsersIcon, CubeIcon } from '@heroicons/react/24/sol
 import DashboardCard from '../Components/DashboardCard';
 import { CubeTransparentIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { comma } from 'postcss/lib/list';
+import Donate from '../Components/Donate';
 
-export default function Dashboard({ auth, produit, produit_lot, totalRevenus, commande }) {
+export default function Dashboard({ auth, produit, produit_lot, totalRevenus, commande, produit2 }) {
     const { data, setData, post, processing, errors, reset } = useForm();
     return (
         <AuthenticatedLayout
@@ -132,9 +133,9 @@ export default function Dashboard({ auth, produit, produit_lot, totalRevenus, co
                             </div>
                         </div>
 
-                        <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
-                            <BarChart />
-                        </div>
+                        {/* <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+                            <Donate produit2={produit2} />
+                        </div> */}
                     </motion.div>
                 </div>
             </motion.div>

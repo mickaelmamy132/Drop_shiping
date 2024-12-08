@@ -51,12 +51,12 @@ class CommandeControlleur extends Controller
                             ];
 
                             $commande = Commande::create($commandeData);
-                            if ($commande) {
-                                $vendeur = User::find($vendeurs_produits[$produit_id]);
-                                if ($vendeur) {
-                                    $vendeur->notify(new PaymentNotification($commande));
-                                }
-                            }
+                            // if ($commande) {
+                            //     $vendeur = User::find($vendeurs_produits[$produit_id]);
+                            //     if ($vendeur) {
+                            //         $vendeur->notify(new PaymentNotification($commande));
+                            //     }
+                            // }
                         }
                     }
 
@@ -80,13 +80,13 @@ class CommandeControlleur extends Controller
                             ];
 
                             $commande = Commande::create($commandeData);
-                            $envoi = 'success';
-                            if ($commande) {
-                                $vendeur = User::find($vendeurs_produits[$produit_id]);
-                                if ($vendeur) {
-                                    $vendeur->notify(new PaymentNotification($envoi));
-                                }
-                            }
+                            // $envoi = 'success';
+                            // if ($commande) {
+                            //     $vendeur = User::find($vendeurs_produits[$produit_id]);
+                            //     if ($vendeur) {
+                            //         $vendeur->notify(new PaymentNotification($envoi));
+                            //     }
+                            // }
                         }
                     }
 

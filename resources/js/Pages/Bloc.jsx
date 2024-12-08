@@ -35,8 +35,11 @@ export default function Bloc({ auth }) {
         <Accueil
             auth={auth}
         >
-            <Link href="/" className="block mb-6 text-blue-600 hover:text-blue-800 transition-colors">
-                ← Retour à l'accueil
+            <Link href="/" className="inline-flex items-center px-4 py-2 mb-6 text-blue-600 hover:text-blue-800 transition-colors duration-300 border border-blue-600 rounded-lg hover:bg-blue-50">
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Retour à l'accueil
             </Link>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 ml-auto mr-8">
                 {blogPosts.map(post => (

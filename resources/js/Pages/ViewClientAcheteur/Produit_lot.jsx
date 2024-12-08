@@ -542,22 +542,39 @@ export default function Produit_lot({ lots, auth }) {
                                                 </div>
                                             </div>
                                             <div className="mt-4 text-center items-center gap-2">
-                                                {endDates[lot.id] !== 0 && (
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.05 }}
-                                                        whileTap={{ scale: 0.95 }}
-                                                        onClick={() => openModal(lot)}
-                                                        className="mr-2 mt-4 mb-2 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
-                                                    >
-                                                        Enchérir
-                                                    </motion.button>
+
+
+
+
+
+
+
+
+
+                                                {endDates[lot.id] !== 0 && !timesLeft[lot.id]?.isFinished && (
+                                                    <>
+                                                        <motion.button
+                                                            whileHover={{ scale: 1.05 }}
+                                                            whileTap={{ scale: 0.95 }}
+                                                            onClick={() => openModal(lot)}
+                                                            className="mr-2 mt-4 mb-2 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
+                                                        >
+                                                            Enchérir
+                                                        </motion.button>
+                                                        <Link
+                                                            href={route('Produit_Lot.show', lot.id)}
+                                                            className="mt-2 inline-block bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
+                                                        >
+                                                            Consulter
+                                                        </Link>
+                                                    </>
                                                 )}
-                                                <Link
-                                                    href={route('Produit_Lot.show', lot.id)}
-                                                    className="mt-2 inline-block bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-105 shadow-md"
-                                                >
-                                                    Consulter
-                                                </Link>
+
+
+
+
+
+
                                             </div>
 
                                         </motion.div>

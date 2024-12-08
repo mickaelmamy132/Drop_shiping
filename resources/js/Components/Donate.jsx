@@ -22,27 +22,29 @@ const data = [
   { team: 'Smooth Pandas', rank: 5, points: 6 },
 ];
 
-export default function Donate() {
+export default function Donate({ produit2 }) {
   return (
-    <PieChart
-      series={[
-        {
-          data: data.map((d) => ({ label: d.team, id: d.team, value: d.points })),
-          innerRadius: 30,
-          outerRadius: 100,
-          paddingAngle: 5,
-          cornerRadius: 5,
-          startAngle: -45,
-          endAngle: 225,
-          cx: 150,
-          cy: 150,
-          valueFormatter: (v, { dataIndex }) => {
-            const { rank } = data[dataIndex];
-            return `has ${v.value} points and is ranked ${rank}.`;
+    <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+      <PieChart
+        series={[
+          {
+            data: data.map((d) => ({ label: d.team, id: d.team, value: d.points })),
+            innerRadius: 30,
+            outerRadius: 100,
+            paddingAngle: 5,
+            cornerRadius: 5,
+            startAngle: -45,
+            endAngle: 225,
+            cx: 150,
+            cy: 150,
+            valueFormatter: (v, { dataIndex }) => {
+              const { rank } = data[dataIndex];
+              return `has ${v.value} points and is ranked ${rank}.`;
+            },
           },
-        },
-      ]}
-      {...otherProps}
-    />
+        ]}
+        {...otherProps}
+      />
+    </div>
   );
 }
