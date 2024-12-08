@@ -119,7 +119,7 @@ export default function Welcome({ auth }) {
                                 }])
                             .flat()
                             .map((item, index) => (
-                                <div key={index} style={{ minWidth: '250px', flexShrink: 0 }}>
+                                <div key={index} style={{ minWidth: '251px', flexShrink: 0 }}>
                                     <motion.div
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
